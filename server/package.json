@@ -1,0 +1,12 @@
+{
+  "name": "doko-server",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@logux/server": "^0.5.1",
+    "jsonwebtoken": "^8.5.1"
+  }
+}

@@ -1,3 +1,0 @@
-# doko
-
-Track your games

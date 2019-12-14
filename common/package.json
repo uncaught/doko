@@ -1,0 +1,9 @@
+{
+  "name": "doko-common",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {},
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
