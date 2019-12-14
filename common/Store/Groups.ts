@@ -1,5 +1,5 @@
 import {AnyAction} from 'redux';
-import {State} from './store';
+import {State} from './Store';
 
 export interface Group {
   id: string;
@@ -8,13 +8,16 @@ export interface Group {
 
 const emptyGroups: Group[] = [];
 
-export function reducer(state: Group[] = emptyGroups, action: AnyAction): Group[] {
+export function groupsReducer(state: Group[] = emptyGroups, action: AnyAction): Group[] {
   let newState = state;
 
-  if (action.type === 'group/add') {
+  if (action.type === 'groups/all') {
+    newState = [...action.groups];
+
+  } else if (action.type === 'groups/add') {
     newState = [...state, action.group];
 
-  } else if (action.type === 'group/rename') {
+  } else if (action.type === 'groups/rename') {
     const idx = state.findIndex((group) => group.id === action.groupId);
     if (idx >= 0) {
       newState = [...state];

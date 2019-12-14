@@ -15,4 +15,32 @@ server.auth(async (userId, credentials) => {
   //return data.sub === userId;
 });
 
+const initGruops = [
+  {
+    id: 'A001',
+    name: 'A001',
+  },
+];
+
+server.channel('groups/all', {
+  async access(ctx, action, meta) {
+    return true;
+  },
+  async init(ctx, action, meta) {
+    ctx.sendBack({type: 'groups/all', groups: initGruops});
+  },
+});
+
+server.type('groups/add', {
+  async access(ctx, action, meta) {
+    return true;
+  },
+  resend(ctx, action, meta) {
+    return {channel: 'groups/all'};
+  },
+  async process(ctx, action, meta) {
+    await initGruops.push(action.group);
+  },
+});
+
 server.listen();

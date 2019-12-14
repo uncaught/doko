@@ -22,6 +22,7 @@
     "jsx": "react"
   },
   "include": [
-    "src"
+    "src",
+    "node_modules/@doko/common"
   ]
 }

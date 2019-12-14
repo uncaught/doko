@@ -5,7 +5,7 @@ import 'fomantic-ui-css/semantic.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
-import {reducer} from './store/store';
+import {storeReducer} from '@doko/common';
 // @ts-ignore
 import createLoguxCreator from '@logux/redux/create-logux-creator';
 // @ts-ignore
@@ -28,7 +28,7 @@ const createStore = createLoguxCreator({
   userId: localStorage.getItem('userId') || false,
   credentials: localStorage.getItem('userToken') || false,
 });
-const store = createStore(reducer);
+const store = createStore(storeReducer);
 badge(store.client, {messages: badgeMessages, styles: badgeStyles});
 log(store.client);
 store.client.start();

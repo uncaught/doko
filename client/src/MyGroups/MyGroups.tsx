@@ -1,18 +1,18 @@
 import React, {FormEvent, ReactElement} from 'react';
-import {useSelector} from 'react-redux';
-import {groupsSelector} from 'src/store/groups';
 import {Form} from 'semantic-ui-react';
+import {useAddGroup, useAllGroups} from 'src/Hooks/Hooks';
 
 export default function (): ReactElement {
-  const groups = useSelector(groupsSelector);
+  const [, groups] = useAllGroups();
+  const addGroup = useAddGroup();
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.stopPropagation();
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const name = formData.get('name');
-
+    const name = formData.get('name') as string;
     event.currentTarget.reset();
+    await addGroup(name);
   };
 
   return <div>

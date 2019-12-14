@@ -1,5 +1,5 @@
 import {AnyAction} from 'redux';
-import {mergeStates} from 'doko-common';
+import {mergeStates} from '../MergeStates';
 
 export interface Ui {
   currentGroupId: string | null;
@@ -32,7 +32,7 @@ const initial: Ui = {
   currentGroupId: null,
 };
 
-export function reducer(state?: Ui, action: AnyAction = {type: ''}): Ui {
+export function uiReducer(state?: Ui, action: AnyAction = {type: ''}): Ui {
   let newState = state;
   if (typeof state === 'undefined') {
     newState = syncFromLocalStorage(initial);

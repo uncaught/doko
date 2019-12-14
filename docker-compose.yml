@@ -15,9 +15,10 @@ services:
   server:
     image: node:13.3.0-alpine3.10
     restart: always
-    working_dir: /server
+    user: '1000:1000'
+    working_dir: /var/projects/doko/server
     volumes:
-      - ./server:/server:rw
+      - /var/projects/doko:/var/projects/doko:rw
     environment:
       - NODE_ENV=development
       - JWT_SECRET=VrNaq0KFu3oisl2l55M1xz3W9xzjM8d7Y3RkiTphey2tTaIbOXpMCh7hsiHsHbmY
@@ -36,12 +37,13 @@ services:
 
   client:
     image: node:13.3.0-alpine3.10
+    user: '1000:1000'
     restart: always
-    working_dir: /client
+    working_dir: /var/projects/doko/client
     environment:
       - NODE_ENV=development
     volumes:
-      - ./client:/client:rw
+      - /var/projects/doko:/var/projects/doko:rw
     entrypoint:
       - "npm"
       - "start"
