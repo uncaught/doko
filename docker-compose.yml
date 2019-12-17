@@ -1,16 +1,16 @@
 version: "3.7"
 
 services:
-  database:
-    image: mysql:5.7
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
-    volumes:
-      - ./mysql/lib:/var/lib/mysql:rw
-      - ./mysql/log:/var/log/mysql:rw
-    ports:
-      - "33061:3306"
+#  database:
+#    image: mysql:5.7
+#    restart: always
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
+#    volumes:
+#      - ./mysql/lib:/var/lib/mysql:rw
+#      - ./mysql/log:/var/log/mysql:rw
+#    ports:
+#      - "33061:3306"
 
   server:
     image: node:13.3.0-alpine3.10
@@ -18,7 +18,7 @@ services:
     user: '1000:1000'
     working_dir: /var/projects/doko/server
     volumes:
-      - /var/projects/doko:/var/projects/doko:rw
+      - ./:/var/projects/doko:rw
     environment:
       - NODE_ENV=development
       - JWT_SECRET=VrNaq0KFu3oisl2l55M1xz3W9xzjM8d7Y3RkiTphey2tTaIbOXpMCh7hsiHsHbmY
@@ -43,7 +43,7 @@ services:
     environment:
       - NODE_ENV=development
     volumes:
-      - /var/projects/doko:/var/projects/doko:rw
+      - ./:/var/projects/doko:rw
     entrypoint:
       - "npm"
       - "start"

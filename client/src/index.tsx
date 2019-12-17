@@ -22,7 +22,7 @@ import IndexedStore from '@logux/client/indexed-store';
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',
   server: process.env.NODE_ENV === 'development'
-    ? 'ws://192.168.42.211:3030'
+    ? `ws://${window.location.hostname}:3030`
     : 'wss://logux.example.com',
   store: new IndexedStore(),
   userId: localStorage.getItem('userId') || false,
