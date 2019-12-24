@@ -31,7 +31,8 @@ services:
       - DB_PW=sKAmqtzkQ1-QhmSdmiH2
     entrypoint:
       - "npm"
-      - "start"
+      - "run"
+      - "dev"
     ports:
       - "3030:3030"
 

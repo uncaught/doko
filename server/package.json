@@ -1,12 +1,21 @@
 {
   "name": "@doko/server",
   "private": true,
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "node index.js"
+    "dev": "ts-node-dev --respawn --transpileOnly src/index.ts",
+    "start": "ts-node src/index.ts",
+    "tsc": "tsc"
   },
   "dependencies": {
+    "@doko/common": "link:../common",
     "@logux/server": "^0.5.1",
-    "jsonwebtoken": "^8.5.1"
+    "@types/node": "^13.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^1.0.0-pre.44"
   }
 }

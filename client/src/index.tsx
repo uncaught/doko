@@ -5,7 +5,6 @@ import 'fomantic-ui-css/semantic.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
-import {storeReducer} from '@doko/common';
 // @ts-ignore
 import createLoguxCreator from '@logux/redux/create-logux-creator';
 // @ts-ignore
@@ -18,6 +17,7 @@ import badgeMessages from '@logux/client/badge/en';
 import log from '@logux/client/log';
 // @ts-ignore
 import IndexedStore from '@logux/client/indexed-store';
+import {storeReducer} from 'src/Store/Store';
 
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',

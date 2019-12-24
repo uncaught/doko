@@ -1,6 +1,7 @@
 import {Action, AnyAction, combineReducers} from 'redux';
-import {Group, groupsReducer as groups} from './Groups';
+import {groupsReducer as groups} from './Groups';
 import {Ui, uiReducer as ui} from './Ui';
+import {Group} from '@doko/common';
 
 export interface LoguxDispatch<A extends Action = AnyAction> {
   <T extends A>(action: T): T;

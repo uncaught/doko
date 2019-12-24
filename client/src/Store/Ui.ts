@@ -1,5 +1,5 @@
 import {AnyAction} from 'redux';
-import {mergeStates} from '../MergeStates';
+import {mergeStates} from '@doko/common';
 
 export interface Ui {
   currentGroupId: string | null;

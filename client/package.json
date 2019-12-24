@@ -6,7 +6,7 @@
     "@doko/common": "link:../common",
     "@logux/client": "^0.5.2",
     "@logux/redux": "^0.4.2",
-    "@types/node": "^12.0.0",
+    "@types/node": "^13.1.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.5",
@@ -23,7 +23,8 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "tsc": "tsc"
   },
   "eslintConfig": {
     "extends": "react-app"

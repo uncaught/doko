@@ -12,14 +12,16 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "noImplicitAny": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react"
   },
   "include": [
-    "."
+    "src",
+    "node_modules/@doko/common"
   ]
 }
