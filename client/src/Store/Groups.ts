@@ -1,22 +1,25 @@
 import {State} from './Store';
-import {Group} from '@doko/common';
-import {GroupsAdd, GroupsAll, GroupsRename} from '@doko/common/Actions';
-import {createReducer} from 'src/Store/CreateReducer';
+import {Groups, GroupsAdd, GroupsAll, GroupsPatch} from '@doko/common/Entities/Groups';
+import {arrayToList, createReducer} from 'src/Store/Reducer';
+import {mergeStates} from '@doko/common';
 
-const emptyGroups: Group[] = [];
+const {addReducer, combinedReducer} = createReducer<Groups>();
 
-const {addReducer, combinedReducer} = createReducer<Group[]>(emptyGroups);
+addReducer<GroupsAll>('groups/all', (state, action) => arrayToList(action.groups));
 
-addReducer<GroupsAll>('groups/all', (state, action) => [...action.groups]);
-addReducer<GroupsAdd>('groups/add', (state, action) => [...state, action.group]);
-addReducer<GroupsRename>('groups/rename', (state, action) => {
-  let newState = state;
-  const idx = state.findIndex((group) => group.id === action.groupId);
-  if (idx >= 0) {
-    newState = [...state];
-    newState[idx] = {...newState[idx], name: action.name};
+addReducer<GroupsAdd>('groups/add', (state, action) => ({
+  ...state,
+  [action.group.id]: action.group,
+}));
+
+addReducer<GroupsPatch>('groups/patch', (state, action) => {
+  if (state[action.id]) {
+    return {
+      ...state,
+      [action.id]: mergeStates(state[action.id], action.group),
+    };
   }
-  return newState;
+  return state;
 });
 
 export const groupsReducer = combinedReducer;

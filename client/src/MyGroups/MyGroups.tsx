@@ -1,9 +1,9 @@
 import React, {FormEvent, ReactElement} from 'react';
 import {Form} from 'semantic-ui-react';
-import {useAddGroup, useAllGroups} from 'src/Hooks/Hooks';
+import {useAddGroup, useSortedGroups} from 'src/Hooks/Hooks';
 
 export default function (): ReactElement {
-  const [, groups] = useAllGroups();
+  const [, groups] = useSortedGroups();
   const addGroup = useAddGroup();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

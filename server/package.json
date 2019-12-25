@@ -1,5 +1,6 @@
 {
   "name": "@doko/server",
+  "version": "1.0.0",
   "private": true,
   "main": "src/index.ts",
   "scripts": {
@@ -11,7 +12,8 @@
     "@doko/common": "link:../common",
     "@logux/server": "^0.5.1",
     "@types/node": "^13.1.0",
-    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mariadb": "^2.1.4",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.4"
   },

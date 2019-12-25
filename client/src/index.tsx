@@ -18,6 +18,7 @@ import log from '@logux/client/log';
 // @ts-ignore
 import IndexedStore from '@logux/client/indexed-store';
 import {storeReducer} from 'src/Store/Store';
+import {getAuth} from './Auth';
 
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',
@@ -25,8 +26,7 @@ const createStore = createLoguxCreator({
     ? `ws://${window.location.hostname}:3030`
     : 'wss://logux.example.com',
   store: new IndexedStore(),
-  userId: localStorage.getItem('userId') || false,
-  credentials: localStorage.getItem('userToken') || false,
+  ...getAuth(),
 });
 const store = createStore(storeReducer);
 badge(store.client, {messages: badgeMessages, styles: badgeStyles});

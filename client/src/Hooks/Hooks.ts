@@ -1,10 +1,10 @@
-import {generateUuid, Group} from '@doko/common';
+import {generateUuid} from '@doko/common';
 import {useDispatch, useSelector} from 'react-redux';
 import useSubscription from '@logux/redux/use-subscription';
 import {groupsSelector} from 'src/Store/Groups';
 import {LoguxDispatch} from 'src/Store/Store';
-import {GroupsAdd, GroupsRename} from '@doko/common/Actions';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
+import {Group, GroupsAdd, GroupsPatch} from '@doko/common/Entities/Groups';
 
 export function useAddGroup() {
   const dispatch = useDispatch<LoguxDispatch>();
@@ -17,18 +17,16 @@ export function useAddGroup() {
   }, [dispatch]);
 }
 
-export function useRenameGroup() {
+export function usePatchGroup() {
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((groupId: string, name: string) => {
-    if (!name) {
-      throw new Error('Invalid name');
-    }
-    return dispatch.sync<GroupsRename>({groupId, name, type: 'groups/rename'});
+  return useCallback((id: string, group: Partial<Omit<Group, 'id'>>) => {
+    return dispatch.sync<GroupsPatch>({id, group, type: 'groups/patch'});
   }, [dispatch]);
 }
 
-export function useAllGroups(): [boolean, Group[]] {
+export function useSortedGroups(): [boolean, Group[]] {
   const isLoading = useSubscription(['groups/load']);
   const groups = useSelector(groupsSelector);
-  return [isLoading, groups];
+  return useMemo(() => [isLoading, Object.values(groups).sort((a, b) => a.name.localeCompare(b.name))],
+    [isLoading, groups]);
 }

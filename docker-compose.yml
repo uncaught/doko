@@ -1,34 +1,37 @@
 version: "3.7"
 
 services:
-#  database:
-#    image: mysql:5.7
-#    restart: always
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
-#    volumes:
-#      - ./mysql/lib:/var/lib/mysql:rw
-#      - ./mysql/log:/var/log/mysql:rw
-#    ports:
-#      - "33061:3306"
+  database:
+    image: mariadb:10.4.11-bionic
+    restart: always
+    environment:
+      - MYSQL_DATABASE=doko
+      - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+      - ./database/lib:/var/lib/mysql:rw
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+    ports:
+      - "33061:3306"
 
   server:
-    image: node:13.3.0-alpine3.10
+    image: node:13.5.0-alpine3.10
     restart: always
     user: '1000:1000'
-    working_dir: /var/projects/doko/server
+    working_dir: /doko/server
     volumes:
-      - ./:/var/projects/doko:rw
+      - ./:/doko:rw
     environment:
       - NODE_ENV=development
-      - JWT_SECRET=VrNaq0KFu3oisl2l55M1xz3W9xzjM8d7Y3RkiTphey2tTaIbOXpMCh7hsiHsHbmY
-      - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
       - LOGUX_HOST=0.0.0.0
       - LOGUX_PORT=3030
       - DB_HOST=database
       - DB_PORT=3306
       - DB_USER=root
       - DB_PW=sKAmqtzkQ1-QhmSdmiH2
+      - DB_NAME=doko
     entrypoint:
       - "npm"
       - "run"
@@ -37,14 +40,14 @@ services:
       - "3030:3030"
 
   client:
-    image: node:13.3.0-alpine3.10
+    image: node:13.5.0-alpine3.10
     user: '1000:1000'
     restart: always
-    working_dir: /var/projects/doko/client
+    working_dir: /doko/client
     environment:
       - NODE_ENV=development
     volumes:
-      - ./:/var/projects/doko:rw
+      - ./:/doko:rw
     entrypoint:
       - "npm"
       - "start"

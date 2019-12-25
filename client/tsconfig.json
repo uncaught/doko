@@ -19,7 +19,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "incremental": true,
+    "jsx": "react",
+    "outDir": "./build"
   },
   "include": [
     "src",
