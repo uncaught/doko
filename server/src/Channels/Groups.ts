@@ -1,36 +1,28 @@
 import server from '../Server';
-import {Group, GroupsAdd, GroupsAll, GroupsLoad, GroupsPatch} from '@doko/common/Entities/Groups';
-import {query} from '../Connection';
+import {Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common/Entities/Groups';
+import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {generateUuid} from '@doko/common';
-import {intersection} from 'lodash';
+import {canEditGroup, clearUserGroupIdsCache, getUserGroupIds} from '../Auth';
 
-async function getUserGroupIds(userId: string): Promise<string[]> {
-  const result = await query<{ group_id: string }>(`SELECT DISTINCT gm.group_id
-                                FROM group_member_users gmu
-                          INNER JOIN group_members gm ON gm.id = gmu.group_member_id
-                               WHERE gmu.user_id = :userId`, {userId});
-  return result.map(({group_id}) => group_id);
-}
-
-server.channel<GroupsLoad, GroupsAll>('groups/load', {
+server.channel<GroupsLoad>('groups/load', {
   async access() {
-    return true;
+    return true; //everyone can read this channel, the result is filtered by membership
   },
   async init(ctx) {
-    let result: Group[] = [];
     const groupIds = await getUserGroupIds(ctx.userId!);
-    if (groupIds.length) {
-      const ary = `,?`.repeat(groupIds.length).substring(1);
-      result = await query<Group>(`SELECT g.id, g.name FROM groups g WHERE g.id IN (${ary})`, groupIds);
+    let groups: Group[] = [];
+    if (groupIds.size) {
+      const ary = `,?`.repeat(groupIds.size).substring(1);
+      groups = await query<Group>(`SELECT g.id, g.name FROM groups g WHERE g.id IN (${ary})`, [...groupIds]);
     }
-    await ctx.sendBack({type: 'groups/all', groups: result});
+    await ctx.sendBack<GroupsLoaded>({groups, type: 'groups/loaded'});
   },
   async filter(ctx) {
+    //TODO: re-test once https://github.com/logux/server/pull/68 is released
     const groupIds = await getUserGroupIds(ctx.userId!);
     const {addFilter, combinedFilter} = createFilter();
-    addFilter<GroupsAdd>('groups/add', (_, {group}) => groupIds.includes(group.id));
-    addFilter<GroupsPatch>('groups/patch', (_, {id}) => groupIds.includes(id));
+    addFilter<GroupsPatch>('groups/patch', (_, {id}) => groupIds.has(id));
     return combinedFilter;
   },
 });
@@ -39,9 +31,7 @@ server.type<GroupsAdd>('groups/add', {
   async access() {
     return true;
   },
-  resend() {
-    return {channel: 'groups/load'};
-  },
+  //No resend needed - no other client may see this group, yet, because no other client is a member
   async process(ctx, action) {
     const groupMemberId = generateUuid();
     await query(`INSERT INTO groups (id, name, created_by_user_id, created_on) VALUES (:id, :name, :userId, NOW())`, {
@@ -55,27 +45,27 @@ server.type<GroupsAdd>('groups/add', {
       name: 'Me',
       userId: ctx.userId,
     });
-    await query(`INSERT INTO group_member_users (group_member_id, user_id) VALUES (:gmid, :userId)`, {
+    await query(`INSERT INTO group_member_users (group_member_id, user_id, inviter_user_id, invited_on) 
+                      VALUES (:gmid, :userId, :inviterUserId, NOW())`, {
       gmid: groupMemberId,
       userId: ctx.userId,
+      inviterUserId: ctx.userId,
     });
+    clearUserGroupIdsCache(ctx.userId!);
   },
 });
 
 server.type<GroupsPatch>('groups/patch', {
-  async access() {
-    return true;
+  access(ctx, {id}) {
+    return canEditGroup(ctx.userId!, id);
   },
   resend() {
     return {channel: 'groups/load'};
   },
   async process(_ctx, action) {
-    const updateKeys = intersection(Object.keys(action.group), ['name']).map((key) => `${key} = :${key}`).join(', ');
+    const updateKeys = buildPartialUpdateSql(action.group, ['name']);
     if (updateKeys.length) {
-      await query(`UPDATE groups SET ${updateKeys} WHERE id = :id`, {
-        id: action.id,
-        ...action.group,
-      });
+      await query(`UPDATE groups SET ${updateKeys} WHERE id = :id`, {...action.group, id: action.id});
     }
   },
 });

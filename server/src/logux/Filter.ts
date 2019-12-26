@@ -10,12 +10,12 @@ export function createFilter() {
     map.set(type, filter);
   };
 
-  const combinedFilter = (resendCtx: Context<Action>, resendAction: Action, resendMeta: Meta) => {
+  const combinedFilter = (resendCtx: Context, resendAction: Action, resendMeta: Meta) => {
     const filter = map.get(resendAction.type);
     if (filter) {
       return filter(resendCtx, resendAction, resendMeta);
     }
-    return true;
+    return false;
   };
 
   return {addFilter, combinedFilter};

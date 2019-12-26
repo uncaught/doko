@@ -1,11 +1,11 @@
 import {State} from './Store';
-import {Groups, GroupsAdd, GroupsAll, GroupsPatch} from '@doko/common/Entities/Groups';
+import {Groups, GroupsAdd, GroupsLoaded, GroupsPatch} from '@doko/common/Entities/Groups';
 import {arrayToList, createReducer} from 'src/Store/Reducer';
 import {mergeStates} from '@doko/common';
 
 const {addReducer, combinedReducer} = createReducer<Groups>();
 
-addReducer<GroupsAll>('groups/all', (state, action) => arrayToList(action.groups));
+addReducer<GroupsLoaded>('groups/loaded', (state, action) => arrayToList(action.groups));
 
 addReducer<GroupsAdd>('groups/add', (state, action) => ({
   ...state,

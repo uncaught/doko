@@ -1,21 +1,26 @@
 declare module '@logux/redux/use-subscription' {
-
-  interface Subscribe {
-    channel: string;
-  }
-
-  type Channel = string | Subscribe;
+  import {SubscribeAction} from '@logux/core';
 
   interface Options {
     context?: object; //React.Context;
   }
 
-  export default function useSubscription(channels: Channel[], opts?: Options): boolean;
+  export default function useSubscription<A extends SubscribeAction>(
+    channels: A['channel'][] | A[],
+    opts?: Options,
+  ): boolean;
 }
 
 declare module '@logux/core' {
   interface Action {
     type: string;
+
+    [extraProps: string]: any;
+  }
+
+  interface SubscribeAction {
+    //type: 'logux/subscribe'; //added by logux interna
+    channel: string;
 
     [extraProps: string]: any;
   }
@@ -28,7 +33,7 @@ declare module '@logux/core' {
 declare module '@logux/server/context' {
   import {Action, Meta} from '@logux/core';
 
-  interface Context<SendBackAction extends Action> {
+  interface Context {
     data: object;
     nodeId: string;
     userId?: string;
@@ -38,16 +43,16 @@ declare module '@logux/server/context' {
 
     isSubprotocol(range: string): boolean;
 
-    sendBack<SendBack extends SendBackAction>(action: SendBack, meta?: Meta): Promise<void>;
+    sendBack<A extends Action>(action: A, meta?: Meta): Promise<void>;
   }
 
-  interface ChannelContext<SendBackAction extends Action, Params extends object = {}> extends Context<SendBackAction> {
+  interface ChannelContext<Params extends object = {}> extends Context {
     params: Params;
   }
 }
 
 declare module '@logux/server/base-server' {
-  import {Action, Meta} from '@logux/core';
+  import {Action, Meta, SubscribeAction} from '@logux/core';
   import {ChannelContext, Context} from '@logux/server/context';
 
   interface Client {
@@ -73,6 +78,17 @@ declare module '@logux/server/base-server' {
     (ctx: Context, action: A, meta: Meta): boolean | Promise<boolean>;
   }
 
+  interface ResendResponse {
+    channel?: string;
+    channels?: string[];
+    client?: string;
+    clients?: string[];
+    user?: string;
+    users?: string[];
+    node?: string;
+    nodes?: string[];
+  }
+
   interface Resender<A extends Action> {
     /**
      * @param ctx Information about node, who create this action.
@@ -80,7 +96,7 @@ declare module '@logux/server/base-server' {
      * @param meta The action metadata.
      * @return Meta’s keys.
      */
-    (ctx: Context, action: A, meta: Meta): object | Promise<object>;
+    (ctx: Context, action: A, meta: Meta): ResendResponse | Promise<ResendResponse>;
   }
 
   interface Processor<A extends Action> {
@@ -103,40 +119,40 @@ declare module '@logux/server/base-server' {
     (ctx: Context, resendAction: ResendAction, meta: Meta): boolean;
   }
 
-  interface ChannelAuthorizer<SubscribeAction extends Action, SendBackAction extends Action, Params extends object = {}> {
+  interface ChannelAuthorizer<SubAction extends SubscribeAction, Params extends object = {}> {
     /**
      * @param ctx Information about node, who create this action.
      * @param action The action data.
      * @param meta The action metadata.
      * @return `true` if client are allowed to subscribe to this channel.
      */
-    (ctx: ChannelContext<SendBackAction, Params>, action: SubscribeAction, meta: Meta): boolean | Promise<boolean>;
+    (ctx: ChannelContext<Params>, action: SubAction, meta: Meta): boolean | Promise<boolean>;
   }
 
-  interface FilterCreator<SubscribeAction extends Action, SendBackAction extends Action, Params extends object = {}> {
+  interface FilterCreator<SubAction extends SubscribeAction, Params extends object = {}> {
     /**
      * @param ctx Information about node, who create this action.
      * @param action The action data.
      * @param meta The action metadata.
      * @return Actions filter.
      */
-    (ctx: ChannelContext<SendBackAction, Params>, action: SubscribeAction, meta: Meta): void | Filter;
+    (ctx: ChannelContext<Params>, action: SubAction, meta: Meta): void | Filter;
   }
 
-  interface Initialized<SubscribeAction extends Action, SendBackAction extends Action, Params extends object = {}> {
+  interface Initialized<SubAction extends SubscribeAction, Params extends object = {}> {
     /**
      * @param ctx Information about node, who create this action.
      * @param action The action data.
      * @param meta The action metadata.
      * @return Promise during initial actions loading.
      */
-    (ctx: ChannelContext<SendBackAction, Params>, action: SubscribeAction, meta: Meta): void | Promise<void>;
+    (ctx: ChannelContext<Params>, action: SubAction, meta: Meta): void | Promise<void>;
   }
 
-  interface ChannelCallbacks<SubscribeAction extends Action, SendBackAction extends Action, Params extends object = {}> {
-    access: ChannelAuthorizer<SubscribeAction, SendBackAction, Params>;
-    filter?: FilterCreator<SubscribeAction, SendBackAction, Params>;
-    init?: Initialized<SubscribeAction, SendBackAction, Params>;
+  interface ChannelCallbacks<SubAction extends SubscribeAction, Params extends object = {}> {
+    access: ChannelAuthorizer<SubAction, Params>;
+    filter?: FilterCreator<SubAction, Params>;
+    init?: Initialized<SubAction, Params>;
     finally?: () => void;
   }
 
@@ -154,9 +170,9 @@ declare module '@logux/server/base-server' {
 
     listen(): Promise<void>;
 
-    channel<SubscribeAction extends Action, SendBackAction extends Action, Params extends object = {}>(
-      pattern: SubscribeAction['type'] | RegExp,
-      callbacks: ChannelCallbacks<SubscribeAction, SendBackAction, Params>,
+    channel<A extends SubscribeAction, Params extends object = {}>(
+      pattern: A['channel'] | RegExp,
+      callbacks: ChannelCallbacks<A, Params>,
     ): void;
 
     otherChannel(callbacks: ChannelCallbacks): void;

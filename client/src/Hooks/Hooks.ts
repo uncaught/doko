@@ -4,7 +4,7 @@ import useSubscription from '@logux/redux/use-subscription';
 import {groupsSelector} from 'src/Store/Groups';
 import {LoguxDispatch} from 'src/Store/Store';
 import {useCallback, useMemo} from 'react';
-import {Group, GroupsAdd, GroupsPatch} from '@doko/common/Entities/Groups';
+import {Group, GroupsAdd, GroupsLoad, GroupsPatch} from '@doko/common/Entities/Groups';
 
 export function useAddGroup() {
   const dispatch = useDispatch<LoguxDispatch>();
@@ -25,7 +25,7 @@ export function usePatchGroup() {
 }
 
 export function useSortedGroups(): [boolean, Group[]] {
-  const isLoading = useSubscription(['groups/load']);
+  const isLoading = useSubscription<GroupsLoad>(['groups/load']);
   const groups = useSelector(groupsSelector);
   return useMemo(() => [isLoading, Object.values(groups).sort((a, b) => a.name.localeCompare(b.name))],
     [isLoading, groups]);

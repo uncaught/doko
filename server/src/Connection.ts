@@ -1,4 +1,6 @@
 import mariadb, {PoolConnection, QueryOptions} from 'mariadb';
+import {snakeCase} from 'snake-case';
+import {intersection} from 'lodash';
 
 const pool = mariadb.createPool({
   host: process.env.DB_HOST,
@@ -27,4 +29,10 @@ export async function query<R>(sql: string, values?: any[] | object): Promise<R[
       conn.release();
     }
   }
+}
+
+export function buildPartialUpdateSql<O extends { [x: string]: any }>(partial: O, whiteList: Array<keyof O>) {
+  return intersection<string>(Object.keys(partial), whiteList as string[])
+    .map((key) => `${snakeCase(key)} = :${key}`)
+    .join(', ');
 }

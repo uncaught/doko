@@ -8,11 +8,11 @@ export interface Groups {
 }
 
 export interface GroupsLoad {
-  type: 'groups/load';
+  channel: 'groups/load';
 }
 
-export interface GroupsAll {
-  type: 'groups/all';
+export interface GroupsLoaded {
+  type: 'groups/loaded';
   groups: Group[];
 }
 
