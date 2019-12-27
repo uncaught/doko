@@ -1,6 +1,7 @@
 export interface Group {
   id: string;
   name: string;
+  lastGameUnix?: number;
 }
 
 export interface Groups {

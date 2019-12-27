@@ -1,8 +1,9 @@
 import {AnyAction} from 'redux';
 import {mergeStates} from '@doko/common';
+import {State} from './Store';
 
 export interface Ui {
-  currentGroupId: string | null;
+  currentGroupId: string;
 }
 
 const syncKeys = ['currentGroupId'];
@@ -29,7 +30,7 @@ function syncFromLocalStorage(state: Ui): Ui {
 }
 
 const initial: Ui = {
-  currentGroupId: null,
+  currentGroupId: '',
 };
 
 export function uiReducer(state?: Ui, action: AnyAction = {type: ''}): Ui {
@@ -43,3 +44,4 @@ export function uiReducer(state?: Ui, action: AnyAction = {type: ''}): Ui {
   return newState!;
 }
 
+export const currentGroupIdSelector = (state: State) => state.ui.currentGroupId;

@@ -1,7 +1,6 @@
 import server from './Server';
-import {Credentials} from '@doko/common/Auth';
+import {Credentials, isUuid} from '@doko/common';
 import {query} from './Connection';
-import {isUuid} from '@doko/common/Uuid';
 
 server.auth(async (userId: string, credentials: Credentials) => {
   if (!isUuid(userId)) {

@@ -1,5 +1,4 @@
-import {generateUuid, isUuid} from '@doko/common/Uuid';
-import {Credentials} from '@doko/common/Auth';
+import {Credentials, generateUuid, isUuid} from '@doko/common';
 
 export function getAuth(): { userId: string; credentials: Credentials } {
   let userId = localStorage.getItem('userId');

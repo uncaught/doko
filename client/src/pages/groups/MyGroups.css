@@ -1,0 +1,11 @@
+.myGroups-group {
+  display: block;
+}
+
+.myGroups-groups .description{
+  font-size: .85em;
+}
+
+.ui.dimmer {
+  background-color: black;
+}

@@ -1,7 +1,8 @@
 import {Action, AnyAction, combineReducers} from 'redux';
 import {groupsReducer as groups} from './Groups';
+import {groupMembersReducer as groupMembers} from './GroupMembers';
 import {Ui, uiReducer as ui} from './Ui';
-import {Groups} from '@doko/common/Entities/Groups';
+import {GroupMembers, Groups} from '@doko/common';
 
 export interface LoguxDispatch<A extends Action = AnyAction> {
   <T extends A>(action: T): T;
@@ -13,10 +14,12 @@ export interface LoguxDispatch<A extends Action = AnyAction> {
 
 export interface State {
   groups: Groups;
+  groupMembers: GroupMembers;
   ui: Ui;
 }
 
 export const storeReducer = combineReducers<State>({
   groups,
+  groupMembers,
   ui,
 });

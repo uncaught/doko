@@ -21,6 +21,6 @@
     "outDir": "build"
   },
   "include": [
-    "."
+    "src"
   ]
 }

@@ -2,7 +2,7 @@
   "name": "@doko/common",
   "version": "1.0.0",
   "private": true,
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {},
   "dependencies": {
     "@types/lodash": "^4.14.149",

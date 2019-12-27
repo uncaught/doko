@@ -1,18 +1,5 @@
 import {cloneDeep, isPlainObject} from 'lodash';
-
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : T[P] extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : DeepPartial<T[P]>
-};
-
-interface AnyObject {
-  [x: string]: any;
-}
-
-type AnyArray = any[];
+import {AnyArray, AnyObject, DeepPartial} from './Generics';
 
 interface MergeStatesOptions {
   replaceArrays: boolean;

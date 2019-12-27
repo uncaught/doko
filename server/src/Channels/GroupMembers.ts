@@ -2,6 +2,7 @@ import server from '../Server';
 import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
+  generateToken,
   GroupMember,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
@@ -10,9 +11,8 @@ import {
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
-} from '@doko/common/Entities/GroupMembers';
+} from '@doko/common';
 import {canEditGroup, canReadGroup, clearUserGroupIdsCache} from '../Auth';
-import {generateToken} from '@doko/common/Uuid';
 
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);

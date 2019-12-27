@@ -1,8 +1,7 @@
 import server from '../Server';
-import {Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common/Entities/Groups';
+import {generateUuid, Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
 import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
-import {generateUuid} from '@doko/common';
 import {canEditGroup, clearUserGroupIdsCache, getUserGroupIds} from '../Auth';
 
 server.channel<GroupsLoad>('groups/load', {
