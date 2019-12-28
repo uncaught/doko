@@ -29,13 +29,18 @@ export function getUserGroupIds(userId: string): Promise<Set<string>> {
   return cacheUserGroupIds.get(userId)!;
 }
 
-export function clearUserGroupIdsCache(userId: string): void {
-  cacheUserGroupIds.delete(userId);
+export async function updateUserGroupIdsCache(userId: string, groupId: string): Promise<void> {
+  if (cacheUserGroupIds.has(userId)) {
+    const set = await cacheUserGroupIds.get(userId)!;
+    set.add(groupId);
+  }
 }
 
 export async function canReadGroup(userId: string, groupId: string): Promise<boolean> {
   //all members may read the group
-  return (await getUserGroupIds(userId)).has(groupId);
+  const canRead = (await getUserGroupIds(userId)).has(groupId);
+  console.error('canReadGroup', {userId, groupId, canRead});
+  return canRead;
 }
 
 export async function canEditGroup(userId: string, groupId: string): Promise<boolean> {

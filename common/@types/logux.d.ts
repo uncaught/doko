@@ -109,7 +109,7 @@ declare module '@logux/server/base-server' {
     (ctx: Context, action: A, meta: Meta): void | Promise<void>;
   }
 
-  interface Filter<ResendAction extends Action> {
+  interface Filter<ResendAction extends Action = Action> {
     /**
      * @param ctx Information about node, who create this action.
      * @param resendAction The action data.
@@ -136,7 +136,7 @@ declare module '@logux/server/base-server' {
      * @param meta The action metadata.
      * @return Actions filter.
      */
-    (ctx: ChannelContext<Params>, action: SubAction, meta: Meta): void | Filter;
+    (ctx: ChannelContext<Params>, action: SubAction, meta: Meta): void | Filter | Promise<void> | Promise<Filter>;
   }
 
   interface Initialized<SubAction extends SubscribeAction, Params extends object = {}> {
@@ -149,7 +149,7 @@ declare module '@logux/server/base-server' {
     (ctx: ChannelContext<Params>, action: SubAction, meta: Meta): void | Promise<void>;
   }
 
-  interface ChannelCallbacks<SubAction extends SubscribeAction, Params extends object = {}> {
+  interface ChannelCallbacks<SubAction extends SubscribeAction = SubscribeAction, Params extends object = {}> {
     access: ChannelAuthorizer<SubAction, Params>;
     filter?: FilterCreator<SubAction, Params>;
     init?: Initialized<SubAction, Params>;

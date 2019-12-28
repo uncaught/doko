@@ -3,20 +3,23 @@ import {
   generateUuid,
   GroupMember,
   GroupMembers,
+  GroupMembersAcceptInvitation,
   GroupMembersAdd,
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
   mergeStates,
   objectContains,
+  parseInvitationUrl,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/Store/Reducer';
-import {useDispatch, useSelector, useStore} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
-import {currentGroupIdSelector} from './Ui';
+import {useHistory} from 'react-router-dom';
+import {useFullParams} from '../FullRoute';
 
-const {addReducer, combinedReducer} = createReducer<GroupMembers>();
+const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
 addReducer<GroupMembersLoaded>('groupMembers/loaded', (state, action) => {
   return {
@@ -51,7 +54,7 @@ export const groupMembersReducer = combinedReducer;
 export const groupMembersSelector = (state: State) => state.groupMembers;
 
 export function useAddGroupMember() {
-  const groupId = useSelector(currentGroupIdSelector);
+  const {groupId} = useFullParams<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((name: string) => {
     if (!name) {
@@ -62,25 +65,49 @@ export function useAddGroupMember() {
   }, [dispatch, groupId]);
 }
 
-export function usePatchGroupMember() {
-  const groupId = useSelector(currentGroupIdSelector);
-  const {getState} = useStore<State>();
+export function useAcceptInvitation() {
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback(async (id: string, groupMember: Partial<Omit<GroupMember, 'id'>>) => {
-    const groupMembers = groupMembersSelector(getState())[groupId];
-    const currentGroupMember = groupMembers && groupMembers[id];
+  const history = useHistory();
+  return useCallback((url: string): boolean => {
+    const parsed = parseInvitationUrl(url);
+    if (parsed) {
+      dispatch.sync<GroupMembersAcceptInvitation>({...parsed, type: 'groupMembers/acceptInvitation'}).then(() => {
+        history.push(`/group/${parsed.groupId}`);
+      });
+      return true;
+    }
+    return false;
+  }, [dispatch, history]);
+}
+
+export function useGroupMember(): GroupMember | void {
+  const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
+  useSubscription<GroupMembersLoad>([{channel: 'groupMembers/load', groupId}]);
+  const groupMembers = useSelector(groupMembersSelector)[groupId] || {};
+  return groupMembers[groupMemberId];
+}
+
+export function usePatchGroupMember() {
+  const currentGroupMember = useGroupMember();
+  const dispatch = useDispatch<LoguxDispatch>();
+  return useCallback((groupMember: Partial<Omit<GroupMember, 'id'>>) => {
     if (!currentGroupMember) {
-      throw new Error(`GroupMember '${id}' does not exist (on group '${groupId}')`);
+      throw new Error(`No currentGroupMember`);
     }
     if (!objectContains(currentGroupMember, groupMember)) {
-      await dispatch.sync<GroupMembersPatch>({id, groupId, groupMember, type: 'groupMembers/patch'});
+      dispatch.sync<GroupMembersPatch>({
+        groupMember,
+        id: currentGroupMember.id,
+        groupId: currentGroupMember.groupId,
+        type: 'groupMembers/patch',
+      });
     }
-  }, [dispatch, getState, groupId]);
+  }, [currentGroupMember, dispatch]);
 }
 
 export function useSortedGroupMembers(): GroupMember[] {
-  const groupId = useSelector(currentGroupIdSelector);
-  useSubscription<GroupMembersLoad>(['groupMembers/load']);
+  const {groupId} = useFullParams<{ groupId: string }>();
+  useSubscription<GroupMembersLoad>([{channel: 'groupMembers/load', groupId}]);
   const groupMembers = useSelector(groupMembersSelector)[groupId];
   return useMemo(() => groupMembers ? Object.values(groupMembers).sort((a, b) => a.name.localeCompare(b.name)) : [],
     [groupMembers]);

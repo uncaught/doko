@@ -1,10 +1,12 @@
 import React, {ReactElement, useCallback, useState} from 'react';
-import './App.css';
-import MyGroups from 'src/pages/groups/MyGroups';
+import {BrowserRouter as Router, Switch} from 'react-router-dom';
 import {Menu, Sidebar} from 'semantic-ui-react';
+import './App.css';
 import AppHeader from './AppHeader';
 import AppMenu from './AppMenu';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import Group from './pages/group';
+import Groups from './pages/groups';
+import FullRoute from './FullRoute';
 
 export default function App(): ReactElement | null {
   const [visible, setVisible] = useState(false);
@@ -28,18 +30,14 @@ export default function App(): ReactElement | null {
       <Sidebar.Pusher dimmed={visible}>
         <div className="app">
           <AppHeader openMenu={openMenu}/>
-
           <div className="app-pages">
             <Switch>
-              <Route path="/groups">
-                <MyGroups/>
-              </Route>
-              <Route path="/users">
-                users
-              </Route>
-              <Route path="/">
-                home
-              </Route>
+              <FullRoute path="/group/:groupId">
+                <Group/>
+              </FullRoute>
+              <FullRoute path="/groups">
+                <Groups/>
+              </FullRoute>
             </Switch>
           </div>
         </div>

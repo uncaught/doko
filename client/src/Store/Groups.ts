@@ -11,11 +11,12 @@ import {
   objectContains,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/Store/Reducer';
-import {useDispatch, useSelector, useStore} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
+import {useFullParams} from '../FullRoute';
 
-const {addReducer, combinedReducer} = createReducer<Groups>();
+const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 
 addReducer<GroupsLoaded>('groups/loaded', (state, action) => arrayToList(action.groups));
 
@@ -50,18 +51,28 @@ export function useAddGroup() {
   }, [dispatch]);
 }
 
+export function useGroup(): Group | void {
+  const {groupId} = useFullParams<{ groupId: string }>();
+  useSubscription<GroupsLoad>(['groups/load']);
+  const groups = useSelector(groupsSelector) || {};
+  return groups[groupId];
+}
+
 export function usePatchGroup() {
-  const {getState} = useStore<State>();
+  const currentGroup = useGroup();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback(async (id: string, group: Partial<Omit<Group, 'id'>>) => {
-    const currentGroup = groupsSelector(getState())[id];
+  return useCallback((group: Partial<Omit<Group, 'id'>>) => {
     if (!currentGroup) {
-      throw new Error(`Group '${id}' does not exist`);
+      throw new Error(`No currentGroup`);
     }
     if (!objectContains(currentGroup, group)) {
-      await dispatch.sync<GroupsPatch>({id, group, type: 'groups/patch'});
+      dispatch.sync<GroupsPatch>({
+        group,
+        id: currentGroup.id,
+        type: 'groups/patch',
+      });
     }
-  }, [dispatch, getState]);
+  }, [currentGroup, dispatch]);
 }
 
 export function useSortedGroups(): Group[] {

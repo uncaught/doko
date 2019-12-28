@@ -2,6 +2,7 @@ export interface Group {
   id: string;
   name: string;
   lastGameUnix?: number;
+  roundsCount?: number;
 }
 
 export interface Groups {

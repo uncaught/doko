@@ -14,7 +14,7 @@ export default function AddGroup(): ReactElement {
     const name = formData.get('name') as string;
     event.currentTarget.reset();
     const groupId = addGroup(name);
-    // history.push(`/group/${groupId}/members`);
+    history.push(`/group/${groupId}/members`);
   }, [addGroup, history]);
 
   return <Form onSubmit={onSubmit}>

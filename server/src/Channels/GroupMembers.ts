@@ -12,7 +12,8 @@ import {
   GroupMembersLoaded,
   GroupMembersPatch,
 } from '@doko/common';
-import {canEditGroup, canReadGroup, clearUserGroupIdsCache} from '../Auth';
+import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
+import {groupsLoadInit} from './Groups';
 
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
@@ -29,7 +30,7 @@ server.channel<GroupMembersLoad>('groupMembers/load', {
       type: 'groupMembers/loaded',
       groupMembers: await query<GroupMember>(`SELECT id, name, group_id as groupId 
                                                 FROM group_members 
-                                               WHERE id = ?`, [groupId]),
+                                               WHERE group_id = ?`, [groupId]),
     });
   },
   async filter(ctx, {groupId: subGroupId}) {
@@ -120,7 +121,7 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
       && invitation.invitedOn > Date.now() - inviteTtl;
   },
   //no resend
-  async process(ctx, {invitationToken, groupMemberId}) {
+  async process(ctx, {invitationToken, groupId, groupMemberId}) {
     const {inviterUserId} = invitationTokens.get(invitationToken)!;
     await query(`INSERT INTO group_member_users (group_member_id, user_id, inviter_user_id, invited_on)
                       VALUES (:groupMemberId, :userId, :inviterUserId, NOW())`, {
@@ -128,7 +129,8 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
       groupMemberId,
       userId: ctx.userId,
     });
-    clearUserGroupIdsCache(ctx.userId!);
+    await updateUserGroupIdsCache(ctx.userId!, groupId);
     invitationTokens.delete(invitationToken);
+    await groupsLoadInit(ctx);
   },
 });

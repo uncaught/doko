@@ -1,21 +1,18 @@
-import React, {ReactElement, useState} from 'react';
-import {Button, Header, Icon, Modal} from 'semantic-ui-react';
+import React, {ReactElement, useCallback, useState} from 'react';
+import {Button, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import QrReader from 'react-qr-reader';
+import {useAcceptInvitation} from '../../Store/GroupMembers';
 
 export default function ScanInvitation(): ReactElement {
   const [show, setShow] = useState(false);
-  // const addGroup = useAddGroup();
-  // const history = useHistory();
+  const [error, setError] = useState<Error | null>(null);
+  const acceptInvitation = useAcceptInvitation();
 
-  // const onSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
-  //   event.stopPropagation();
-  //   event.preventDefault();
-  //   const formData = new FormData(event.currentTarget);
-  //   const name = formData.get('name') as string;
-  //   event.currentTarget.reset();
-  //   const groupId = addGroup(name);
-  //   history.push(`/group/${groupId}/members`);
-  // }, [addGroup, history]);
+  const onScan = useCallback((data: string | null) => {
+    if (data && acceptInvitation(data)) {
+      setShow(false);
+    }
+  }, [acceptInvitation]);
 
   return <div>
     <Header>Scanne einen Einladungs-Code</Header>
@@ -25,8 +22,8 @@ export default function ScanInvitation(): ReactElement {
       <Modal.Content>
         <QrReader
           delay={300}
-          onError={(err) => console.error({err})}
-          onScan={(data) => console.error({data})}
+          onError={setError}
+          onScan={onScan}
           style={{width: '100%'}}
         />
       </Modal.Content>
@@ -34,6 +31,7 @@ export default function ScanInvitation(): ReactElement {
         <Button basic color='red' inverted onClick={() => setShow(false)}>
           <Icon name='cancel'/> Cancel
         </Button>
+        {!!error && <Message negative>{error.message || error}</Message>}
       </Modal.Actions>
     </Modal>}
   </div>;

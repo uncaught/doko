@@ -1,18 +1,23 @@
 import {AnyAction} from 'redux';
-import {mergeStates} from '@doko/common';
-import {State} from './Store';
+import {DeepPartial, mergeStates} from '@doko/common';
+import * as LocalStorage from '../LocalStorage';
+import {isAction} from './Reducer';
 
 export interface Ui {
-  currentGroupId: string;
 }
 
-const syncKeys = ['currentGroupId'];
+export interface UiSet {
+  type: 'ui/set';
+  ui: DeepPartial<Ui>;
+}
+
+const syncKeys: string[] = [];
 
 function syncToLocalStorage(oldState: Ui, newState: Ui): void {
   Object.entries(oldState).forEach(([key, oldValue]) => {
     const newValue = newState[key as keyof Ui];
     if (oldValue !== newValue && syncKeys.includes(key)) {
-      localStorage.setItem(`ui.${key}`, JSON.stringify(newValue));
+      LocalStorage.set(`ui.${key}`, newValue);
     }
   });
 }
@@ -20,28 +25,23 @@ function syncToLocalStorage(oldState: Ui, newState: Ui): void {
 function syncFromLocalStorage(state: Ui): Ui {
   let newState = state;
   syncKeys.forEach((key) => {
-    const storeValue = localStorage.getItem(`ui.${key}`);
-    if (storeValue !== null) {
-      const parsedValue = JSON.parse(storeValue);
+    const parsedValue = LocalStorage.get(`ui.${key}`);
+    if (parsedValue !== null) {
       newState = {...newState, [key]: parsedValue};
     }
   });
   return newState;
 }
 
-const initial: Ui = {
-  currentGroupId: '',
-};
+const initial: Ui = {};
 
 export function uiReducer(state?: Ui, action: AnyAction = {type: ''}): Ui {
   let newState = state;
   if (typeof state === 'undefined') {
     newState = syncFromLocalStorage(initial);
-  } else if (action.type === 'ui/set') {
+  } else if (isAction<UiSet>(action, 'ui/set')) {
     newState = mergeStates(state, action.ui);
     syncToLocalStorage(state, newState);
   }
   return newState!;
 }
-
-export const currentGroupIdSelector = (state: State) => state.ui.currentGroupId;

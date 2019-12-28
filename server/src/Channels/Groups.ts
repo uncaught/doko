@@ -2,21 +2,24 @@ import server from '../Server';
 import {generateUuid, Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
 import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
-import {canEditGroup, clearUserGroupIdsCache, getUserGroupIds} from '../Auth';
+import {canEditGroup, updateUserGroupIdsCache, getUserGroupIds} from '../Auth';
+import {Context} from '@logux/server/context';
+
+export async function groupsLoadInit(ctx: Context) {
+  const groupIds = await getUserGroupIds(ctx.userId!);
+  let groups: Group[] = [];
+  if (groupIds.size) {
+    const ary = `,?`.repeat(groupIds.size).substring(1);
+    groups = await query<Group>(`SELECT g.id, g.name FROM groups g WHERE g.id IN (${ary})`, [...groupIds]);
+  }
+  await ctx.sendBack<GroupsLoaded>({groups, type: 'groups/loaded'});
+}
 
 server.channel<GroupsLoad>('groups/load', {
   async access() {
     return true; //everyone can read this channel, the result is filtered by membership
   },
-  async init(ctx) {
-    const groupIds = await getUserGroupIds(ctx.userId!);
-    let groups: Group[] = [];
-    if (groupIds.size) {
-      const ary = `,?`.repeat(groupIds.size).substring(1);
-      groups = await query<Group>(`SELECT g.id, g.name FROM groups g WHERE g.id IN (${ary})`, [...groupIds]);
-    }
-    await ctx.sendBack<GroupsLoaded>({groups, type: 'groups/loaded'});
-  },
+  init: groupsLoadInit,
   async filter(ctx) {
     //TODO: re-test once https://github.com/logux/server/pull/68 is released
     const groupIds = await getUserGroupIds(ctx.userId!);
@@ -50,7 +53,7 @@ server.type<GroupsAdd>('groups/add', {
       userId: ctx.userId,
       inviterUserId: ctx.userId,
     });
-    clearUserGroupIdsCache(ctx.userId!);
+    await updateUserGroupIdsCache(ctx.userId!, action.group.id);
   },
 });
 

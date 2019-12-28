@@ -2,6 +2,9 @@ export interface GroupMember {
   id: string;
   groupId: string;
   name: string;
+  roundsCount?: number;
+  pointBalance?: number;
+  euroBalance?: number;
 }
 
 export interface GroupMembers {
