@@ -33,7 +33,7 @@ services:
       - DB_PW=sKAmqtzkQ1-QhmSdmiH2
       - DB_NAME=doko
     entrypoint:
-      - "npm"
+      - "yarn"
       - "run"
       - "dev"
     ports:
@@ -49,7 +49,7 @@ services:
     volumes:
       - ./:/doko:rw
     entrypoint:
-      - "npm"
+      - "yarn"
       - "start"
     ports:
       - "3333:3000"
