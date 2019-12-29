@@ -38,9 +38,7 @@ export async function updateUserGroupIdsCache(userId: string, groupId: string): 
 
 export async function canReadGroup(userId: string, groupId: string): Promise<boolean> {
   //all members may read the group
-  const canRead = (await getUserGroupIds(userId)).has(groupId);
-  console.error('canReadGroup', {userId, groupId, canRead});
-  return canRead;
+  return (await getUserGroupIds(userId)).has(groupId);
 }
 
 export async function canEditGroup(userId: string, groupId: string): Promise<boolean> {

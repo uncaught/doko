@@ -1,7 +1,6 @@
 import React, {ReactElement} from 'react';
 import AddGroup from './AddGroup';
 import ScanInvitation from './ScanInvitation';
-import './MyGroups.css';
 import {Divider} from 'semantic-ui-react';
 import MyGroups from './MyGroups';
 

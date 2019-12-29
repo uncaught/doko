@@ -1,10 +1,12 @@
-import {LoguxDispatch, State} from './Store';
+import {State} from './Store';
 import {
   generateUuid,
   GroupMember,
   GroupMembers,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
+  GroupMembersInvite,
+  GroupMembersInvited,
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
@@ -13,11 +15,13 @@ import {
   parseInvitationUrl,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/Store/Reducer';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
 import {useHistory} from 'react-router-dom';
 import {useFullParams} from '../FullRoute';
+import {invitedToGroupIdSelector} from './Ui';
+import {LoguxDispatch, useLoguxClientOnce} from './Logux';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
@@ -65,19 +69,36 @@ export function useAddGroupMember() {
   }, [dispatch, groupId]);
 }
 
+export function useCreateInvitation() {
+  const once = useLoguxClientOnce();
+  const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
+  const dispatch = useDispatch<LoguxDispatch>();
+  return useCallback(async (): Promise<string> => {
+    const response = once<GroupMembersInvited>('groupMembers/invited');
+    await dispatch.sync<GroupMembersInvite>({groupId, groupMemberId, type: 'groupMembers/invite'});
+    return (await response).invitationToken;
+  }, [dispatch, groupId, groupMemberId, once]);
+}
+
 export function useAcceptInvitation() {
+  const {getState} = useStore<State>();
   const dispatch = useDispatch<LoguxDispatch>();
   const history = useHistory();
   return useCallback((url: string): boolean => {
-    const parsed = parseInvitationUrl(url);
-    if (parsed) {
-      dispatch.sync<GroupMembersAcceptInvitation>({...parsed, type: 'groupMembers/acceptInvitation'}).then(() => {
-        history.push(`/group/${parsed.groupId}`);
+    const token = parseInvitationUrl(url);
+    if (token) {
+      dispatch.sync<GroupMembersAcceptInvitation>({token, type: 'groupMembers/acceptInvitation'}).then(() => {
+        const groupId = invitedToGroupIdSelector(getState());
+        if (groupId) {
+          history.push(`/group/${groupId}`);
+        } else {
+          console.error('Missing invited groupId');
+        }
       });
       return true;
     }
     return false;
-  }, [dispatch, history]);
+  }, [dispatch, getState, history]);
 }
 
 export function useGroupMember(): GroupMember | void {

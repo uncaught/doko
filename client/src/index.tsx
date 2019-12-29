@@ -23,7 +23,9 @@ import {getAuth} from './Auth';
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',
   server: process.env.NODE_ENV === 'development'
-    ? `wss://${window.location.hostname}/api`
+    ? window.location.protocol === 'https'
+      ? `wss://${window.location.hostname}/api`
+      : `ws://${window.location.hostname}:3030`
     : 'wss://logux.example.com',
   store: new IndexedStore(),
   ...getAuth(),

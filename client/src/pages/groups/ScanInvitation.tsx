@@ -14,10 +14,20 @@ export default function ScanInvitation(): ReactElement {
     }
   }, [acceptInvitation]);
 
-  return <div>
-    <Header>Scanne einen Einladungs-Code</Header>
-    <Button onClick={() => setShow(true)}>Scan</Button>
-    {show && <Modal className={'scanInvitation-modal'} open={show} onClose={() => setShow(false)} basic size='small'>
+  return <section className="u-relative u-overflow-hidden">
+    <Header as='h4'>Scanne einen Einladungs-Code</Header>
+
+    <Button icon floated='right' labelPosition='left' color={'blue'} onClick={() => setShow(true)}>
+      <Icon name='qrcode'/>
+      Scan
+    </Button>
+
+    {show && <Modal className="scanInvitation-modal"
+                    open={show}
+                    dimmer={'inverted'}
+                    onClose={() => setShow(false)}
+                    basic
+                    size='small'>
       <Header icon='camera' content='Scanning ...'/>
       <Modal.Content>
         <QrReader
@@ -28,11 +38,11 @@ export default function ScanInvitation(): ReactElement {
         />
       </Modal.Content>
       <Modal.Actions>
-        <Button basic color='red' inverted onClick={() => setShow(false)}>
+        <Button basic onClick={() => setShow(false)}>
           <Icon name='cancel'/> Cancel
         </Button>
         {!!error && <Message negative>{error.message || error}</Message>}
       </Modal.Actions>
     </Modal>}
-  </div>;
+  </section>;
 }

@@ -1,20 +1,19 @@
 import React, {ReactElement} from 'react';
 import {Header, Icon, Label, List} from 'semantic-ui-react';
 import {useSortedGroupMembers} from '../../Store/GroupMembers';
-import {useSelector} from 'react-redux';
-import {groupsSelector} from '../../Store/Groups';
+import {useGroup} from '../../Store/Groups';
 import {asLink} from '../../AsLink';
 import {useFullParams} from '../../FullRoute';
 
 export default function Members(): ReactElement {
   const {groupId} = useFullParams<{ groupId: string }>();
-  const {name: groupName, roundsCount: groupRoundsCount = 1} = useSelector(groupsSelector)[groupId];
+  const {roundsCount: groupRoundsCount = 1} = useGroup() || {};
   const groupMembers = useSortedGroupMembers();
 
-  return <div>
-    <Header>Mitglieder von {groupName}</Header>
+  return <section>
+    <Header as='h4'>Mitglieder</Header>
 
-    {groupMembers.length > 0 && <div className={'group-members'}>
+    {groupMembers.length > 0 && <div className="">
       <List divided relaxed>
         {groupMembers.map(({id, name, pointBalance = 0, roundsCount = 0, euroBalance = 0}) =>
           <List.Item key={id}>
@@ -36,5 +35,5 @@ export default function Members(): ReactElement {
           </List.Item>)}
       </List>
     </div>}
-  </div>;
+  </section>;
 }

@@ -1,5 +1,7 @@
 export {mergeStates} from './MergeStates';
 export * from './Auth';
+export * from './CreatePromise';
+export * from './Debug';
 export * from './Entities';
 export * from './Generics';
 export * from './Invitation';

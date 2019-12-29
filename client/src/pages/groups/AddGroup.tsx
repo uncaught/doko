@@ -17,15 +17,17 @@ export default function AddGroup(): ReactElement {
     history.push(`/group/${groupId}/members`);
   }, [addGroup, history]);
 
-  return <Form onSubmit={onSubmit}>
-    <Header>Lege eine neue Gruppe an</Header>
-    <Form.Group>
-      <Form.Field>
-        <Form.Input name={'name'} maxLength={191} required placeholder={'Gruppenname'}/>
-      </Form.Field>
-      <Form.Field>
-        <Form.Button color={'blue'} type={'submit'}>Anlegen</Form.Button>
-      </Form.Field>
-    </Form.Group>
-  </Form>;
+  return <section>
+    <Form onSubmit={onSubmit}>
+      <Header as='h4'>Lege eine neue Gruppe an</Header>
+      <Form.Group>
+        <Form.Field>
+          <Form.Input name={'name'} maxLength={191} required placeholder={'Gruppenname'}/>
+        </Form.Field>
+        <Form.Field>
+          <Form.Button color={'green'} type={'submit'}>Anlegen</Form.Button>
+        </Form.Field>
+      </Form.Group>
+    </Form>
+  </section>;
 }

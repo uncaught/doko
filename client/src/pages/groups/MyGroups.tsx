@@ -1,16 +1,15 @@
 import React, {ReactElement} from 'react';
 import {useSortedGroups} from '../../Store/Groups';
-import './MyGroups.css';
 import {Header, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
 import dayjs from 'dayjs';
 
 export default function MyGroups(): ReactElement {
   const groups = useSortedGroups();
-  return <>
-    <Header>Deine Gruppen</Header>
+  return <section>
+    <Header as='h4'>Deine Gruppen</Header>
 
-    {groups.length > 0 && <div className={'myGroups-groups'}>
+    {groups.length > 0 && <div className="myGroups-groups">
       <List divided relaxed>
         {groups.map(({id, name, lastGameUnix}) => <List.Item key={id}>
           <List.Icon name='group' verticalAlign='middle'/>
@@ -25,9 +24,9 @@ export default function MyGroups(): ReactElement {
       </List>
     </div>}
 
-    {groups.length === 0 && <div className={'myGroups-noGroups'}>
+    {groups.length === 0 && <div className="myGroups-noGroups">
       <p>Du hast noch keine Gruppen!</p>
       <p>Lege eine neue Gruppe an oder lass dich von einem Mitspieler zu einer Gruppe einladen.</p>
     </div>}
-  </>;
+  </section>;
 }

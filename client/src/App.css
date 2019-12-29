@@ -38,6 +38,42 @@
   justify-content: space-between;
 }
 
+.u-relative {
+  position: relative;
+}
+
+.u-overflow-hidden {
+  overflow: hidden;
+}
+
 .u-pointer {
   cursor: pointer;
+}
+
+.editableNameHeader {
+  height: 3rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.editableNameHeader .header {
+  margin: 0;
+}
+
+.qrCodeContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.myGroups-group {
+  display: block;
+}
+
+.myGroups-groups .description{
+  font-size: .85em;
+}
+
+.ui.inverted.dimmer {
+  background-color: white;
 }

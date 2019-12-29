@@ -1,3 +1,5 @@
+import {Group} from './Groups';
+
 export interface GroupMember {
   id: string;
   groupId: string;
@@ -51,7 +53,17 @@ export interface GroupMembersInvited {
 
 export interface GroupMembersAcceptInvitation {
   type: 'groupMembers/acceptInvitation';
+  token: string;
+}
+
+export interface GroupMembersInvitationAccepted {
+  type: 'groupMembers/invitationAccepted';
   groupId: string;
   groupMemberId: string;
-  invitationToken: string;
+  group: Group;
+}
+
+export interface GroupMembersInvitationUsed {
+  type: 'groupMembers/invitationUsed';
+  token: string;
 }

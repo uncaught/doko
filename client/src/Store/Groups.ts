@@ -1,4 +1,4 @@
-import {LoguxDispatch, State} from './Store';
+import {State} from './Store';
 import {
   generateUuid,
   Group,
@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
 import {useFullParams} from '../FullRoute';
+import {LoguxDispatch} from './Logux';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 

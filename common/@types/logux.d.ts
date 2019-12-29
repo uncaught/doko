@@ -11,21 +11,57 @@ declare module '@logux/redux/use-subscription' {
   ): boolean;
 }
 
+declare module '@logux/core/log' {
+  import {Action} from '@logux/core';
+
+  export interface LogTarget {
+    channel?: string;
+    channels?: string[];
+    client?: string;
+    clients?: string[];
+    user?: string;
+    users?: string[];
+    node?: string;
+    nodes?: string[];
+  }
+
+  interface AddMeta extends LogTarget {
+    id?: string;
+    time?: number;
+    reasons?: string | string[];
+    keepLast?: boolean;
+  }
+
+  export default interface Log {
+    nodeId: string | number;
+    lastTime: number;
+    sequence: number;
+
+    on(event: 'preadd' | 'add' | 'clean', listener: () => void): () => void;
+
+    add<A extends Action>(action: A, meta: AddMeta): () => void;
+
+    generateId(): string;
+  }
+}
+
 declare module '@logux/core' {
-  interface Action {
+  export {default as Log} from '@logux/core/log';
+
+  export interface Action {
     type: string;
 
     [extraProps: string]: any;
   }
 
-  interface SubscribeAction {
+  export interface SubscribeAction {
     //type: 'logux/subscribe'; //added by logux interna
     channel: string;
 
     [extraProps: string]: any;
   }
 
-  interface Meta {
+  export interface Meta {
 
   }
 }
@@ -54,6 +90,7 @@ declare module '@logux/server/context' {
 declare module '@logux/server/base-server' {
   import {Action, Meta, SubscribeAction} from '@logux/core';
   import {ChannelContext, Context} from '@logux/server/context';
+  import {LogTarget} from '@logux/core/log';
 
   interface Client {
   }
@@ -78,15 +115,7 @@ declare module '@logux/server/base-server' {
     (ctx: Context, action: A, meta: Meta): boolean | Promise<boolean>;
   }
 
-  interface ResendResponse {
-    channel?: string;
-    channels?: string[];
-    client?: string;
-    clients?: string[];
-    user?: string;
-    users?: string[];
-    node?: string;
-    nodes?: string[];
+  interface ResendResponse extends LogTarget {
   }
 
   interface Resender<A extends Action> {
@@ -185,7 +214,7 @@ declare module '@logux/server/base-server' {
 }
 
 declare module '@logux/server/server' {
-
+  import {Log} from '@logux/core';
   import BaseServer from '@logux/server/base-server';
 
   interface ServerOptions {
@@ -211,6 +240,8 @@ declare module '@logux/server/server' {
   }
 
   export default class Server extends BaseServer {
+    log: Log;
+
     constructor(options: ServerOptions);
 
     static loadOptions(process: NodeJS.Process, defaults?: object): ServerOptions;

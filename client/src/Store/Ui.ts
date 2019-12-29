@@ -1,9 +1,10 @@
-import {AnyAction} from 'redux';
-import {DeepPartial, mergeStates} from '@doko/common';
-import * as LocalStorage from '../LocalStorage';
-import {isAction} from './Reducer';
+import {DeepPartial, GroupMembersInvitationAccepted, GroupMembersInvitationUsed, mergeStates} from '@doko/common';
+import {createReducer} from './Reducer';
+import {State} from './Store';
 
 export interface Ui {
+  invitedToGroupId: string;
+  usedInvitationTokens: string[];
 }
 
 export interface UiSet {
@@ -11,37 +12,32 @@ export interface UiSet {
   ui: DeepPartial<Ui>;
 }
 
-const syncKeys: string[] = [];
+const initial: Ui = {
+  invitedToGroupId: '',
+  usedInvitationTokens: [],
+};
 
-function syncToLocalStorage(oldState: Ui, newState: Ui): void {
-  Object.entries(oldState).forEach(([key, oldValue]) => {
-    const newValue = newState[key as keyof Ui];
-    if (oldValue !== newValue && syncKeys.includes(key)) {
-      LocalStorage.set(`ui.${key}`, newValue);
+const {addReducer, combinedReducer} = createReducer<Ui>(initial);
+
+addReducer<UiSet>('ui/set', (state, action) => mergeStates(state, action.ui));
+
+addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted',
+  (state, {groupId}) => mergeStates(state, {invitedToGroupId: groupId}));
+
+addReducer<GroupMembersInvitationUsed>('groupMembers/invitationUsed',
+  (state, {token}) => {
+    console.error('groupMembers/invitationUsed', token);
+    const set = new Set(state.usedInvitationTokens);
+    if (!set.has(token)) {
+      return {
+        ...state,
+        usedInvitationTokens: [...set.add(token)],
+      };
     }
+    return state;
   });
-}
 
-function syncFromLocalStorage(state: Ui): Ui {
-  let newState = state;
-  syncKeys.forEach((key) => {
-    const parsedValue = LocalStorage.get(`ui.${key}`);
-    if (parsedValue !== null) {
-      newState = {...newState, [key]: parsedValue};
-    }
-  });
-  return newState;
-}
+export const uiReducer = combinedReducer;
 
-const initial: Ui = {};
-
-export function uiReducer(state?: Ui, action: AnyAction = {type: ''}): Ui {
-  let newState = state;
-  if (typeof state === 'undefined') {
-    newState = syncFromLocalStorage(initial);
-  } else if (isAction<UiSet>(action, 'ui/set')) {
-    newState = mergeStates(state, action.ui);
-    syncToLocalStorage(state, newState);
-  }
-  return newState!;
-}
+export const invitedToGroupIdSelector = (state: State) => state.ui.invitedToGroupId;
+export const usedInvitationTokensSelector = (state: State) => state.ui.usedInvitationTokens;

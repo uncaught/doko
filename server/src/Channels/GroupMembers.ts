@@ -6,6 +6,8 @@ import {
   GroupMember,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
+  GroupMembersInvitationAccepted,
+  GroupMembersInvitationUsed,
   GroupMembersInvite,
   GroupMembersInvited,
   GroupMembersLoad,
@@ -13,7 +15,7 @@ import {
   GroupMembersPatch,
 } from '@doko/common';
 import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
-import {groupsLoadInit} from './Groups';
+import {loadGroups} from './Groups';
 
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
@@ -113,24 +115,33 @@ server.type<GroupMembersInvite>('groupMembers/invite', {
 });
 
 server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
-  async access(ctx, {invitationToken, groupId, groupMemberId}) {
-    const invitation = invitationTokens.get(invitationToken);
-    return !!invitation
-      && invitation.groupId === groupId
-      && invitation.groupMemberId === groupMemberId
-      && invitation.invitedOn > Date.now() - inviteTtl;
+  async access(ctx, {token}) {
+    const invitation = invitationTokens.get(token);
+    return !!invitation && invitation.invitedOn > (Date.now() - inviteTtl);
   },
   //no resend
-  async process(ctx, {invitationToken, groupId, groupMemberId}) {
-    const {inviterUserId} = invitationTokens.get(invitationToken)!;
+  async process(ctx, {token}) {
+    const {groupId, groupMemberId, inviterUserId} = invitationTokens.get(token)!;
     await query(`INSERT INTO group_member_users (group_member_id, user_id, inviter_user_id, invited_on)
-                      VALUES (:groupMemberId, :userId, :inviterUserId, NOW())`, {
+                      VALUES (:groupMemberId, :userId, :inviterUserId, NOW())
+                ON DUPLICATE KEY UPDATE group_member_id = VALUES(group_member_id)`, {
       inviterUserId,
       groupMemberId,
       userId: ctx.userId,
     });
     await updateUserGroupIdsCache(ctx.userId!, groupId);
-    invitationTokens.delete(invitationToken);
-    await groupsLoadInit(ctx);
+    invitationTokens.delete(token);
+
+    //Inform the inviter:
+    server.log.add<GroupMembersInvitationUsed>({token, type: 'groupMembers/invitationUsed'}, {users: [inviterUserId]});
+
+    //Inform the invitee:
+    const groups = await loadGroups(new Set(groupId));
+    await ctx.sendBack<GroupMembersInvitationAccepted>({
+      groupId,
+      groupMemberId,
+      group: groups[0],
+      type: 'groupMembers/invitationAccepted',
+    });
   },
 });
