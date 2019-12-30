@@ -1,5 +1,5 @@
 import server from '../Server';
-import {buildPartialUpdateSql, query} from '../Connection';
+import {buildPartialUpdateSql, deviceBoundQuery, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
   GroupMember,
@@ -51,10 +51,9 @@ server.type<GroupMembersAdd>('groupMembers/add', {
     return {channel: 'groupMembers/load'};
   },
   async process(ctx, action) {
-    await query(`INSERT INTO group_members (id, group_id, name, created_by_device_id, created_on) 
-                      VALUES (:id, :groupId, :name, :deviceId, NOW())`, {
+    await deviceBoundQuery(ctx.userId!, `INSERT INTO group_members (id, group_id, name) 
+                                              VALUES (:id, :groupId, :name)`, {
       ...action.groupMember,
-      deviceId: ctx.userId,
     });
   },
 });
@@ -67,10 +66,11 @@ server.type<GroupMembersPatch>('groupMembers/patch', {
   resend() {
     return {channel: 'groupMembers/load'};
   },
-  async process(_ctx, action) {
+  async process(ctx, action) {
     const updateKeys = buildPartialUpdateSql(action.groupMember, ['name']);
     if (updateKeys.length) {
-      await query(`UPDATE group_members SET ${updateKeys} WHERE id = :id`, {...action.groupMember, id: action.id});
+      await deviceBoundQuery(ctx.userId!, `UPDATE group_members SET ${updateKeys} WHERE id = :id`,
+        {...action.groupMember, id: action.id});
     }
   },
 });

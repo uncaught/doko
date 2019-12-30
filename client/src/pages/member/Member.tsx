@@ -6,7 +6,7 @@ import InviteDevice from './InviteDevice';
 import {useGroup} from '../../Store/Groups';
 
 export default function Member(): ReactElement {
-  const {roundsCount: groupRoundsCount = 1} = useGroup() || {};
+  const {roundsCount: groupRoundsCount = 0} = useGroup() || {};
   const {pointBalance = 0, roundsCount = 0, euroBalance = 0, isYou} = useGroupMember() || {};
 
   return <div>
@@ -27,7 +27,9 @@ export default function Member(): ReactElement {
         <Label color={'orange'}>
           Teilnahmen
           <Label.Detail>
-            {roundsCount} / {Math.ceil(roundsCount / groupRoundsCount * 100)}% <Icon name='time'/>
+            {roundsCount} / {groupRoundsCount} ({groupRoundsCount
+            ? Math.ceil(roundsCount / groupRoundsCount * 100)
+            : 0}%) <Icon name='time'/>
           </Label.Detail>
         </Label>
       </div>

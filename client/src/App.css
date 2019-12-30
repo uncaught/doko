@@ -87,6 +87,10 @@
   margin: 0;
 }
 
+.editableNameHeader .header .icon {
+  margin-bottom: 5px;
+}
+
 .qrCodeContainer {
   display: flex;
   flex-direction: row;

@@ -37,10 +37,9 @@ server.type<RoundsAdd>('rounds/add', {
     return {channel: 'rounds/load'};
   },
   async process(ctx, action) {
-    // await query(`INSERT INTO group_members (id, group_id, name, created_by_device_id, created_on)
-    //                   VALUES (:id, :groupId, :name, :deviceId, NOW())`, {
+    // await query(`INSERT INTO group_members (id, group_id, name)
+    //                   VALUES (:id, :groupId, :name)`, {
     //   ...action.round,
-    //   deviceId: ctx.userId,
     // });
   },
 });

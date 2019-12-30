@@ -11,24 +11,45 @@ const pool = mariadb.createPool({
   connectionLimit: 5,
 });
 
-export async function getConnection<R>(): Promise<PoolConnection> {
-  return pool.getConnection();
+function doQuery<R>(conn: PoolConnection, sql: string, values?: any[] | object): Promise<R[]> {
+  const sqlOptions: QueryOptions = {
+    namedPlaceholders: Boolean(values && !Array.isArray(values)),
+    sql,
+  };
+  return conn.query(sqlOptions, values);
 }
 
 export async function query<R>(sql: string, values?: any[] | object): Promise<R[]> {
   let conn;
   try {
     conn = await pool.getConnection();
-    const sqlOptions: QueryOptions = {
-      namedPlaceholders: Boolean(values && !Array.isArray(values)),
-      sql,
-    };
-    return conn.query(sqlOptions, values);
+    return doQuery(conn, sql, values);
   } finally {
     if (conn) {
       conn.release();
     }
   }
+}
+
+export async function getTransactional<R>(deviceId: string, fn: (update: typeof query) => Promise<R>): Promise<R> {
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+  let result;
+  try {
+    await doQuery(conn, 'SET @__currentDeviceId = ?', [deviceId]);
+    result = await fn(doQuery.bind(null, conn) as typeof query);
+    await conn.commit();
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
+  return result as unknown as R;
+}
+
+export async function deviceBoundQuery<R>(deviceId: string, sql: string, values?: any[] | object): Promise<R[]> {
+  return getTransactional(deviceId, (update) => update(sql, values));
 }
 
 export function buildPartialUpdateSql<O extends { [x: string]: any }>(partial: O, whiteList: Array<keyof O>) {
