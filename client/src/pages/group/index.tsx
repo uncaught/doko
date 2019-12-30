@@ -10,24 +10,21 @@ import AddMember from './AddMember';
 
 export default function (): ReactElement {
   const match = useRouteMatch();
-  return <div>
-    <Switch>
-      <Page path={`${match.url}/rounds`} displayName={'Runden'}>
-        <Rounds/>
-      </Page>
-      <Page path={`${match.url}/member/:groupMemberId`} displayName={'Mitglied'}>
-        <Member/>
-      </Page>
-      <Page path={`${match.url}/members`} displayName={'Mitglieder'}>
-        <Members/>
-        <Divider section/>
-        <AddMember/>
-      </Page>
-      <Page path={`${match.url}`}
-            displayName={'Gruppe'}
-            menuItems={[{icon: 'user plus', route: `${match.url}/members`, title: 'Mitglieder hinzufügen'}]}>
-        <Group/>
-      </Page>
-    </Switch>
-  </div>;
+  return <Switch>
+    <Page path={`${match.url}/rounds`} displayName={'Runden'}>
+      <Rounds/>
+    </Page>
+    <Page path={`${match.url}/member/:groupMemberId`} displayName={'Mitglied'}>
+      <Member/>
+    </Page>
+    <Page path={`${match.url}/addMembers`} displayName={'Mitglieder'}>
+      <Members/>
+      <Divider section/>
+      <AddMember/>
+    </Page>
+    <Page path={`${match.url}`}
+          menuItems={[{icon: 'user plus', route: `${match.url}/addMembers`, title: 'Mitglieder hinzufügen'}]}>
+      <Group/>
+    </Page>
+  </Switch>;
 }

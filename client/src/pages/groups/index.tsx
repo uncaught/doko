@@ -3,13 +3,22 @@ import AddGroup from './AddGroup';
 import ScanInvitation from './ScanInvitation';
 import {Divider} from 'semantic-ui-react';
 import MyGroups from './MyGroups';
+import {Switch, useRouteMatch} from 'react-router-dom';
+import Page from '../../Page';
+import Group from '../group';
 
 export default function (): ReactElement {
-  return <div>
-    <MyGroups/>
-    <Divider section/>
-    <AddGroup/>
-    <Divider section/>
-    <ScanInvitation/>
-  </div>;
+  const match = useRouteMatch();
+  return <Switch>
+    <Page path={`${match.url}/group/:groupId`} displayName={'Gruppe'}>
+      <Group/>
+    </Page>
+    <Page path={`${match.url}`}>
+      <MyGroups/>
+      <Divider section/>
+      <AddGroup/>
+      <Divider section/>
+      <ScanInvitation/>
+    </Page>
+  </Switch>;
 }

@@ -67,7 +67,7 @@ export function useAddGroup() {
       },
       type: 'groups/add',
     });
-    history.push(`/group/${groupId}/members`);
+    history.push(`/groups/group/${groupId}/addMembers`);
   }, [dispatch, history]);
 }
 

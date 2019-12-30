@@ -23,7 +23,7 @@ export default function Rounds({limit}: { limit?: number }): ReactElement {
           <List.Item key={id}>
             <List.Icon name='paw' verticalAlign='middle'/>
             <List.Content>
-              <List.Header as={asLink(`/group/${groupId}/round/${id}`, {className: 'header'})}>
+              <List.Header as={asLink(`/groups/group/${groupId}/round/${id}`, {className: 'header'})}>
                 {dayjs.unix(date).format('DD.MM.YYYY')}
               </List.Header>
               <List.Description>
@@ -37,7 +37,7 @@ export default function Rounds({limit}: { limit?: number }): ReactElement {
       </List>
     </div>}
 
-    {!!limit && <Link to={`/group/${groupId}/rounds`}>alle Runden</Link>}
+    {!!limit && <Link to={`/groups/group/${groupId}/rounds`}>alle Runden</Link>}
 
   </section>;
 }

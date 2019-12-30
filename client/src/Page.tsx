@@ -20,13 +20,13 @@ interface PageContextProps {
   children: React.ReactNode;
   parentParams: FullParams;
   parentUrl: string;
-  displayName: string;
+  displayName?: string;
   isIndex: boolean;
 }
 
 function PageContext({children, parentParams, displayName, parentUrl, isIndex}: PageContextProps): ReactElement {
   const localParams = useParams();
-  const fullParams = {...parentParams, ...localParams, displayName};
+  const fullParams = {...parentParams, ...localParams, displayName: displayName || parentParams.displayName};
   if (!isIndex) {
     fullParams.parents = [
       {displayName: parentParams.displayName, url: parentUrl},
@@ -42,7 +42,7 @@ function PageContext({children, parentParams, displayName, parentUrl, isIndex}: 
 }
 
 interface FullRouteProps extends RouteProps {
-  displayName: string;
+  displayName?: string;
   menuItems?: PageMenuItemConfig[];
 }
 

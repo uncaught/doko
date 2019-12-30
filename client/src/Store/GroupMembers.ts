@@ -97,7 +97,7 @@ export function useAcceptInvitation() {
       dispatch.sync<GroupMembersAcceptInvitation>({token, type: 'groupMembers/acceptInvitation'}).then(() => {
         const groupId = acceptedInvitationsSelector(getState())[token];
         if (groupId) {
-          history.push(`/group/${groupId}`);
+          history.push(`/groups/group/${groupId}`);
         } else {
           console.error('Missing invited groupId');
         }

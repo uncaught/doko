@@ -8,7 +8,13 @@ export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
   let groups: Group[] = [];
   if (groupIds.size) {
     const ary = `,?`.repeat(groupIds.size).substring(1);
-    groups = await query<Group>(`SELECT g.id, g.name FROM groups g WHERE g.id IN (${ary})`, [...groupIds]);
+    groups = await query<Group>(`SELECT g.id, g.name, 
+                                        COUNT(r.id) as roundsCount, 
+                                        UNIX_TIMESTAMP(MAX(r.start_date)) as lastRoundUnix 
+                                   FROM groups g
+                              LEFT JOIN rounds r ON r.group_id = g.id 
+                                  WHERE g.id IN (${ary})
+                               GROUP BY g.id`, [...groupIds]);
   }
   return groups;
 }
