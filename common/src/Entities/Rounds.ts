@@ -1,7 +1,8 @@
 export interface Round {
   id: string;
   groupId: string;
-  date: number; //unix
+  startDate: number; //unix
+  endDate: number | null; //unix
 }
 
 export interface Rounds {

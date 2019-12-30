@@ -1,6 +1,6 @@
 import server from '../Server';
 import {Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
-import {buildPartialUpdateSql, deviceBoundQuery, getTransactional, query} from '../Connection';
+import {getTransactional, query, updateEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {canEditGroup, getUserGroupIds, updateUserGroupIdsCache} from '../Auth';
 
@@ -69,11 +69,6 @@ server.type<GroupsPatch>('groups/patch', {
     return {channel: 'groups/load'};
   },
   async process(ctx, action) {
-    const updateKeys = buildPartialUpdateSql(action.group, ['name']);
-    if (updateKeys.length) {
-      await deviceBoundQuery(ctx.userId!,
-        `UPDATE groups SET ${updateKeys} WHERE id = :id`,
-        {...action.group, id: action.id});
-    }
+    await updateEntity(ctx.userId!, 'groups', action.id, action.group, ['name']);
   },
 });

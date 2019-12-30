@@ -1,6 +1,8 @@
 import mariadb, {PoolConnection, QueryOptions} from 'mariadb';
 import {snakeCase} from 'snake-case';
 import {intersection} from 'lodash';
+import dayjs from 'dayjs';
+import {AnyObject} from '@doko/common';
 
 const pool = mariadb.createPool({
   host: process.env.DB_HOST,
@@ -52,8 +54,33 @@ export async function deviceBoundQuery<R>(deviceId: string, sql: string, values?
   return getTransactional(deviceId, (update) => update(sql, values));
 }
 
-export function buildPartialUpdateSql<O extends { [x: string]: any }>(partial: O, whiteList: Array<keyof O>) {
-  return intersection<string>(Object.keys(partial), whiteList as string[])
-    .map((key) => `${snakeCase(key)} = :${key}`)
+export async function updateEntity<O extends AnyObject>(
+  deviceId: string,
+  table: string,
+  id: string,
+  partialEntity: O,
+  whiteList: Array<keyof O>,
+  types: {
+    [k in keyof O]?: 'unix';
+  } = {},
+) {
+  const updateData = {} as O;
+  const updateKeys = intersection<string>(Object.keys(partialEntity), whiteList as string[])
+    .map((key: keyof O) => {
+      switch (types[key]) {
+        case 'unix':
+          // @ts-ignore
+          updateData[key] =
+            partialEntity[key] === null ? null : dayjs.unix(partialEntity[key]).format('YYYY-MM-DD HH:mm:ss');
+          break;
+        default:
+          updateData[key] = partialEntity[key];
+      }
+      return `${snakeCase(key as string)} = :${key}`;
+    })
     .join(', ');
+
+  if (updateKeys.length) {
+    await deviceBoundQuery(deviceId, `UPDATE ${table} SET ${updateKeys} WHERE id = :id`, {...updateData, id});
+  }
 }

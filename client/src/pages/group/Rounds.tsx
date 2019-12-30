@@ -19,12 +19,12 @@ export default function Rounds({limit}: { limit?: number }): ReactElement {
 
     {rounds.length > 0 && <div className="">
       <List divided relaxed>
-        {rounds.map(({id, date}) =>
+        {rounds.map(({id, startDate}) =>
           <List.Item key={id}>
             <List.Icon name='paw' verticalAlign='middle'/>
             <List.Content>
               <List.Header as={asLink(`/groups/group/${groupId}/round/${id}`, {className: 'header'})}>
-                {dayjs.unix(date).format('DD.MM.YYYY')}
+                {dayjs.unix(startDate).format('DD.MM.YYYY')}
               </List.Header>
               <List.Description>
                 <Label color={'green'}>

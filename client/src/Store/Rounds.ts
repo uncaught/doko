@@ -59,7 +59,7 @@ export function useAddRound() {
     if (!name) {
       throw new Error('Invalid name');
     }
-    const round: Round = {groupId, date: dayjs().unix(), id: generateUuid()};
+    const round: Round = {groupId, startDate: dayjs().unix(), endDate: null, id: generateUuid()};
     return dispatch.sync<RoundsAdd>({round, type: 'rounds/add'});
   }, [dispatch, groupId]);
 }
@@ -93,5 +93,5 @@ export function useSortedRounds(): Round[] {
   const {groupId} = useFullParams<{ groupId: string }>();
   useSubscription<RoundsLoad>([{channel: 'rounds/load', groupId}]);
   const rounds = useSelector(roundsSelector)[groupId];
-  return useMemo(() => rounds ? Object.values(rounds).sort((a, b) => b.date - a.date) : [], [rounds]);
+  return useMemo(() => rounds ? Object.values(rounds).sort((a, b) => b.startDate - a.startDate) : [], [rounds]);
 }

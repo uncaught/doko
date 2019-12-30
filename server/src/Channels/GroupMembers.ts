@@ -1,5 +1,5 @@
 import server from '../Server';
-import {buildPartialUpdateSql, deviceBoundQuery, query} from '../Connection';
+import {deviceBoundQuery, query, updateEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
   GroupMember,
@@ -67,11 +67,7 @@ server.type<GroupMembersPatch>('groupMembers/patch', {
     return {channel: 'groupMembers/load'};
   },
   async process(ctx, action) {
-    const updateKeys = buildPartialUpdateSql(action.groupMember, ['name']);
-    if (updateKeys.length) {
-      await deviceBoundQuery(ctx.userId!, `UPDATE group_members SET ${updateKeys} WHERE id = :id`,
-        {...action.groupMember, id: action.id});
-    }
+    await updateEntity(ctx.userId!, 'group_members', action.id, action.groupMember, ['name']);
   },
 });
 
