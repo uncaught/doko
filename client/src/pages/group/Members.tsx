@@ -7,7 +7,7 @@ import {useFullParams} from '../../Page';
 
 export default function Members(): ReactElement {
   const {groupId} = useFullParams<{ groupId: string }>();
-  const {roundsCount: groupRoundsCount = 1} = useGroup() || {};
+  const {roundsCount: groupRoundsCount = 0} = useGroup() || {};
   const groupMembers = useSortedGroupMembers();
 
   return <section>
@@ -19,13 +19,16 @@ export default function Members(): ReactElement {
           <List.Item key={id}>
             <List.Icon name='user' verticalAlign='middle'/>
             <List.Content>
-              <List.Header as={asLink(`/groups/group/${groupId}/member/${id}`, {className: 'header'})}>{name}</List.Header>
+              <List.Header as={asLink(`/groups/group/${groupId}/member/${id}`,
+                {className: 'header'})}>{name}</List.Header>
               <List.Description>
                 <Label size={'small'} color={pointBalance >= 0 ? 'green' : 'red'}>
                   {pointBalance} <Icon name='sort'/>
                 </Label>
                 <Label size={'small'} color={'orange'}>
-                  {roundsCount} / {Math.ceil(roundsCount / groupRoundsCount * 100)}% <Icon name='time'/>
+                  {roundsCount} / {groupRoundsCount
+                  ? Math.ceil(roundsCount / groupRoundsCount * 100)
+                  : 0}% <Icon name='time'/>
                 </Label>
                 {!!euroBalance && <Label size={'small'} color={'blue'}>
                   {euroBalance} <Icon name='euro sign'/>
