@@ -16,18 +16,18 @@ import badgeMessages from '@logux/client/badge/en';
 // @ts-ignore
 import log from '@logux/client/log';
 // @ts-ignore
-import IndexedStore from '@logux/client/indexed-store';
+// import IndexedStore from '@logux/client/indexed-store';
 import {storeReducer} from 'src/Store/Store';
 import {getAuth} from './Auth';
 
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',
   server: process.env.NODE_ENV === 'development'
-    ? window.location.protocol === 'https'
+    ? window.location.protocol === 'https:'
       ? `wss://${window.location.hostname}/api`
       : `ws://${window.location.hostname}:3030`
     : 'wss://logux.example.com',
-  store: new IndexedStore(),
+  // store: new IndexedStore(),
   ...getAuth(),
 });
 const store = createStore(storeReducer);

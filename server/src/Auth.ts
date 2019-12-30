@@ -2,14 +2,14 @@ import server from './Server';
 import {Credentials, isUuid} from '@doko/common';
 import {query} from './Connection';
 
-server.auth(async (userId: string, credentials: Credentials) => {
-  if (!isUuid(userId)) {
-    throw new Error(`Invalid uuid '${userId}'`);
+server.auth(async (deviceId: string, credentials: Credentials) => {
+  if (!isUuid(deviceId)) {
+    throw new Error(`Invalid uuid '${deviceId}'`);
   }
-  await query(`INSERT INTO users (id, created_on, created_creds, last_seen_on, last_seen_creds)
+  await query(`INSERT INTO devices (id, created_on, created_creds, last_seen_on, last_seen_creds)
 VALUES (:id, NOW(), :creds, NOW(), :creds)
 ON DUPLICATE KEY UPDATE last_seen_on = VALUES(last_seen_on), last_seen_creds = VALUES(last_seen_creds)`, {
-    id: userId,
+    id: deviceId,
     creds: JSON.stringify(credentials),
   });
   return true;
@@ -17,31 +17,31 @@ ON DUPLICATE KEY UPDATE last_seen_on = VALUES(last_seen_on), last_seen_creds = V
 
 const cacheUserGroupIds = new Map<string, Promise<Set<string>>>();
 
-export function getUserGroupIds(userId: string): Promise<Set<string>> {
-  if (!cacheUserGroupIds.has(userId)) {
+export function getUserGroupIds(deviceId: string): Promise<Set<string>> {
+  if (!cacheUserGroupIds.has(deviceId)) {
     const prom = query<{ group_id: string }>(`SELECT DISTINCT gm.group_id
-                                FROM group_member_users gmu
-                          INNER JOIN group_members gm ON gm.id = gmu.group_member_id
-                               WHERE gmu.user_id = :userId`, {userId})
+                                                FROM group_member_devices gmd
+                                          INNER JOIN group_members gm ON gm.id = gmd.group_member_id
+                                               WHERE gmd.device_id = :deviceId`, {deviceId})
       .then((result) => result.reduce<Set<string>>((acc, {group_id}) => acc.add(group_id), new Set()));
-    cacheUserGroupIds.set(userId, prom);
+    cacheUserGroupIds.set(deviceId, prom);
   }
-  return cacheUserGroupIds.get(userId)!;
+  return cacheUserGroupIds.get(deviceId)!;
 }
 
-export async function updateUserGroupIdsCache(userId: string, groupId: string): Promise<void> {
-  if (cacheUserGroupIds.has(userId)) {
-    const set = await cacheUserGroupIds.get(userId)!;
+export async function updateUserGroupIdsCache(deviceId: string, groupId: string): Promise<void> {
+  if (cacheUserGroupIds.has(deviceId)) {
+    const set = await cacheUserGroupIds.get(deviceId)!;
     set.add(groupId);
   }
 }
 
-export async function canReadGroup(userId: string, groupId: string): Promise<boolean> {
+export async function canReadGroup(deviceId: string, groupId: string): Promise<boolean> {
   //all members may read the group
-  return (await getUserGroupIds(userId)).has(groupId);
+  return (await getUserGroupIds(deviceId)).has(groupId);
 }
 
-export async function canEditGroup(userId: string, groupId: string): Promise<boolean> {
+export async function canEditGroup(deviceId: string, groupId: string): Promise<boolean> {
   //for now all members may edit the group
-  return (await getUserGroupIds(userId)).has(groupId);
+  return (await getUserGroupIds(deviceId)).has(groupId);
 }

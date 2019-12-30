@@ -2,14 +2,12 @@ import server from '../Server';
 import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
-  generateToken,
   GroupMember,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
   GroupMembersInvitationAccepted,
   GroupMembersInvitationUsed,
   GroupMembersInvite,
-  GroupMembersInvited,
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
@@ -30,9 +28,12 @@ server.channel<GroupMembersLoad>('groupMembers/load', {
     await ctx.sendBack<GroupMembersLoaded>({
       groupId,
       type: 'groupMembers/loaded',
-      groupMembers: await query<GroupMember>(`SELECT id, name, group_id as groupId 
-                                                FROM group_members 
-                                               WHERE group_id = ?`, [groupId]),
+      groupMembers: await query<GroupMember>(`SELECT gm.id, gm.name, gm.group_id as groupId, 
+                                                     IF(gmd.device_id IS NULL, 0, 1) as isYou
+                                                FROM group_members gm
+                                           LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
+                                                 AND gmd.device_id = ?
+                                               WHERE gm.group_id = ?`, [ctx.userId!, groupId]),
     });
   },
   async filter(ctx, {groupId: subGroupId}) {
@@ -50,10 +51,10 @@ server.type<GroupMembersAdd>('groupMembers/add', {
     return {channel: 'groupMembers/load'};
   },
   async process(ctx, action) {
-    await query(`INSERT INTO group_members (id, group_id, name, created_by_user_id, created_on) 
-                      VALUES (:id, :groupId, :name, :userId, NOW())`, {
+    await query(`INSERT INTO group_members (id, group_id, name, created_by_device_id, created_on) 
+                      VALUES (:id, :groupId, :name, :deviceId, NOW())`, {
       ...action.groupMember,
-      userId: ctx.userId,
+      deviceId: ctx.userId,
     });
   },
 });
@@ -79,7 +80,7 @@ const inviteTtl = 7 * 60 * 1000; // 7 minutes - the UI will display 5 minutes co
 interface Invite {
   groupId: string;
   groupMemberId: string;
-  inviterUserId: string;
+  inviterDeviceId: string;
   invitedOn: number;
 }
 
@@ -97,20 +98,19 @@ function cleanupTokens(): void {
 setTimeout(cleanupTokens, inviteTtl);
 
 server.type<GroupMembersInvite>('groupMembers/invite', {
-  async access(ctx, {groupId, groupMemberId}) {
+  async access(ctx, {groupId, groupMemberId, invitationToken}) {
     return await canEditGroup(ctx.userId!, groupId) //inviter can edit group
-      && groupId === await getGroupForMember(groupMemberId); //member is part of group
+      && groupId === await getGroupForMember(groupMemberId) //member is part of group
+      && !invitationTokens.has(invitationToken);
   },
   //no resend
-  async process(ctx, {groupMemberId, groupId}) {
-    const invitationToken = generateToken();
+  process(ctx, {groupMemberId, groupId, invitationToken}) {
     invitationTokens.set(invitationToken, {
       groupMemberId,
       groupId,
-      inviterUserId: ctx.userId!,
+      inviterDeviceId: ctx.userId!,
       invitedOn: Date.now(),
     });
-    await ctx.sendBack<GroupMembersInvited>({invitationToken, groupMemberId, groupId, type: 'groupMembers/invited'});
   },
 });
 
@@ -121,25 +121,37 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
   },
   //no resend
   async process(ctx, {token}) {
-    const {groupId, groupMemberId, inviterUserId} = invitationTokens.get(token)!;
-    await query(`INSERT INTO group_member_users (group_member_id, user_id, inviter_user_id, invited_on)
-                      VALUES (:groupMemberId, :userId, :inviterUserId, NOW())
-                ON DUPLICATE KEY UPDATE group_member_id = VALUES(group_member_id)`, {
-      inviterUserId,
-      groupMemberId,
-      userId: ctx.userId,
+    const {groupId, groupMemberId, inviterDeviceId} = invitationTokens.get(token)!;
+
+    //Check if the user is already connected to a group member:
+    const existing = await query(`SELECT gm.id
+                                    FROM group_member_devices gmd
+                              INNER JOIN group_members gm ON gm.id = gmd.group_member_id AND gm.group_id = :groupId
+                                   WHERE gmd.device_id = :deviceId`, {
+      groupId,
+      deviceId: ctx.userId,
     });
-    await updateUserGroupIdsCache(ctx.userId!, groupId);
+    if (existing.length === 0) {
+      await query(`INSERT INTO group_member_devices (group_member_id, device_id, inviter_device_id, invited_on)
+                        VALUES (:groupMemberId, :deviceId, :inviterDeviceId, NOW())
+                  ON DUPLICATE KEY UPDATE group_member_id = VALUES(group_member_id)`, {
+        inviterDeviceId,
+        groupMemberId,
+        deviceId: ctx.userId,
+      });
+      await updateUserGroupIdsCache(ctx.userId!, groupId);
+    }
     invitationTokens.delete(token);
 
     //Inform the inviter:
-    server.log.add<GroupMembersInvitationUsed>({token, type: 'groupMembers/invitationUsed'}, {users: [inviterUserId]});
+    server.log.add<GroupMembersInvitationUsed>({token, type: 'groupMembers/invitationUsed'},
+      {users: [inviterDeviceId]});
 
     //Inform the invitee:
     const groups = await loadGroups(new Set(groupId));
     await ctx.sendBack<GroupMembersInvitationAccepted>({
+      token,
       groupId,
-      groupMemberId,
       group: groups[0],
       type: 'groupMembers/invitationAccepted',
     });

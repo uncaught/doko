@@ -1,7 +1,9 @@
+import {GroupMember} from './GroupMembers';
+
 export interface Group {
   id: string;
   name: string;
-  lastGameUnix?: number;
+  lastRoundUnix?: number;
   roundsCount?: number;
 }
 
@@ -21,6 +23,7 @@ export interface GroupsLoaded {
 export interface GroupsAdd {
   type: 'groups/add';
   group: Group;
+  groupMember: GroupMember; //self, initial member
 }
 
 export interface GroupsPatch {

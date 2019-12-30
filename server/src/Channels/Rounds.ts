@@ -1,7 +1,7 @@
 import server from '../Server';
 import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
-import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch} from '@doko/common';
+import {RoundsAdd, RoundsLoad, RoundsPatch} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
 
 async function getGroupForRound(id: string): Promise<string | null> {
@@ -37,10 +37,10 @@ server.type<RoundsAdd>('rounds/add', {
     return {channel: 'rounds/load'};
   },
   async process(ctx, action) {
-    // await query(`INSERT INTO group_members (id, group_id, name, created_by_user_id, created_on)
-    //                   VALUES (:id, :groupId, :name, :userId, NOW())`, {
+    // await query(`INSERT INTO group_members (id, group_id, name, created_by_device_id, created_on)
+    //                   VALUES (:id, :groupId, :name, :deviceId, NOW())`, {
     //   ...action.round,
-    //   userId: ctx.userId,
+    //   deviceId: ctx.userId,
     // });
   },
 });

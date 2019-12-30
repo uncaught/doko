@@ -3,8 +3,8 @@ import {createReducer} from './Reducer';
 import {State} from './Store';
 
 export interface Ui {
-  invitedToGroupId: string;
-  usedInvitationTokens: string[];
+  acceptedInvitations: { [token: string]: string }, //token => groupId for the invitee
+  usedInvitationTokens: string[]; //for the inviter
 }
 
 export interface UiSet {
@@ -13,7 +13,7 @@ export interface UiSet {
 }
 
 const initial: Ui = {
-  invitedToGroupId: '',
+  acceptedInvitations: {},
   usedInvitationTokens: [],
 };
 
@@ -22,7 +22,7 @@ const {addReducer, combinedReducer} = createReducer<Ui>(initial);
 addReducer<UiSet>('ui/set', (state, action) => mergeStates(state, action.ui));
 
 addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted',
-  (state, {groupId}) => mergeStates(state, {invitedToGroupId: groupId}));
+  (state, {groupId, token}) => mergeStates(state, {acceptedInvitations: {[token]: groupId}}));
 
 addReducer<GroupMembersInvitationUsed>('groupMembers/invitationUsed',
   (state, {token}) => {
@@ -39,5 +39,5 @@ addReducer<GroupMembersInvitationUsed>('groupMembers/invitationUsed',
 
 export const uiReducer = combinedReducer;
 
-export const invitedToGroupIdSelector = (state: State) => state.ui.invitedToGroupId;
+export const acceptedInvitationsSelector = (state: State) => state.ui.acceptedInvitations;
 export const usedInvitationTokensSelector = (state: State) => state.ui.usedInvitationTokens;

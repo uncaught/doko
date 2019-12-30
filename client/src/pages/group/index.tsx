@@ -2,22 +2,32 @@ import React, {ReactElement} from 'react';
 import {Switch, useRouteMatch} from 'react-router-dom';
 import Member from '../member/Member';
 import Group from './Group';
-import FullRoute from '../../FullRoute';
+import Page from '../../Page';
 import Rounds from './Rounds';
+import Members from './Members';
+import {Divider} from 'semantic-ui-react';
+import AddMember from './AddMember';
 
 export default function (): ReactElement {
   const match = useRouteMatch();
   return <div>
     <Switch>
-      <FullRoute path={`${match.url}/rounds`}>
+      <Page path={`${match.url}/rounds`} displayName={'Runden'}>
         <Rounds/>
-      </FullRoute>
-      <FullRoute path={`${match.url}/member/:groupMemberId`}>
+      </Page>
+      <Page path={`${match.url}/member/:groupMemberId`} displayName={'Mitglied'}>
         <Member/>
-      </FullRoute>
-      <FullRoute path={`${match.url}`}>
+      </Page>
+      <Page path={`${match.url}/members`} displayName={'Mitglieder'}>
+        <Members/>
+        <Divider section/>
+        <AddMember/>
+      </Page>
+      <Page path={`${match.url}`}
+            displayName={'Gruppe'}
+            menuItems={[{icon: 'user plus', route: `${match.url}/members`, title: 'Mitglieder hinzufügen'}]}>
         <Group/>
-      </FullRoute>
+      </Page>
     </Switch>
   </div>;
 }

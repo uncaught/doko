@@ -1,5 +1,5 @@
 import server from '../Server';
-import {generateUuid, Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
+import {Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
 import {buildPartialUpdateSql, query} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {canEditGroup, getUserGroupIds, updateUserGroupIdsCache} from '../Auth';
@@ -31,28 +31,25 @@ server.channel<GroupsLoad>('groups/load', {
 });
 
 server.type<GroupsAdd>('groups/add', {
-  async access() {
-    return true;
+  async access(ctx, action) {
+    return action.group.id === action.groupMember.groupId;
   },
   //No resend needed - no other client may see this group, yet, because no other client is a member
   async process(ctx, action) {
-    const groupMemberId = generateUuid();
-    await query(`INSERT INTO groups (id, name, created_by_user_id, created_on) VALUES (:id, :name, :userId, NOW())`, {
+    await query(`INSERT INTO groups (id, name, created_by_device_id, created_on) VALUES (:id, :name, :deviceId, NOW())`, {
       ...action.group,
-      userId: ctx.userId,
+      deviceId: ctx.userId,
     });
-    await query(`INSERT INTO group_members (id, group_id, name, created_by_user_id, created_on)
-                      VALUES (:id, :gid, :name, :userId, NOW())`, {
-      id: groupMemberId,
-      gid: action.group.id,
-      name: 'Me',
-      userId: ctx.userId,
+    await query(`INSERT INTO group_members (id, group_id, name, created_by_device_id, created_on)
+                      VALUES (:id, :groupId, :name, :deviceId, NOW())`, {
+      ...action.groupMember,
+      deviceId: ctx.userId,
     });
-    await query(`INSERT INTO group_member_users (group_member_id, user_id, inviter_user_id, invited_on) 
-                      VALUES (:gmid, :userId, :inviterUserId, NOW())`, {
-      gmid: groupMemberId,
-      userId: ctx.userId,
-      inviterUserId: ctx.userId,
+    await query(`INSERT INTO group_member_devices (group_member_id, device_id, inviter_device_id, invited_on) 
+                      VALUES (:gmid, :deviceId, :inviterDeviceId, NOW())`, {
+      gmid: action.groupMember.id,
+      deviceId: ctx.userId,
+      inviterDeviceId: ctx.userId,
     });
     await updateUserGroupIdsCache(ctx.userId!, action.group.id);
   },

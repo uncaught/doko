@@ -1,15 +1,16 @@
 import {State} from './Store';
 import {
+  generateToken,
   generateUuid,
   GroupMember,
   GroupMembers,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
   GroupMembersInvite,
-  GroupMembersInvited,
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
+  GroupsAdd,
   mergeStates,
   objectContains,
   parseInvitationUrl,
@@ -19,11 +20,18 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
 import {useHistory} from 'react-router-dom';
-import {useFullParams} from '../FullRoute';
-import {invitedToGroupIdSelector} from './Ui';
-import {LoguxDispatch, useLoguxClientOnce} from './Logux';
+import {useFullParams} from '../Page';
+import {acceptedInvitationsSelector} from './Ui';
+import {LoguxDispatch} from './Logux';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
+
+addReducer<GroupsAdd>('groups/add', (state, action) => ({
+  ...state,
+  [action.group.id]: {
+    [action.groupMember.id]: action.groupMember,
+  },
+}));
 
 addReducer<GroupMembersLoaded>('groupMembers/loaded', (state, action) => {
   return {
@@ -60,24 +68,23 @@ export const groupMembersSelector = (state: State) => state.groupMembers;
 export function useAddGroupMember() {
   const {groupId} = useFullParams<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((name: string) => {
+  return useCallback((name: string): void => {
     if (!name) {
       throw new Error('Invalid name');
     }
     const groupMember: GroupMember = {groupId, name, id: generateUuid()};
-    return dispatch.sync<GroupMembersAdd>({groupMember, type: 'groupMembers/add'});
+    dispatch.sync<GroupMembersAdd>({groupMember, type: 'groupMembers/add'});
   }, [dispatch, groupId]);
 }
 
 export function useCreateInvitation() {
-  const once = useLoguxClientOnce();
   const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback(async (): Promise<string> => {
-    const response = once<GroupMembersInvited>('groupMembers/invited');
-    await dispatch.sync<GroupMembersInvite>({groupId, groupMemberId, type: 'groupMembers/invite'});
-    return (await response).invitationToken;
-  }, [dispatch, groupId, groupMemberId, once]);
+    const invitationToken = generateToken();
+    await dispatch.sync<GroupMembersInvite>({groupId, groupMemberId, invitationToken, type: 'groupMembers/invite'});
+    return invitationToken;
+  }, [dispatch, groupId, groupMemberId]);
 }
 
 export function useAcceptInvitation() {
@@ -88,7 +95,7 @@ export function useAcceptInvitation() {
     const token = parseInvitationUrl(url);
     if (token) {
       dispatch.sync<GroupMembersAcceptInvitation>({token, type: 'groupMembers/acceptInvitation'}).then(() => {
-        const groupId = invitedToGroupIdSelector(getState());
+        const groupId = acceptedInvitationsSelector(getState())[token];
         if (groupId) {
           history.push(`/group/${groupId}`);
         } else {

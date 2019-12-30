@@ -2,6 +2,7 @@ import {State} from './Store';
 import {
   generateUuid,
   Group,
+  GroupMembersInvitationAccepted,
   Groups,
   GroupsAdd,
   GroupsLoad,
@@ -14,8 +15,9 @@ import {arrayToList, createReducer} from 'src/Store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
-import {useFullParams} from '../FullRoute';
+import {useFullParams} from '../Page';
 import {LoguxDispatch} from './Logux';
+import {useHistory} from 'react-router-dom';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 
@@ -36,20 +38,37 @@ addReducer<GroupsPatch>('groups/patch', (state, action) => {
   return state;
 });
 
+addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted', (state, action) => ({
+  ...state,
+  [action.group.id]: action.group,
+}));
+
 export const groupsReducer = combinedReducer;
 
 export const groupsSelector = (state: State) => state.groups;
 
 export function useAddGroup() {
+  const history = useHistory();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((name: string): string => {
-    if (!name) {
+  return useCallback((groupName: string): void => {
+    if (!groupName) {
       throw new Error('Invalid name');
     }
-    const id = generateUuid();
-    dispatch.sync<GroupsAdd>({group: {name, id}, type: 'groups/add'});
-    return id;
-  }, [dispatch]);
+    const groupId = generateUuid();
+    dispatch.sync<GroupsAdd>({
+      group: {
+        id: groupId,
+        name: groupName,
+      },
+      groupMember: {
+        id: generateUuid(),
+        groupId: groupId,
+        name: 'Me',
+      },
+      type: 'groups/add',
+    });
+    history.push(`/group/${groupId}/members`);
+  }, [dispatch, history]);
 }
 
 export function useGroup(): Group | void {

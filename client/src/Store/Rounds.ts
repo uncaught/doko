@@ -14,7 +14,7 @@ import {arrayToList, createReducer} from 'src/Store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
-import {useFullParams} from '../FullRoute';
+import {useFullParams} from '../Page';
 import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
 

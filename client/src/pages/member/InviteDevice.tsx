@@ -1,5 +1,5 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {Button, Header, Icon, Modal} from 'semantic-ui-react';
+import {Button, Header, Icon, Modal, Segment} from 'semantic-ui-react';
 import {useCreateInvitation} from '../../Store/GroupMembers';
 import {generateInvitationUrl} from '@doko/common';
 import QrCode from 'qrcode.react';
@@ -86,6 +86,9 @@ export default function InviteDevice(): ReactElement {
       <Icon name='qrcode'/>
       QR-Code
     </Button>
+
+    <Segment vertical className="u-clear-both">Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein Gerät
+      kann nur mit einem Mitglied einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener Gruppen.</Segment>
 
     {showQr && <Modal className="scanInvitation-modal"
                       open={true}

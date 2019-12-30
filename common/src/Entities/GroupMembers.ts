@@ -4,6 +4,7 @@ export interface GroupMember {
   id: string;
   groupId: string;
   name: string;
+  isYou?: boolean;
   roundsCount?: number;
   pointBalance?: number;
   euroBalance?: number;
@@ -42,12 +43,6 @@ export interface GroupMembersInvite {
   type: 'groupMembers/invite';
   groupId: string;
   groupMemberId: string;
-}
-
-export interface GroupMembersInvited {
-  type: 'groupMembers/invited';
-  groupId: string;
-  groupMemberId: string;
   invitationToken: string;
 }
 
@@ -58,8 +53,8 @@ export interface GroupMembersAcceptInvitation {
 
 export interface GroupMembersInvitationAccepted {
   type: 'groupMembers/invitationAccepted';
+  token: string;
   groupId: string;
-  groupMemberId: string;
   group: Group;
 }
 

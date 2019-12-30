@@ -7,17 +7,17 @@ import dayjs from 'dayjs';
 export default function MyGroups(): ReactElement {
   const groups = useSortedGroups();
   return <section>
-    <Header as='h4'>Deine Gruppen</Header>
+    <Header as='h4'>Meine Gruppen</Header>
 
     {groups.length > 0 && <div className="myGroups-groups">
       <List divided relaxed>
-        {groups.map(({id, name, lastGameUnix}) => <List.Item key={id}>
+        {groups.map(({id, name, lastRoundUnix}) => <List.Item key={id}>
           <List.Icon name='group' verticalAlign='middle'/>
           <List.Content>
             <List.Header as={asLink(`/group/${id}`, {className: 'header'})}>{name}</List.Header>
             <List.Description>
-              {!lastGameUnix && `Noch kein Spiel aufgezeichnet`}
-              {!!lastGameUnix && `Letztes Spiel am ${dayjs.unix(lastGameUnix).format('DD.MM.YYYY')}`}
+              {!lastRoundUnix && `Noch keine Runde aufgezeichnet`}
+              {!!lastRoundUnix && `Letzte Runde am ${dayjs.unix(lastRoundUnix).format('DD.MM.YYYY')}`}
             </List.Description>
           </List.Content>
         </List.Item>)}

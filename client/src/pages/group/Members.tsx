@@ -3,7 +3,7 @@ import {Header, Icon, Label, List} from 'semantic-ui-react';
 import {useSortedGroupMembers} from '../../Store/GroupMembers';
 import {useGroup} from '../../Store/Groups';
 import {asLink} from '../../AsLink';
-import {useFullParams} from '../../FullRoute';
+import {useFullParams} from '../../Page';
 
 export default function Members(): ReactElement {
   const {groupId} = useFullParams<{ groupId: string }>();
@@ -15,7 +15,7 @@ export default function Members(): ReactElement {
 
     {groupMembers.length > 0 && <div className="">
       <List divided relaxed>
-        {groupMembers.map(({id, name, pointBalance = 0, roundsCount = 0, euroBalance = 0}) =>
+        {groupMembers.map(({id, name, pointBalance = 0, roundsCount = 0, euroBalance = 0, isYou}) =>
           <List.Item key={id}>
             <List.Icon name='user' verticalAlign='middle'/>
             <List.Content>
@@ -29,6 +29,9 @@ export default function Members(): ReactElement {
                 </Label>
                 {!!euroBalance && <Label size={'small'} color={'blue'}>
                   {euroBalance} <Icon name='euro sign'/>
+                </Label>}
+                {!!isYou && <Label size={'small'} color={'teal'}>
+                  du <Icon name='linkify'/>
                 </Label>}
               </List.Description>
             </List.Content>

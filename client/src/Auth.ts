@@ -1,14 +1,14 @@
 import {Credentials, generateUuid, isUuid} from '@doko/common';
 
 export function getAuth(): { userId: string; credentials: Credentials } {
-  let userId = localStorage.getItem('userId');
-  if (!isUuid(userId)) {
-    userId = generateUuid();
-    localStorage.setItem('userId', userId);
+  let deviceId = localStorage.getItem('deviceId');
+  if (!isUuid(deviceId)) {
+    deviceId = generateUuid();
+    localStorage.setItem('deviceId', deviceId);
   }
   const {navigator, screen} = window;
   return {
-    userId,
+    userId: deviceId,
     credentials: {
       navigator: {
         languages: navigator.languages,
