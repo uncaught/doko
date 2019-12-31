@@ -13,13 +13,15 @@ CREATE TRIGGER groups_after_insert AFTER INSERT ON `groups`
    revision_on,
    revision_type,
    id,
-   name)
+   name,
+   settings)
   VALUES
   (@__currentDeviceId,
    now(),
    'insert',
    NEW.id,
-   NEW.name);
+   NEW.name,
+   NEW.settings);
 END $$
 
 CREATE TRIGGER groups_after_update AFTER UPDATE ON `groups`
@@ -35,13 +37,15 @@ thisTrigger: BEGIN
    revision_on,
    revision_type,
    id,
-   name)
+   name,
+   settings)
   VALUES
   (@__currentDeviceId,
    now(),
    'update',
    NEW.id,
-   NEW.name);
+   NEW.name,
+   NEW.settings);
 END $$
 
 CREATE TRIGGER groups_before_delete BEFORE DELETE ON `groups`
@@ -57,13 +61,15 @@ thisTrigger: BEGIN
    revision_on,
    revision_type,
    id,
-   name)
+   name,
+   settings)
   VALUES
   (@__currentDeviceId,
    now(),
    'delete',
    OLD.id,
-   OLD.name);
+   OLD.name,
+   OLD.settings);
 END $$
 
 DELIMITER ;

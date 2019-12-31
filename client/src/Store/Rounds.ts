@@ -1,5 +1,6 @@
 import {State} from './Store';
 import {
+  DeepPartial,
   generateUuid,
   mergeStates,
   objectContains,
@@ -42,7 +43,7 @@ addReducer<RoundsPatch>('rounds/patch', (state, action) => {
       ...state,
       [action.groupId]: {
         ...state[action.groupId],
-        [action.id]: mergeStates(state[action.groupId][action.id], action.round),
+        [action.id]: mergeStates<Round>(state[action.groupId][action.id], action.round),
       },
     };
   }
@@ -81,7 +82,7 @@ export function useRound(): Round | void {
 export function usePatchRound() {
   const currentRound = useRound();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((round: Partial<Omit<Round, 'id'>>) => {
+  return useCallback((round: DeepPartial<Omit<Round, 'id'>>) => {
     if (!currentRound) {
       throw new Error(`No currentRound`);
     }

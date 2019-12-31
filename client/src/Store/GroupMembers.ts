@@ -1,5 +1,6 @@
 import {State} from './Store';
 import {
+  DeepPartial,
   generateToken,
   generateUuid,
   GroupMember,
@@ -21,7 +22,7 @@ import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
 import {useHistory} from 'react-router-dom';
 import {useFullParams} from '../Page';
-import {acceptedInvitationsSelector} from './Ui';
+import {acceptedInvitationsSelector, rejectedInvitationsSelector} from './Ui';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
 
@@ -55,7 +56,7 @@ addReducer<GroupMembersPatch>('groupMembers/patch', (state, action) => {
       ...state,
       [action.groupId]: {
         ...state[action.groupId],
-        [action.id]: mergeStates(state[action.groupId][action.id], action.groupMember),
+        [action.id]: mergeStates<GroupMember>(state[action.groupId][action.id], action.groupMember),
       },
     };
   }
@@ -99,18 +100,18 @@ export function useAcceptInvitation() {
   const {getState} = useStore<State>();
   const dispatch = useDispatch<LoguxDispatch>();
   const history = useHistory();
-  return useCallback((url: string): boolean => {
+  return useCallback(async (url: string): Promise<boolean> => {
     const token = parseInvitationUrl(url);
     if (token) {
-      dispatch.sync<GroupMembersAcceptInvitation>({token, type: 'groupMembers/acceptInvitation'}).then(() => {
-        const groupId = acceptedInvitationsSelector(getState())[token];
-        if (groupId) {
-          history.push(`/groups/group/${groupId}`);
-        } else {
-          console.error('Missing invited groupId');
-        }
-      });
-      return true;
+      await dispatch.sync<GroupMembersAcceptInvitation>({token, type: 'groupMembers/acceptInvitation'});
+      const state = getState();
+      const groupId = acceptedInvitationsSelector(state)[token];
+      if (groupId) {
+        history.push(`/groups/group/${groupId}`);
+        return true;
+      } else if (!rejectedInvitationsSelector(state).includes(token)) {
+        console.error('Missing invited groupId');
+      }
     }
     return false;
   }, [dispatch, getState, history]);
@@ -125,7 +126,7 @@ export function useGroupMember(): GroupMember | void {
 export function usePatchGroupMember() {
   const currentGroupMember = useGroupMember();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((groupMember: Partial<Omit<GroupMember, 'id'>>) => {
+  return useCallback((groupMember: DeepPartial<Omit<GroupMember, 'id'>>) => {
     if (!currentGroupMember) {
       throw new Error(`No currentGroupMember`);
     }

@@ -1,8 +1,9 @@
 import mariadb, {PoolConnection, QueryOptions} from 'mariadb';
 import {snakeCase} from 'snake-case';
-import {intersection} from 'lodash';
+import {difference, intersection} from 'lodash';
 import dayjs from 'dayjs';
-import {AnyObject} from '@doko/common';
+import {AnyObject, DeepPartial, mergeStates} from '@doko/common';
+import {DatabaseTypes, DbConfig} from './DbTypes';
 
 const pool = mariadb.createPool({
   host: process.env.DB_HOST,
@@ -54,33 +55,115 @@ export async function deviceBoundQuery<R>(deviceId: string, sql: string, values?
   return getTransactional(deviceId, (update) => update(sql, values));
 }
 
-export async function updateEntity<O extends AnyObject>(
-  deviceId: string,
-  table: string,
-  id: string,
-  partialEntity: O,
-  whiteList: Array<keyof O>,
-  types: {
-    [k in keyof O]?: 'unix';
-  } = {},
-) {
-  const updateData = {} as O;
-  const updateKeys = intersection<string>(Object.keys(partialEntity), whiteList as string[])
-    .map((key: keyof O) => {
-      switch (types[key]) {
-        case 'unix':
-          // @ts-ignore
-          updateData[key] =
-            partialEntity[key] === null ? null : dayjs.unix(partialEntity[key]).format('YYYY-MM-DD HH:mm:ss');
-          break;
-        default:
-          updateData[key] = partialEntity[key];
-      }
-      return `${snakeCase(key as string)} = :${key}`;
-    })
-    .join(', ');
+type Parameters<O extends AnyObject> = {
+  [k in keyof O]?: string | number | null;
+}
 
-  if (updateKeys.length) {
-    await deviceBoundQuery(deviceId, `UPDATE ${table} SET ${updateKeys} WHERE id = :id`, {...updateData, id});
+function prepareId<O extends AnyObject>(
+  id: string | Partial<O>,
+  parameters: Parameters<O>,
+): string {
+  const ids = typeof id === 'string' ? {id} : id;
+  return Object.entries(ids).map(([key, val]) => {
+    parameters[key as keyof O] = val;
+    return `${snakeCase(key as string)} = :${key}`;
+  }).join(' AND ');
+}
+
+async function getToDbTransformer<O extends AnyObject>(
+  upsertData: DeepPartial<O>,
+  types: DatabaseTypes<O> = {},
+  oldEntity?: O | null,
+) {
+  return (key: keyof O): string | number | null => {
+    const newValue = upsertData[key] as O[keyof O];
+    if (newValue === null) {
+      return null;
+    }
+    switch (types[key]) {
+      case 'json':
+        const oldValue = oldEntity ? oldEntity[snakeCase(key as string)] : null;
+        if (oldValue === null) {
+          return JSON.stringify(upsertData[key]);
+        }
+        const oldJson = JSON.parse(oldValue);
+        return JSON.stringify(mergeStates(oldJson, newValue));
+      case 'unix':
+        return dayjs.unix(newValue).format('YYYY-MM-DD HH:mm:ss');
+      default:
+        const type = typeof newValue;
+        if (type !== 'string' && type !== 'number') {
+          throw new Error(`Missing db transformer for type '${type}' (${newValue})`);
+        }
+        return newValue;
+    }
+  };
+}
+
+export async function insertEntity<O extends AnyObject>(
+  update: typeof query,
+  {table, types, insertFields}: DbConfig<O>,
+  entity: O,
+) {
+  const keysToInsert = intersection<keyof O>(Object.keys(entity), insertFields);
+  const parameters: Parameters<O> = {};
+  if (keysToInsert.length) {
+    const toDbValue = await getToDbTransformer<O>(entity, types);
+    const columns: string[] = [];
+    const values: Array<string | number | null> = [];
+    keysToInsert.forEach((key: keyof O) => {
+      columns.push(snakeCase(key as string));
+      values.push(`:${key}`);
+      parameters[key] = toDbValue(key);
+    });
+    await update(`INSERT INTO ${table} (${columns.join(', ')}) VALUES (${values.join(', ')})`, parameters);
   }
+}
+
+export async function insertSingleEntity<O extends AnyObject>(
+  deviceId: string,
+  dbConfig: DbConfig<O>,
+  entity: O,
+) {
+  await getTransactional(deviceId, async (update) => {
+    await insertEntity<O>(update, dbConfig, entity);
+  });
+}
+
+export async function updateEntity<O extends AnyObject>(
+  update: typeof query,
+  {table, types, updateFields}: DbConfig<O>,
+  id: string | Partial<O>,
+  partial: DeepPartial<O>,
+) {
+  const ids = typeof id === 'string' ? {id} : id;
+  const keysToUpdate = difference<keyof O>(
+    intersection<keyof O>(Object.keys(partial), updateFields),
+    Object.keys(ids),
+  );
+
+  const parameters: Parameters<O> = {};
+  const where = prepareId<O>(id, parameters);
+  if (keysToUpdate.length) {
+    const oldEntity = keysToUpdate.some((key) => types[key] === 'json')
+      ? (await update<O>(`SELECT * FROM ${table} WHERE ${where}`, parameters))[0]
+      : null;
+    const toDbValue = await getToDbTransformer<O>(partial, types, oldEntity);
+    const updateKeys = keysToUpdate.map((key: keyof O) => {
+      parameters[key] = toDbValue(key);
+      return `${snakeCase(key as string)} = :${key}`;
+    }).join(', ');
+    await update(`UPDATE ${table} SET ${updateKeys} WHERE ${where}`, parameters);
+  }
+}
+
+export async function updateSingleEntity<O extends AnyObject>(
+  deviceId: string,
+  dbConfig: DbConfig<O>,
+  id: string | Partial<O>,
+  partialEntity: DeepPartial<O>,
+) {
+  await getTransactional(deviceId, async (update) => {
+    await updateEntity<O>(update, dbConfig, id, partialEntity);
+  });
 }

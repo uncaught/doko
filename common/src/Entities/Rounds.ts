@@ -1,3 +1,5 @@
+import {DeepPartial} from '../Generics';
+
 export interface Round {
   id: string;
   groupId: string;
@@ -31,5 +33,5 @@ export interface RoundsPatch {
   type: 'rounds/patch';
   id: string;
   groupId: string;
-  round: Partial<Omit<Round, 'id' | 'groupId'>>;
+  round: DeepPartial<Omit<Round, 'id' | 'groupId'>>;
 }

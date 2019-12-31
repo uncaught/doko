@@ -1,4 +1,5 @@
 import {Group} from './Groups';
+import {DeepPartial} from '../Generics';
 
 export interface GroupMember {
   id: string;
@@ -36,7 +37,7 @@ export interface GroupMembersPatch {
   type: 'groupMembers/patch';
   id: string;
   groupId: string;
-  groupMember: Partial<Omit<GroupMember, 'id' | 'groupId'>>;
+  groupMember: DeepPartial<Omit<GroupMember, 'id' | 'groupId'>>;
 }
 
 export interface GroupMembersInvite {
@@ -48,6 +49,11 @@ export interface GroupMembersInvite {
 
 export interface GroupMembersAcceptInvitation {
   type: 'groupMembers/acceptInvitation';
+  token: string;
+}
+
+export interface GroupMembersInvitationRejected {
+  type: 'groupMembers/invitationRejected';
   token: string;
 }
 

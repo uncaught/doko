@@ -10,12 +10,14 @@ CREATE TABLE devices (
 CREATE TABLE `groups` (
   id CHAR(36) NOT NULL,
   name VARCHAR(191),
+  settings JSON NOT NULL,
   PRIMARY KEY(id)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
 
 CREATE TABLE history_groups (
   id CHAR(36) NOT NULL,
   name VARCHAR(191),
+  settings JSON NOT NULL,
   revision INT AUTO_INCREMENT NOT NULL,
   revision_device_id CHAR(36) NOT NULL,
   revision_on DATETIME NOT NULL,
@@ -80,23 +82,53 @@ CREATE TABLE history_rounds (
   PRIMARY KEY(revision)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
 
+CREATE TABLE round_group_members (
+  round_id CHAR(36) NOT NULL,
+  group_member_id CHAR(36) NOT NULL,
+  sitting_order TINYINT(1) UNSIGNED,
+  joined_after_game_number TINYINT(2) UNSIGNED DEFAULT 0,
+  left_after_game_number TINYINT(2) UNSIGNED DEFAULT NULL,
+  INDEX IDX_ROUND_GROUP_MEMBERS_GROUP_MEMBER (group_member_id),
+  PRIMARY KEY(round_id, group_member_id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
+
+ALTER TABLE round_group_members ADD CONSTRAINT FK_ROUND_GROUP_MEMBERS_ROUND FOREIGN KEY (round_id) REFERENCES rounds (id) ON DELETE RESTRICT;
+ALTER TABLE round_group_members ADD CONSTRAINT FK_ROUND_GROUP_MEMBERS_GROUP_MEMBER FOREIGN KEY (group_member_id) REFERENCES group_members (id) ON DELETE RESTRICT;
+
+CREATE TABLE history_round_group_members (
+  round_id CHAR(36) NOT NULL,
+  group_member_id CHAR(36) NOT NULL,
+  sitting_order TINYINT(1) UNSIGNED,
+  joined_after_game_number TINYINT(2) UNSIGNED DEFAULT 0,
+  left_after_game_number TINYINT(2) UNSIGNED DEFAULT NULL,
+  revision INT AUTO_INCREMENT NOT NULL,
+  revision_device_id CHAR(36) NOT NULL,
+  revision_on DATETIME NOT NULL,
+  revision_type ENUM('insert', 'update', 'delete'),
+  PRIMARY KEY(revision)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
+
 CREATE TABLE games (
   id CHAR(36) NOT NULL,
   round_id CHAR(36) NOT NULL,
   game_number TINYINT(2) UNSIGNED,
-  type ENUM('normal','solo','penalty'),
+  dealer_group_member_id CHAR(36) NOT NULL,
+  data JSON NOT NULL,
   INDEX IDX_GAMES_ROUND (round_id),
+  INDEX IDX_GAMES_DEALER (dealer_group_member_id),
   PRIMARY KEY(id)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
 CREATE UNIQUE INDEX UNIQ_GAME_NUMBER ON games(round_id, game_number);
 
 ALTER TABLE games ADD CONSTRAINT FK_GAMES_ROUND FOREIGN KEY (round_id) REFERENCES rounds (id) ON DELETE CASCADE;
+ALTER TABLE games ADD CONSTRAINT FK_GAMES_DEALER FOREIGN KEY (dealer_group_member_id) REFERENCES group_members (id) ON DELETE CASCADE;
 
 CREATE TABLE history_games (
   id CHAR(36) NOT NULL,
   round_id CHAR(36) NOT NULL,
   game_number TINYINT(2) UNSIGNED,
-  type ENUM('normal','solo','penalty'),
+  dealer_group_member_id CHAR(36) NOT NULL,
+  data JSON NOT NULL,
   revision INT AUTO_INCREMENT NOT NULL,
   revision_device_id CHAR(36) NOT NULL,
   revision_on DATETIME NOT NULL,

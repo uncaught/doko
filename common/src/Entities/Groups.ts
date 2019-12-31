@@ -1,8 +1,11 @@
 import {GroupMember} from './GroupMembers';
+import {GroupSettings} from './Doko';
+import {DeepPartial} from '../Generics';
 
 export interface Group {
   id: string;
   name: string;
+  settings: GroupSettings;
   isNew?: true;
   lastRoundUnix?: number;
   roundsCount?: number;
@@ -35,5 +38,5 @@ export interface GroupsAdded {
 export interface GroupsPatch {
   type: 'groups/patch';
   id: string;
-  group: Partial<Omit<Group, 'id'>>;
+  group: DeepPartial<Omit<Group, 'id'>>;
 }

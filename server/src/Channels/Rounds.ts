@@ -1,8 +1,9 @@
 import server from '../Server';
-import {deviceBoundQuery, query, updateEntity} from '../Connection';
+import {insertSingleEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
+import {roundsDbConfig} from '../DbTypes';
 
 async function getGroupForRound(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
@@ -40,10 +41,7 @@ server.type<RoundsAdd>('rounds/add', {
     return {channel: 'rounds/load'};
   },
   async process(ctx, action) {
-    await deviceBoundQuery(ctx.userId!, `INSERT INTO rounds (id, group_id, start_date, end_date)
-                      VALUES (:id, :groupId, FROM_UNIXTIME(:startDate), FROM_UNIXTIME(:endDate))`, {
-      ...action.round,
-    });
+    await insertSingleEntity<Round>(ctx.userId!, roundsDbConfig, action.round);
   },
 });
 
@@ -56,9 +54,6 @@ server.type<RoundsPatch>('rounds/patch', {
     return {channel: 'rounds/load'};
   },
   async process(ctx, action) {
-    await updateEntity(ctx.userId!, 'rounds', action.id, action.round, ['startDate', 'endDate'], {
-      startDate: 'unix',
-      endDate: 'unix',
-    });
+    await updateSingleEntity<Round>(ctx.userId!, roundsDbConfig, action.id, action.round);
   },
 });

@@ -1,20 +1,29 @@
 import server from '../Server';
 import {Group, GroupsAdd, GroupsAdded, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
-import {getTransactional, query, updateEntity} from '../Connection';
+import {getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {canEditGroup, getUserGroupIds, updateUserGroupIdsCache} from '../Auth';
+import {groupMemberDevicesDbConfig, groupMembersDbConfig, groupsDbConfig} from '../DbTypes';
 
 export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
   let groups: Group[] = [];
   if (groupIds.size) {
     const ary = `,?`.repeat(groupIds.size).substring(1);
-    groups = await query<Group>(`SELECT g.id, g.name, 
+    groups = await query<Group>(`SELECT g.id, g.name, g.settings,
                                         COUNT(r.id) as roundsCount, 
                                         UNIX_TIMESTAMP(MAX(r.start_date)) as lastRoundUnix 
                                    FROM groups g
                               LEFT JOIN rounds r ON r.group_id = g.id 
                                   WHERE g.id IN (${ary})
                                GROUP BY g.id`, [...groupIds]);
+    groups.forEach((group) => {
+      Object.entries(group).forEach(([key, value]) => {
+        if (groupsDbConfig.types[key as keyof Group] === 'json') {
+          // @ts-ignore
+          group[key] = value === null ? null : JSON.parse(value);
+        }
+      });
+    });
   }
   return groups;
 }
@@ -43,18 +52,13 @@ server.type<GroupsAdd>('groups/add', {
   //No resend needed - no other client may see this group, yet, because no other client is a member
   async process(ctx, action) {
     await getTransactional(ctx.userId!, async (update) => {
-      await update(`INSERT INTO groups (id, name) VALUES (:id, :name)`, {
-        ...action.group,
-      });
-      await update(`INSERT INTO group_members (id, group_id, name)
-                      VALUES (:id, :groupId, :name)`, {
-        ...action.groupMember,
-      });
-      await update(`INSERT INTO group_member_devices (group_member_id, device_id, inviter_device_id, invited_on) 
-                      VALUES (:gmid, :deviceId, :inviterDeviceId, NOW())`, {
-        gmid: action.groupMember.id,
+      await insertEntity(update, groupsDbConfig, action.group);
+      await insertEntity(update, groupMembersDbConfig, action.groupMember);
+      await insertEntity(update, groupMemberDevicesDbConfig, {
+        groupMemberId: action.groupMember.id,
         deviceId: ctx.userId,
         inviterDeviceId: ctx.userId,
+        invitedOn: Date.now() / 1000,
       });
     });
     await updateUserGroupIdsCache(ctx.userId!, action.group.id);
@@ -70,6 +74,6 @@ server.type<GroupsPatch>('groups/patch', {
     return {channel: 'groups/load'};
   },
   async process(ctx, action) {
-    await updateEntity(ctx.userId!, 'groups', action.id, action.group, ['name']);
+    await updateSingleEntity<Group>(ctx.userId!, groupsDbConfig, action.id, action.group);
   },
 });

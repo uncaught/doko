@@ -1,5 +1,6 @@
 import {State} from './Store';
 import {
+  DeepPartial,
   generateUuid,
   Group,
   GroupMembersInvitationAccepted,
@@ -17,6 +18,7 @@ import {useCallback, useMemo} from 'react';
 import {useFullParams} from '../Page';
 import {LoguxDispatch} from './Logux';
 import {useHistory} from 'react-router-dom';
+import {defaultGroupSettings} from '@doko/common/src/Entities/Doko';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 
@@ -40,7 +42,7 @@ addReducer<GroupsPatch>('groups/patch', (state, action) => {
   if (state[action.id]) {
     return {
       ...state,
-      [action.id]: mergeStates(state[action.id], action.group),
+      [action.id]: mergeStates<Group>(state[action.id], action.group),
     };
   }
   return state;
@@ -68,6 +70,7 @@ export function useAddGroup() {
         id: groupId,
         name: groupName,
         isNew: true,
+        settings: defaultGroupSettings,
       },
       groupMember: {
         id: generateUuid(),
@@ -90,7 +93,7 @@ export function useGroup(): Group | void {
 export function usePatchGroup() {
   const currentGroup = useGroup();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((group: Partial<Omit<Group, 'id'>>) => {
+  return useCallback((group: DeepPartial<Omit<Group, 'id'>>) => {
     if (!currentGroup) {
       throw new Error(`No currentGroup`);
     }

@@ -1,11 +1,12 @@
 import server from '../Server';
-import {deviceBoundQuery, query, updateEntity} from '../Connection';
+import {insertSingleEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
   GroupMember,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
   GroupMembersInvitationAccepted,
+  GroupMembersInvitationRejected,
   GroupMembersInvitationUsed,
   GroupMembersInvite,
   GroupMembersLoad,
@@ -14,6 +15,7 @@ import {
 } from '@doko/common';
 import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
 import {loadGroups} from './Groups';
+import {groupMemberDevicesDbConfig, groupMembersDbConfig} from '../DbTypes';
 
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
@@ -51,10 +53,7 @@ server.type<GroupMembersAdd>('groupMembers/add', {
     return {channel: 'groupMembers/load'};
   },
   async process(ctx, action) {
-    await deviceBoundQuery(ctx.userId!, `INSERT INTO group_members (id, group_id, name) 
-                                              VALUES (:id, :groupId, :name)`, {
-      ...action.groupMember,
-    });
+    await insertSingleEntity<GroupMember>(ctx.userId!, groupMembersDbConfig, action.groupMember);
   },
 });
 
@@ -67,7 +66,7 @@ server.type<GroupMembersPatch>('groupMembers/patch', {
     return {channel: 'groupMembers/load'};
   },
   async process(ctx, action) {
-    await updateEntity(ctx.userId!, 'group_members', action.id, action.groupMember, ['name']);
+    await updateSingleEntity<GroupMember>(ctx.userId!, groupMembersDbConfig, action.id, action.groupMember);
   },
 });
 
@@ -111,13 +110,21 @@ server.type<GroupMembersInvite>('groupMembers/invite', {
 });
 
 server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
-  async access(ctx, {token}) {
-    const invitation = invitationTokens.get(token);
-    return !!invitation && invitation.invitedOn > (Date.now() - inviteTtl);
+  async access() {
+    return true;
   },
   //no resend
   async process(ctx, {token}) {
-    const {groupId, groupMemberId, inviterDeviceId} = invitationTokens.get(token)!;
+    const invitation = invitationTokens.get(token);
+    if (!invitation || invitation.invitedOn < (Date.now() - inviteTtl)) {
+      await ctx.sendBack<GroupMembersInvitationRejected>({
+        token,
+        type: 'groupMembers/invitationRejected',
+      });
+      return;
+    }
+
+    const {groupId, groupMemberId, inviterDeviceId} = invitation;
 
     //Check if the user is already connected to a group member:
     const existing = await query(`SELECT gm.id
@@ -128,12 +135,11 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
       deviceId: ctx.userId,
     });
     if (existing.length === 0) {
-      await query(`INSERT INTO group_member_devices (group_member_id, device_id, inviter_device_id, invited_on)
-                        VALUES (:groupMemberId, :deviceId, :inviterDeviceId, NOW())
-                  ON DUPLICATE KEY UPDATE group_member_id = VALUES(group_member_id)`, {
-        inviterDeviceId,
+      await insertSingleEntity(ctx.userId!, groupMemberDevicesDbConfig, {
         groupMemberId,
+        inviterDeviceId,
         deviceId: ctx.userId,
+        invitedOn: Date.now() / 1000,
       });
       await updateUserGroupIdsCache(ctx.userId!, groupId);
     }
@@ -144,7 +150,7 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
       {users: [inviterDeviceId]});
 
     //Inform the invitee:
-    const groups = await loadGroups(new Set(groupId));
+    const groups = await loadGroups(new Set([groupId]));
     await ctx.sendBack<GroupMembersInvitationAccepted>({
       token,
       groupId,

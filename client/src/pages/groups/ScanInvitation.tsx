@@ -8,8 +8,8 @@ export default function ScanInvitation(): ReactElement {
   const [error, setError] = useState<Error | null>(null);
   const acceptInvitation = useAcceptInvitation();
 
-  const onScan = useCallback((data: string | null) => {
-    if (data && acceptInvitation(data)) {
+  const onScan = useCallback(async (data: string | null) => {
+    if (data && await acceptInvitation(data)) {
       setShow(false);
     }
   }, [acceptInvitation]);

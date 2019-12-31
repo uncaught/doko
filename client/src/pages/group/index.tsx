@@ -9,12 +9,16 @@ import {Divider} from 'semantic-ui-react';
 import AddMember from './AddMember';
 import {useLoadGroupMembers} from '../../Store/GroupMembers';
 import {useLoadRounds} from '../../Store/Rounds';
+import Settings from './Settings';
 
 export default function (): ReactElement {
   useLoadGroupMembers();
   useLoadRounds();
   const {url} = useRouteMatch();
   return <Switch>
+    <Page path={`${url}/settings`} displayName={'Einstellungen'}>
+      <Settings/>
+    </Page>
     <Page path={`${url}/rounds`} displayName={'Runden'}>
       <Rounds/>
     </Page>

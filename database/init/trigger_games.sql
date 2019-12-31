@@ -15,7 +15,8 @@ CREATE TRIGGER games_after_insert AFTER INSERT ON `games`
    id,
    round_id,
    game_number,
-   type)
+   dealer_group_member_id,
+   data)
   VALUES
   (@__currentDeviceId,
    now(),
@@ -23,7 +24,8 @@ CREATE TRIGGER games_after_insert AFTER INSERT ON `games`
    NEW.id,
    NEW.round_id,
    NEW.game_number,
-   NEW.type);
+   NEW.dealer_group_member_id,
+   NEW.data);
 END $$
 
 CREATE TRIGGER games_after_update AFTER UPDATE ON `games`
@@ -41,7 +43,8 @@ thisTrigger: BEGIN
    id,
    round_id,
    game_number,
-   type)
+   dealer_group_member_id,
+   data)
   VALUES
   (@__currentDeviceId,
    now(),
@@ -49,7 +52,8 @@ thisTrigger: BEGIN
    NEW.id,
    NEW.round_id,
    NEW.game_number,
-   NEW.type);
+   NEW.dealer_group_member_id,
+   NEW.data);
 END $$
 
 CREATE TRIGGER games_before_delete BEFORE DELETE ON `games`
@@ -67,7 +71,8 @@ thisTrigger: BEGIN
    id,
    round_id,
    game_number,
-   type)
+   dealer_group_member_id,
+   data)
   VALUES
   (@__currentDeviceId,
    now(),
@@ -75,7 +80,8 @@ thisTrigger: BEGIN
    OLD.id,
    OLD.round_id,
    OLD.game_number,
-   OLD.type);
+   OLD.dealer_group_member_id,
+   OLD.data);
 END $$
 
 DELIMITER ;
