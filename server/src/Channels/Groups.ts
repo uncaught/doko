@@ -1,5 +1,5 @@
 import server from '../Server';
-import {Group, GroupsAdd, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
+import {Group, GroupsAdd, GroupsAdded, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
 import {getTransactional, query, updateEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {canEditGroup, getUserGroupIds, updateUserGroupIdsCache} from '../Auth';
@@ -58,6 +58,7 @@ server.type<GroupsAdd>('groups/add', {
       });
     });
     await updateUserGroupIdsCache(ctx.userId!, action.group.id);
+    await ctx.sendBack<GroupsAdded>({groupId: action.group.id, type: 'groups/added'});
   },
 });
 

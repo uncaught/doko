@@ -3,6 +3,7 @@ import {GroupMember} from './GroupMembers';
 export interface Group {
   id: string;
   name: string;
+  isNew?: true;
   lastRoundUnix?: number;
   roundsCount?: number;
 }
@@ -24,6 +25,11 @@ export interface GroupsAdd {
   type: 'groups/add';
   group: Group;
   groupMember: GroupMember; //self, initial member
+}
+
+export interface GroupsAdded {
+  type: 'groups/added';
+  groupId: string;
 }
 
 export interface GroupsPatch {

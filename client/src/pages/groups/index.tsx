@@ -8,12 +8,12 @@ import Page from '../../Page';
 import Group from '../group';
 
 export default function (): ReactElement {
-  const match = useRouteMatch();
+  const {url} = useRouteMatch();
   return <Switch>
-    <Page path={`${match.url}/group/:groupId`} displayName={'Gruppe'}>
+    <Page path={`${url}/group/:groupId`} displayName={'Gruppe'}>
       <Group/>
     </Page>
-    <Page path={`${match.url}`}>
+    <Page path={`${url}`}>
       <MyGroups/>
       <Divider section/>
       <AddGroup/>

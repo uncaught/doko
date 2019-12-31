@@ -5,7 +5,7 @@ import {
   GroupMembersInvitationAccepted,
   Groups,
   GroupsAdd,
-  GroupsLoad,
+  GroupsAdded,
   GroupsLoaded,
   GroupsPatch,
   mergeStates,
@@ -14,7 +14,6 @@ import {
 import {arrayToList, createReducer} from 'src/Store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
-import useSubscription from '@logux/redux/use-subscription';
 import {useFullParams} from '../Page';
 import {LoguxDispatch} from './Logux';
 import {useHistory} from 'react-router-dom';
@@ -27,6 +26,15 @@ addReducer<GroupsAdd>('groups/add', (state, action) => ({
   ...state,
   [action.group.id]: action.group,
 }));
+
+addReducer<GroupsAdded>('groups/added', (state, {groupId}) => {
+  if (state[groupId]) {
+    const newState = {...state, [groupId]: {...state[groupId]}};
+    delete newState[groupId].isNew;
+    return newState;
+  }
+  return state;
+});
 
 addReducer<GroupsPatch>('groups/patch', (state, action) => {
   if (state[action.id]) {
@@ -59,11 +67,13 @@ export function useAddGroup() {
       group: {
         id: groupId,
         name: groupName,
+        isNew: true,
       },
       groupMember: {
         id: generateUuid(),
         groupId: groupId,
         name: 'Me',
+        isYou: true,
       },
       type: 'groups/add',
     });
@@ -73,8 +83,7 @@ export function useAddGroup() {
 
 export function useGroup(): Group | void {
   const {groupId} = useFullParams<{ groupId: string }>();
-  useSubscription<GroupsLoad>(['groups/load']);
-  const groups = useSelector(groupsSelector) || {};
+  const groups = useSelector(groupsSelector);
   return groups[groupId];
 }
 
@@ -96,7 +105,6 @@ export function usePatchGroup() {
 }
 
 export function useSortedGroups(): Group[] {
-  useSubscription<GroupsLoad>(['groups/load']);
   const groups = useSelector(groupsSelector);
   return useMemo(() => Object.values(groups).sort((a, b) => a.name.localeCompare(b.name)), [groups]);
 }

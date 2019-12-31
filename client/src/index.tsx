@@ -20,9 +20,11 @@ import log from '@logux/client/log';
 import {storeReducer} from 'src/Store/Store';
 import {getAuth} from './Auth';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',
-  server: process.env.NODE_ENV === 'development'
+  server: isDev
     ? window.location.protocol === 'https:'
       ? `wss://${window.location.hostname}/api`
       : `ws://${window.location.hostname}:3030`
@@ -30,7 +32,10 @@ const createStore = createLoguxCreator({
   // store: new IndexedStore(),
   ...getAuth(),
 });
-const store = createStore(storeReducer);
+
+// @ts-ignore
+const enhancer = isDev && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({name: 'Doko'});
+const store = createStore(storeReducer, enhancer);
 badge(store.client, {messages: badgeMessages, styles: badgeStyles});
 log(store.client);
 store.client.start();

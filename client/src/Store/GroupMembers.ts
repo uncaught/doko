@@ -23,6 +23,7 @@ import {useHistory} from 'react-router-dom';
 import {useFullParams} from '../Page';
 import {acceptedInvitationsSelector} from './Ui';
 import {LoguxDispatch} from './Logux';
+import {groupsSelector} from './Groups';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
@@ -64,6 +65,13 @@ addReducer<GroupMembersPatch>('groupMembers/patch', (state, action) => {
 export const groupMembersReducer = combinedReducer;
 
 export const groupMembersSelector = (state: State) => state.groupMembers;
+
+export function useLoadGroupMembers() {
+  const {groupId} = useFullParams<{ groupId: string }>();
+  const group = useSelector(groupsSelector)[groupId];
+  //Only subscribe if the group is not new (otherwise the server will respond with `Access denied`:
+  useSubscription<GroupMembersLoad>(group && !group.isNew ? [{channel: 'groupMembers/load', groupId}] : []);
+}
 
 export function useAddGroupMember() {
   const {groupId} = useFullParams<{ groupId: string }>();
@@ -110,7 +118,6 @@ export function useAcceptInvitation() {
 
 export function useGroupMember(): GroupMember | void {
   const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
-  useSubscription<GroupMembersLoad>([{channel: 'groupMembers/load', groupId}]);
   const groupMembers = useSelector(groupMembersSelector)[groupId] || {};
   return groupMembers[groupMemberId];
 }
@@ -135,8 +142,6 @@ export function usePatchGroupMember() {
 
 export function useSortedGroupMembers(): GroupMember[] {
   const {groupId} = useFullParams<{ groupId: string }>();
-  useSubscription<GroupMembersLoad>([{channel: 'groupMembers/load', groupId}]);
-  const groupMembers = useSelector(groupMembersSelector)[groupId];
-  return useMemo(() => groupMembers ? Object.values(groupMembers).sort((a, b) => a.name.localeCompare(b.name)) : [],
-    [groupMembers]);
+  const members = useSelector(groupMembersSelector)[groupId];
+  return useMemo(() => members ? Object.values(members).sort((a, b) => a.name.localeCompare(b.name)) : [], [members]);
 }

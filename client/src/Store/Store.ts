@@ -17,6 +17,4 @@ export const storeReducer = combineReducers<State>({
   groupMembers,
   rounds,
   ui,
-  // @ts-ignore
-  x: (_, action) => {console.log('action', action); return null;},
 });

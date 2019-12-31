@@ -17,6 +17,7 @@ import useSubscription from '@logux/redux/use-subscription';
 import {useFullParams} from '../Page';
 import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
+import {groupsSelector} from './Groups';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -52,6 +53,13 @@ export const roundsReducer = combinedReducer;
 
 export const roundsSelector = (state: State) => state.rounds;
 
+export function useLoadRounds() {
+  const {groupId} = useFullParams<{ groupId: string }>();
+  const group = useSelector(groupsSelector)[groupId];
+  //Only subscribe if the group is not new (otherwise the server will respond with `Access denied`:
+  useSubscription<RoundsLoad>(group && !group.isNew ? [{channel: 'rounds/load', groupId}] : []);
+}
+
 export function useAddRound() {
   const {groupId} = useFullParams<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
@@ -66,7 +74,6 @@ export function useAddRound() {
 
 export function useRound(): Round | void {
   const {groupId, roundId} = useFullParams<{ groupId: string; roundId: string }>();
-  useSubscription<RoundsLoad>([{channel: 'rounds/load', groupId}]);
   const rounds = useSelector(roundsSelector)[groupId] || {};
   return rounds[roundId];
 }
@@ -91,7 +98,6 @@ export function usePatchRound() {
 
 export function useSortedRounds(): Round[] {
   const {groupId} = useFullParams<{ groupId: string }>();
-  useSubscription<RoundsLoad>([{channel: 'rounds/load', groupId}]);
   const rounds = useSelector(roundsSelector)[groupId];
   return useMemo(() => rounds ? Object.values(rounds).sort((a, b) => b.startDate - a.startDate) : [], [rounds]);
 }

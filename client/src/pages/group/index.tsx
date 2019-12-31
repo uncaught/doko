@@ -7,23 +7,27 @@ import Rounds from './Rounds';
 import Members from './Members';
 import {Divider} from 'semantic-ui-react';
 import AddMember from './AddMember';
+import {useLoadGroupMembers} from '../../Store/GroupMembers';
+import {useLoadRounds} from '../../Store/Rounds';
 
 export default function (): ReactElement {
-  const match = useRouteMatch();
+  useLoadGroupMembers();
+  useLoadRounds();
+  const {url} = useRouteMatch();
   return <Switch>
-    <Page path={`${match.url}/rounds`} displayName={'Runden'}>
+    <Page path={`${url}/rounds`} displayName={'Runden'}>
       <Rounds/>
     </Page>
-    <Page path={`${match.url}/member/:groupMemberId`} displayName={'Mitglied'}>
+    <Page path={`${url}/member/:groupMemberId`} displayName={'Mitglied'}>
       <Member/>
     </Page>
-    <Page path={`${match.url}/addMembers`} displayName={'Mitglieder'}>
+    <Page path={`${url}/addMembers`} displayName={'Mitglieder'}>
       <Members/>
       <Divider section/>
       <AddMember/>
     </Page>
-    <Page path={`${match.url}`}
-          menuItems={[{icon: 'user plus', route: `${match.url}/addMembers`, title: 'Mitglieder hinzufügen'}]}>
+    <Page path={`${url}`}
+          menuItems={[{icon: 'user plus', route: `${url}/addMembers`, title: 'Mitglieder hinzufügen'}]}>
       <Group/>
     </Page>
   </Switch>;
