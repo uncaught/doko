@@ -18,7 +18,7 @@ import {useCallback, useMemo} from 'react';
 import {useFullParams} from '../Page';
 import {LoguxDispatch} from './Logux';
 import {useHistory} from 'react-router-dom';
-import {defaultGroupSettings} from '@doko/common/src/Entities/Doko';
+import {defaultGroupSettings} from '@doko/common/src/Entities/GroupSettings';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 

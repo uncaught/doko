@@ -1,27 +1,29 @@
 import React, {ReactElement} from 'react';
-import {Dropdown, Header} from 'semantic-ui-react';
-import {useGroup, usePatchGroup} from '../../Store/Groups';
-import {soloOptions, SoloType} from '@doko/common';
+import {Divider, Form, Header} from 'semantic-ui-react';
+import Name from './settings/Name';
+import AllowedSoloTypes from './settings/AllowedSoloTypes';
+import CheckboxGroup from './settings/CheckboxGroup';
+import {bockGamesTranslations, bockInBockBehaviorOptions, extraPointsTranslations} from '@doko/common';
+import RadioGroup from './settings/RadioGroup';
+import BockEffect from './settings/BockEffect';
 
 export default function Settings(): ReactElement | null {
-  const group = useGroup();
-  const patch = usePatchGroup();
-
-  if (!group) {
-    return null;
-  }
-
   return <section>
-    <Header as='h4'>Einstellungen / Regeln</Header>
+    <Form>
+      <Name/>
+      <AllowedSoloTypes/>
+      <CheckboxGroup label={'Zusatzpunkte bei ...'} options={extraPointsTranslations} parentKey={'extraPoints'}/>
 
-    <Header as='h6'>Erlaubte Soli</Header>
-    <Dropdown placeholder='Erlaubte Soli'
-              fluid
-              multiple
-              selection
-              onChange={(e, {value}) => patch({settings: {allowedSoloTypes: value as SoloType[]}})}
-              options={soloOptions}
-              value={group.settings.allowedSoloTypes}/>
+      <Divider section/>
 
+      <section>
+        <Header as='h4'>Bock</Header>
+        <CheckboxGroup label={'Bockspiele nach ...'} options={bockGamesTranslations} parentKey={'bockGames'}/>
+        <RadioGroup label={'Bei Bock im Bock ...'}
+                    options={bockInBockBehaviorOptions}
+                    parentKey={'bockInBockBehavior'}/>
+        <BockEffect/>
+      </section>
+    </Form>
   </section>;
 }

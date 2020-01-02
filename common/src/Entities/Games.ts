@@ -1,5 +1,5 @@
-import {GameData} from './Doko';
 import {DeepPartial} from '../Generics';
+import {GameData} from './GameData';
 
 export interface Game {
   id: string;

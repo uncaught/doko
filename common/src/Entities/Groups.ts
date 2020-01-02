@@ -1,5 +1,5 @@
 import {GroupMember} from './GroupMembers';
-import {GroupSettings} from './Doko';
+import {GroupSettings} from './GroupSettings';
 import {DeepPartial} from '../Generics';
 
 export interface Group {
