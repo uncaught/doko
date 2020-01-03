@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
     volumes:
       - ./database/init:/docker-entrypoint-initdb.d:ro
-      - ./database/lib:/var/lib/mysql:rw
+      - dblib:/var/lib/mysql:rw
     command:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
@@ -53,3 +53,6 @@ services:
       - "start"
     ports:
       - "3333:3000"
+
+volumes:
+  dblib:
