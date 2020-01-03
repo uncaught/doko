@@ -1,6 +1,6 @@
 import server from '../Server';
 import {Group, GroupsAdd, GroupsAdded, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
-import {getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
+import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {canEditGroup, getUserGroupIds, updateUserGroupIdsCache} from '../Auth';
 import {groupMemberDevicesDbConfig, groupMembersDbConfig, groupsDbConfig} from '../DbTypes';
@@ -16,14 +16,7 @@ export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
                               LEFT JOIN rounds r ON r.group_id = g.id 
                                   WHERE g.id IN (${ary})
                                GROUP BY g.id`, [...groupIds]);
-    groups.forEach((group) => {
-      Object.entries(group).forEach(([key, value]) => {
-        if (groupsDbConfig.types[key as keyof Group] === 'json') {
-          // @ts-ignore
-          group[key] = value === null ? null : JSON.parse(value);
-        }
-      });
-    });
+    fromDbValue(groups, groupsDbConfig.types);
   }
   return groups;
 }

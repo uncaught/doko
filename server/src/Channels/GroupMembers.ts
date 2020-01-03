@@ -1,5 +1,5 @@
 import server from '../Server';
-import {insertSingleEntity, query, updateSingleEntity} from '../Connection';
+import {fromDbValue, insertSingleEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
   GroupMember,
@@ -14,12 +14,26 @@ import {
   GroupMembersPatch,
 } from '@doko/common';
 import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
-import {loadGroups} from './Groups';
 import {groupMemberDevicesDbConfig, groupMembersDbConfig} from '../DbTypes';
+import {loadGroups} from './Groups';
 
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
   return result.length ? result[0].groupId : null;
+}
+
+export async function loadGroupMembers(deviceId: string, groupId: string): Promise<GroupMember[]> {
+  const groupMembers = await query<GroupMember>(`SELECT gm.id, 
+                                                     gm.name, 
+                                                     gm.group_id as groupId, 
+                                                     gm.is_regular as isRegular, 
+                                                     IF(gmd.device_id IS NULL, 0, 1) as isYou
+                                                FROM group_members gm
+                                           LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
+                                                 AND gmd.device_id = ?
+                                               WHERE gm.group_id = ?`, [deviceId, groupId]);
+  fromDbValue(groupMembers, groupMembersDbConfig.types);
+  return groupMembers;
 }
 
 server.channel<GroupMembersLoad>('groupMembers/load', {
@@ -30,12 +44,7 @@ server.channel<GroupMembersLoad>('groupMembers/load', {
     await ctx.sendBack<GroupMembersLoaded>({
       groupId,
       type: 'groupMembers/loaded',
-      groupMembers: await query<GroupMember>(`SELECT gm.id, gm.name, gm.group_id as groupId, 
-                                                     IF(gmd.device_id IS NULL, 0, 1) as isYou
-                                                FROM group_members gm
-                                           LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
-                                                 AND gmd.device_id = ?
-                                               WHERE gm.group_id = ?`, [ctx.userId!, groupId]),
+      groupMembers: await loadGroupMembers(ctx.userId!, groupId),
     });
   },
   async filter(ctx, {groupId: subGroupId}) {

@@ -41,7 +41,9 @@
   margin-bottom: 0.25rem;
 }
 
-.group-members .ui.label > .close.icon, .ui.label > .icon {
+.item .ui.label > .icon,
+.memberDetail .ui.label > .icon,
+.memberDetail .ui.label > .detail > .icon {
   margin-right: 0;
   margin-left: .5em;
 }

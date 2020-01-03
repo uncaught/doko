@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
  */
 export function asLink(
   route: string,
-  {className, onClick}: { className?: string; onClick?: () => void } = {},
-): React.FC {
-  return ({children}) => <Link className={className} onClick={onClick} to={route}>{children}</Link>;
+  {onClick}: { onClick?: () => void } = {},
+): React.FC<{ className?: string }> {
+  return ({children, className}) => <Link className={className} onClick={onClick} to={route}>{children}</Link>;
 }

@@ -70,6 +70,23 @@ function prepareId<O extends AnyObject>(
   }).join(' AND ');
 }
 
+export function fromDbValue<O extends AnyObject>(entities: O[], types: DatabaseTypes<O>): void {
+  entities.forEach((entity) => {
+    Object.entries(entity).forEach(([key, value]) => {
+      switch (types[key as keyof O]) {
+        case 'json':
+          entity[key as keyof O] = value === null ? null : JSON.parse(value);
+          break;
+        case 'bool':
+          entity[key as keyof O] = (value === null ? null : entity[key] == '1') as O[keyof O];
+          break;
+        default:
+        //nothing
+      }
+    });
+  });
+}
+
 async function getToDbTransformer<O extends AnyObject>(
   upsertData: DeepPartial<O>,
   types: DatabaseTypes<O> = {},
@@ -90,6 +107,8 @@ async function getToDbTransformer<O extends AnyObject>(
         return JSON.stringify(mergeStates(oldJson, newValue));
       case 'unix':
         return dayjs.unix(newValue).format('YYYY-MM-DD HH:mm:ss');
+      case 'bool':
+        return newValue ? 1 : 0;
       default:
         const type = typeof newValue;
         if (type !== 'string' && type !== 'number') {

@@ -1,18 +1,13 @@
 import React, {ReactElement} from 'react';
 import {Header, Label, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
-import {useFullParams} from '../../Page';
 import {useSortedRounds} from '../../Store/Rounds';
 import dayjs from 'dayjs';
-import {Link} from 'react-router-dom';
+import {useRouteMatch} from 'react-router-dom';
 
-export default function Rounds({limit}: { limit?: number }): ReactElement {
-  const {groupId} = useFullParams<{ groupId: string }>();
+export default function Rounds(): ReactElement {
   let rounds = useSortedRounds();
-
-  if (limit) {
-    rounds = rounds.slice(0, limit);
-  }
+  const {url} = useRouteMatch();
 
   return <section>
     <Header as='h4'>Runden</Header>
@@ -21,9 +16,9 @@ export default function Rounds({limit}: { limit?: number }): ReactElement {
       <List divided relaxed>
         {rounds.map(({id, startDate}) =>
           <List.Item key={id}>
-            <List.Icon name='paw' verticalAlign='middle'/>
+            <List.Icon name='bullseye' verticalAlign='middle'/>
             <List.Content>
-              <List.Header as={asLink(`/groups/group/${groupId}/round/${id}`, {className: 'header'})}>
+              <List.Header as={asLink(`${url}/round/${id}`)}>
                 {dayjs.unix(startDate).format('DD.MM.YYYY')}
               </List.Header>
               <List.Description>
@@ -36,8 +31,6 @@ export default function Rounds({limit}: { limit?: number }): ReactElement {
           </List.Item>)}
       </List>
     </div>}
-
-    {!!limit && <Link to={`/groups/group/${groupId}/rounds`}>alle Runden</Link>}
 
   </section>;
 }

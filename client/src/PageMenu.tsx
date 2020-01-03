@@ -11,7 +11,7 @@ export interface PageMenuItemConfig {
 
 export default function PageMenu({closeMenu, menuItems}: { closeMenu: () => void; menuItems?: PageMenuItemConfig[] }): ReactElement | null {
   const Item = useCallback(({children, route}: { children: React.ReactNode; route: string }) => {
-    return <Menu.Item as={asLink(route, {className: 'item', onClick: closeMenu})}>{children}</Menu.Item>;
+    return <Menu.Item as={asLink(route, {onClick: closeMenu})}>{children}</Menu.Item>;
   }, [closeMenu]);
   return <>
     <Item route={'/'}>

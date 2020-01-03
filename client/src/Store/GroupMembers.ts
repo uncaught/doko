@@ -81,7 +81,7 @@ export function useAddGroupMember() {
     if (!name) {
       throw new Error('Invalid name');
     }
-    const groupMember: GroupMember = {groupId, name, id: generateUuid()};
+    const groupMember: GroupMember = {groupId, name, id: generateUuid(), isRegular: true};
     dispatch.sync<GroupMembersAdd>({groupMember, type: 'groupMembers/add'});
   }, [dispatch, groupId]);
 }

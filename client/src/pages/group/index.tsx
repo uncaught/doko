@@ -3,7 +3,7 @@ import {Switch, useRouteMatch} from 'react-router-dom';
 import Member from '../member/Member';
 import Group from './Group';
 import Page from '../../Page';
-import Rounds from './Rounds';
+import Rounds from '../rounds';
 import Members from './Members';
 import {Divider} from 'semantic-ui-react';
 import AddMember from './AddMember';

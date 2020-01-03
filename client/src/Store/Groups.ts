@@ -76,6 +76,7 @@ export function useAddGroup() {
         id: generateUuid(),
         groupId: groupId,
         name: 'Me',
+        isRegular: true,
         isYou: true,
       },
       type: 'groups/add',

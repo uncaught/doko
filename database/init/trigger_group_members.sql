@@ -14,14 +14,16 @@ CREATE TRIGGER group_members_after_insert AFTER INSERT ON `group_members`
    revision_type,
    id,
    group_id,
-   name)
+   name,
+   is_regular)
   VALUES
   (@__currentDeviceId,
    now(),
    'insert',
    NEW.id,
    NEW.group_id,
-   NEW.name);
+   NEW.name,
+   NEW.is_regular);
 END $$
 
 CREATE TRIGGER group_members_after_update AFTER UPDATE ON `group_members`
@@ -38,14 +40,16 @@ thisTrigger: BEGIN
    revision_type,
    id,
    group_id,
-   name)
+   name,
+   is_regular)
   VALUES
   (@__currentDeviceId,
    now(),
    'update',
    NEW.id,
    NEW.group_id,
-   NEW.name);
+   NEW.name,
+   NEW.is_regular);
 END $$
 
 CREATE TRIGGER group_members_before_delete BEFORE DELETE ON `group_members`
@@ -62,14 +66,16 @@ thisTrigger: BEGIN
    revision_type,
    id,
    group_id,
-   name)
+   name,
+   is_regular)
   VALUES
   (@__currentDeviceId,
    now(),
    'delete',
    OLD.id,
    OLD.group_id,
-   OLD.name);
+   OLD.name,
+   OLD.is_regular);
 END $$
 
 DELIMITER ;

@@ -29,6 +29,7 @@ CREATE TABLE group_members (
   id CHAR(36) NOT NULL,
   group_id CHAR(36) NOT NULL,
   name VARCHAR(191),
+  is_regular TINYINT(1),
   INDEX IDX_GROUP_MEMBERS_GROUP (group_id),
   PRIMARY KEY(id)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
@@ -38,6 +39,7 @@ CREATE TABLE history_group_members (
   id CHAR(36) NOT NULL,
   group_id CHAR(36) NOT NULL,
   name VARCHAR(191),
+  is_regular TINYINT(1),
   revision INT AUTO_INCREMENT NOT NULL,
   revision_device_id CHAR(36) NOT NULL,
   revision_on DATETIME NOT NULL,

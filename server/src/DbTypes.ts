@@ -10,7 +10,7 @@ type Table =
   | 'games';
 
 export type DatabaseTypes<O extends AnyObject> = {
-  [k in keyof O]?: 'unix' | 'json';
+  [k in keyof O]?: 'unix' | 'json' | 'bool';
 };
 
 export interface DbConfig<O extends AnyObject> {
@@ -31,9 +31,12 @@ export const groupsDbConfig: DbConfig<Group> = {
 
 export const groupMembersDbConfig: DbConfig<GroupMember> = {
   table: 'group_members',
-  types: {},
-  insertFields: ['id', 'groupId', 'name'],
-  updateFields: ['name'],
+  types: {
+    isRegular: 'bool',
+    isYou: 'bool',
+  },
+  insertFields: ['id', 'groupId', 'name', 'isRegular'],
+  updateFields: ['name', 'isRegular'],
 };
 
 export const groupMemberDevicesDbConfig: DbConfig<{

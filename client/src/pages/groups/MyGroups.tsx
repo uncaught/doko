@@ -14,7 +14,7 @@ export default function MyGroups(): ReactElement {
         {groups.map(({id, name, lastRoundUnix}) => <List.Item key={id}>
           <List.Icon name='group' verticalAlign='middle'/>
           <List.Content>
-            <List.Header as={asLink(`/groups/group/${id}`, {className: 'header'})}>{name}</List.Header>
+            <List.Header as={asLink(`/groups/group/${id}`)}>{name}</List.Header>
             <List.Description>
               {!lastRoundUnix && `Noch keine Runde aufgezeichnet`}
               {!!lastRoundUnix && `Letzte Runde am ${dayjs.unix(lastRoundUnix).format('DD.MM.YYYY')}`}

@@ -5,6 +5,7 @@ export interface GroupMember {
   id: string;
   groupId: string;
   name: string;
+  isRegular: boolean;
   isYou?: boolean;
   roundsCount?: number;
   pointBalance?: number;

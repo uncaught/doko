@@ -19,6 +19,7 @@ import {useFullParams} from '../Page';
 import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
+import {useHistory} from 'react-router-dom';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -64,13 +65,13 @@ export function useLoadRounds() {
 export function useAddRound() {
   const {groupId} = useFullParams<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((name: string) => {
-    if (!name) {
-      throw new Error('Invalid name');
-    }
-    const round: Round = {groupId, startDate: dayjs().unix(), endDate: null, id: generateUuid()};
-    return dispatch.sync<RoundsAdd>({round, type: 'rounds/add'});
-  }, [dispatch, groupId]);
+  const history = useHistory();
+  return useCallback(() => {
+    const roundId = generateUuid();
+    const round: Round = {groupId, startDate: dayjs().unix(), endDate: null, id: roundId};
+    dispatch.sync<RoundsAdd>({round, type: 'rounds/add'});
+    history.push(`/groups/group/${groupId}/rounds/round/${roundId}`);
+  }, [dispatch, groupId, history]);
 }
 
 export function useRound(): Round | void {

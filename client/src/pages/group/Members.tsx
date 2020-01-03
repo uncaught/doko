@@ -19,8 +19,7 @@ export default function Members(): ReactElement {
           <List.Item key={id}>
             <List.Icon name='user' verticalAlign='middle'/>
             <List.Content>
-              <List.Header as={asLink(`/groups/group/${groupId}/member/${id}`,
-                {className: 'header'})}>{name}</List.Header>
+              <List.Header as={asLink(`/groups/group/${groupId}/member/${id}`)}>{name}</List.Header>
               <List.Description>
                 <Label size={'small'} color={pointBalance >= 0 ? 'green' : 'red'}>
                   {pointBalance} <Icon name='sort'/>
