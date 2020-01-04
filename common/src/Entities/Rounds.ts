@@ -1,4 +1,5 @@
 import {DeepPartial} from '../Generics';
+import {Player} from './Players';
 
 export interface Round {
   id: string;
@@ -27,6 +28,7 @@ export interface RoundsLoaded {
 export interface RoundsAdd {
   type: 'rounds/add';
   round: Round;
+  players: Player[];
 }
 
 export interface RoundsPatch {

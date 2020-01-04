@@ -103,10 +103,14 @@
   display: block;
 }
 
-.myGroups-groups .description {
+.u-font-smaller {
   font-size: .85em;
 }
 
 .ui.inverted.dimmer {
   background-color: white;
+}
+
+.icon.listDragHandle {
+  margin-top: 11px;
 }

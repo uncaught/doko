@@ -4,7 +4,9 @@ import {
   generateUuid,
   mergeStates,
   objectContains,
+  Player,
   Round,
+  RoundDetailsLoad,
   Rounds,
   RoundsAdd,
   RoundsLoad,
@@ -20,6 +22,7 @@ import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
 import {useHistory} from 'react-router-dom';
+import {useSortedGroupMembers} from './GroupMembers';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -62,16 +65,36 @@ export function useLoadRounds() {
   useSubscription<RoundsLoad>(group && !group.isNew ? [{channel: 'rounds/load', groupId}] : []);
 }
 
+export function useLoadRoundDetails() {
+  const {roundId} = useFullParams<{ roundId: string }>();
+  useSubscription<RoundDetailsLoad>([{channel: 'roundDetails/load', roundId}]);
+}
+
 export function useAddRound() {
   const {groupId} = useFullParams<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
+  const members = useSortedGroupMembers();
   const history = useHistory();
   return useCallback(() => {
     const roundId = generateUuid();
     const round: Round = {groupId, startDate: dayjs().unix(), endDate: null, id: roundId};
-    dispatch.sync<RoundsAdd>({round, type: 'rounds/add'});
-    history.push(`/groups/group/${groupId}/rounds/round/${roundId}`);
-  }, [dispatch, groupId, history]);
+    const players = members.reduce<Player[]>((acc, {id, isRegular}, idx) => {
+      acc.push({
+        roundId,
+        groupMemberId: id,
+        sittingOrder: idx + 1,
+        joinedAfterGameNumber: 0,
+        leftAfterGameNumber: isRegular ? null : 0,
+      });
+      return acc;
+    }, []);
+    dispatch.sync<RoundsAdd>({
+      round,
+      players,
+      type: 'rounds/add',
+    });
+    history.push(`/groups/group/${groupId}/rounds/round/${roundId}/players`);
+  }, [dispatch, groupId, history, members]);
 }
 
 export function useRound(): Round | void {

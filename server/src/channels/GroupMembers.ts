@@ -17,6 +17,12 @@ import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
 import {groupMemberDevicesDbConfig, groupMembersDbConfig} from '../DbTypes';
 import {loadGroups} from './Groups';
 
+export async function memberIdsBelongToGroup(groupId: string, memberIds: string[]): Promise<boolean> {
+  const rows = await query<{ id: string }>(`SELECT id FROM group_members WHERE group_id = ?`, [groupId]);
+  const gmIds = rows.reduce((set, {id}) => set.add(id), new Set());
+  return memberIds.every((id) => gmIds.has(id));
+}
+
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
   return result.length ? result[0].groupId : null;
@@ -24,14 +30,14 @@ async function getGroupForMember(id: string): Promise<string | null> {
 
 export async function loadGroupMembers(deviceId: string, groupId: string): Promise<GroupMember[]> {
   const groupMembers = await query<GroupMember>(`SELECT gm.id, 
-                                                     gm.name, 
-                                                     gm.group_id as groupId, 
-                                                     gm.is_regular as isRegular, 
-                                                     IF(gmd.device_id IS NULL, 0, 1) as isYou
-                                                FROM group_members gm
-                                           LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
-                                                 AND gmd.device_id = ?
-                                               WHERE gm.group_id = ?`, [deviceId, groupId]);
+                                                        gm.name, 
+                                                        gm.group_id as groupId, 
+                                                        gm.is_regular as isRegular, 
+                                                        IF(gmd.device_id IS NULL, 0, 1) as isYou
+                                                   FROM group_members gm
+                                              LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
+                                                    AND gmd.device_id = ?
+                                                  WHERE gm.group_id = ?`, [deviceId, groupId]);
   fromDbValue(groupMembers, groupMembersDbConfig.types);
   return groupMembers;
 }

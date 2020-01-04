@@ -144,5 +144,8 @@ export function usePatchGroupMember() {
 export function useSortedGroupMembers(): GroupMember[] {
   const {groupId} = useFullParams<{ groupId: string }>();
   const members = useSelector(groupMembersSelector)[groupId];
-  return useMemo(() => members ? Object.values(members).sort((a, b) => a.name.localeCompare(b.name)) : [], [members]);
+  return useMemo(() => members ? Object.values(members).sort((a, b) => {
+    const comp = a.name.localeCompare(b.name);
+    return comp === 0 ? (+b.isRegular - +a.isRegular) : comp;
+  }) : [], [members]);
 }

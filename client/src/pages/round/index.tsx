@@ -1,17 +1,19 @@
 import React, {ReactElement} from 'react';
 import {Switch, useRouteMatch} from 'react-router-dom';
 import Page from '../../Page';
-import Round from '../round';
-import Rounds from './Rounds';
+import Players from './Players';
+import {useLoadRoundDetails} from '../../store/Rounds';
+import Round from './Round';
 
 export default function (): ReactElement {
+  useLoadRoundDetails();
   const {url} = useRouteMatch();
   return <Switch>
-    <Page path={`${url}/round/:roundId`} displayName={'Runde'}>
-      <Round/>
+    <Page path={`${url}/players`} displayName={'Mitspieler'}>
+      <Players/>
     </Page>
     <Page path={`${url}`}>
-      <Rounds/>
+      <Round/>
     </Page>
   </Switch>;
 }

@@ -3,27 +3,18 @@ import {GameData} from './GameData';
 
 export interface Game {
   id: string;
-  gameId: string;
+  roundId: string;
   gameNumber: number;
   dealerGroupMemberId: string;
   data: GameData;
 }
 
+export interface RoundGames {
+  [id: string]: Game;
+}
+
 export interface Games {
-  [roundId: string]: {
-    [id: string]: Game;
-  };
-}
-
-export interface GamesLoad {
-  channel: 'games/load';
-  roundId: string;
-}
-
-export interface GamesLoaded {
-  type: 'games/loaded';
-  roundId: string;
-  games: Game[];
+  [roundId: string]: RoundGames;
 }
 
 export interface GamesAdd {

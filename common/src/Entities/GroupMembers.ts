@@ -12,10 +12,12 @@ export interface GroupMember {
   euroBalance?: number;
 }
 
+export interface GroupGroupMembers {
+  [id: string]: GroupMember;
+}
+
 export interface GroupMembers {
-  [groupId: string]: {
-    [id: string]: GroupMember;
-  };
+  [groupId: string]: GroupGroupMembers;
 }
 
 export interface GroupMembersLoad {

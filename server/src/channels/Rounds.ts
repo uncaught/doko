@@ -1,12 +1,13 @@
 import server from '../Server';
-import {insertSingleEntity, query, updateSingleEntity} from '../Connection';
+import {getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
-import {roundsDbConfig} from '../DbTypes';
+import {playersDbConfig, roundsDbConfig} from '../DbTypes';
+import {memberIdsBelongToGroup} from './GroupMembers';
 
-async function getGroupForRound(id: string): Promise<string | null> {
-  const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
+export async function getGroupForRound(roundId: string): Promise<string | null> {
+  const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM rounds WHERE id = ?`, [roundId]);
   return result.length ? result[0].groupId : null;
 }
 
@@ -34,14 +35,21 @@ server.channel<RoundsLoad>('rounds/load', {
 });
 
 server.type<RoundsAdd>('rounds/add', {
-  access(ctx, {round: {groupId}}) {
+  access(ctx, {round: {id, groupId}, players}) {
+    const memberIds = players.map((p) => p.groupMemberId);
+    if (!players.every((player) => player.roundId === id) || !memberIdsBelongToGroup(groupId, memberIds)) {
+      return false;
+    }
     return canEditGroup(ctx.userId!, groupId);
   },
   resend() {
     return {channel: 'rounds/load'};
   },
   async process(ctx, action) {
-    await insertSingleEntity<Round>(ctx.userId!, roundsDbConfig, action.round);
+    await getTransactional(ctx.userId!, async (update) => {
+      await insertEntity(update, roundsDbConfig, action.round);
+      await Promise.all(action.players.map((player) => insertEntity(update, playersDbConfig, player)));
+    });
   },
 });
 
