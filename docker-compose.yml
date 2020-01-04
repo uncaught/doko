@@ -8,7 +8,7 @@ services:
       - MYSQL_DATABASE=doko
       - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
     volumes:
-      - ./database/init:/docker-entrypoint-initdb.d:ro
+      - ./server/src/database/schema:/docker-entrypoint-initdb.d:ro
       - dblib:/var/lib/mysql:rw
     command:
       - "--character-set-server=utf8mb4"

@@ -1,7 +1,20 @@
 ### Dev
 - Have docker and docker-compose installed 
-- Get the dev started with `./start.sh`
+- Install dependencies with:
+```bash
+./yarn.sh common install
+./yarn.sh client install
+./yarn.sh server install
+```
+- Start with `docker-compose up -d`
 - Open http://127.0.0.1:3333
+- Stop with `docker-compse down` 
+- To delete the database, too, use `docker-compose down --volumes`
+
+##### SSL
+- HTTPS is required for using the browser's camera
+- Use an SSL-proxy like nginx, routing `/` to port 3333 and `/api` to port 3030
+- Until create-react-app 3.3.1 is not released, hack in [this fix for wss](https://github.com/facebook/create-react-app/pull/8079/commits/9585c26593e18296fe202bfea198130f9d0dbd34)
 
 
 ### Nomenklatur
