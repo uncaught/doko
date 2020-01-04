@@ -75,6 +75,10 @@
   cursor: pointer;
 }
 
+.u-line-through {
+  text-decoration: line-through;
+}
+
 .memberDetail + .memberDetail {
   margin-top: 0.5rem;
 }
@@ -112,5 +116,5 @@
 }
 
 .icon.listDragHandle {
-  margin-top: 11px;
+  margin-top: 10px;
 }

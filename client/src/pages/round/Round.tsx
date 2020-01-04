@@ -1,11 +1,15 @@
 import React, {ReactElement} from 'react';
-import {Link, useRouteMatch} from 'react-router-dom';
-import {useActivePlayers} from '../../store/Players';
+import {useRouteMatch} from 'react-router-dom';
+import IconLink from '../../components/IconLink';
+import Players from './Players';
+import {Divider} from 'semantic-ui-react';
 
 export default function Round(): ReactElement {
   const {url} = useRouteMatch();
-  const players = useActivePlayers();
   return <section>
-    <Link to={`${url}/players`}>Mitspieler ({players.length})</Link>
+    <IconLink to={`${url}/players`}>Sitzfolge / Teilnahme</IconLink>
+    <IconLink to={`${url}/games`}>Spiele</IconLink>
+    <Divider section/>
+    <Players/>
   </section>;
 }

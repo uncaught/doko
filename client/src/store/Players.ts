@@ -1,6 +1,8 @@
 import {State} from './Store';
 import {
+  GroupMember,
   mergeStates,
+  Party,
   Player,
   Players,
   PlayerSittingOrderPatch,
@@ -14,6 +16,7 @@ import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
 import {useFullParams} from '../Page';
 import {useSortedGames} from './Games';
+import {groupMembersSelector} from './GroupMembers';
 
 const {addReducer, combinedReducer} = createReducer<Players>({}, 'players');
 
@@ -61,7 +64,62 @@ export function usePlayers(): Player[] {
 
 export function useActivePlayers(): Player[] {
   const players = usePlayers();
-  return useMemo(() => players.filter(({leftAfterGameNumber}) => leftAfterGameNumber === null), [players]);
+  return useMemo(() => players.filter((p) => p.leftAfterGameNumber !== 0), [players]);
+}
+
+interface PlayerStats {
+  member: GroupMember;
+  player: Player;
+  euros: number;
+  pointBalance: number;
+  dutySoloPlayed: boolean;
+}
+
+export function usePlayersWithStats(): PlayerStats[] {
+  const players = useActivePlayers();
+  const games = useSortedGames();
+
+  const {groupId} = useFullParams<{ groupId: string }>();
+  const members = useSelector(groupMembersSelector)[groupId];
+
+  return useMemo(() => {
+    const statsByMember = new Map<string, PlayerStats>();
+
+    players.forEach((player) => {
+      statsByMember.set(player.groupMemberId, {
+        player,
+        member: members[player.groupMemberId],
+        euros: 0,
+        pointBalance: 0,
+        dutySoloPlayed: false,
+      });
+    });
+
+    const addPoints = (p: Party) => {
+      p.members.forEach((id) => {
+        statsByMember.get(id)!.pointBalance += p.totalPoints;
+      });
+    };
+
+    games.forEach(({data: {isComplete, gameType, re, contra}}) => {
+      if (!isComplete) {
+        //only complete games are counted for the player stats.
+        return;
+      }
+
+      if (gameType === 'dutySolo' || gameType === 'forcedSolo') {
+        statsByMember.get(re.members[0])!.dutySoloPlayed = true;
+      }
+
+      addPoints(re);
+      addPoints(contra);
+    });
+
+    const sorted = [...statsByMember.values()].sort((a, b) => b.pointBalance - a.pointBalance);
+    const topPoints = sorted[0].pointBalance;
+    sorted.forEach((stat) => stat.euros = (topPoints - stat.pointBalance) * 0.05);
+    return sorted;
+  }, [games, members, players]);
 }
 
 export function usePatchSittingOrder() {

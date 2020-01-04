@@ -16,10 +16,10 @@ export default function Members(): ReactElement {
     {groupMembers.length > 0 && <div className="">
       <List divided relaxed>
         {groupMembers.map(({id, name, pointBalance = 0, roundsCount = 0, euroBalance = 0, isYou}) =>
-          <List.Item key={id}>
-            <List.Icon name='user' verticalAlign='middle'/>
+          <List.Item as={asLink(`/groups/group/${groupId}/member/${id}`)} key={id}>
+            <List.Icon color={'black'} size={'large'} name='user' verticalAlign='middle'/>
             <List.Content>
-              <List.Header as={asLink(`/groups/group/${groupId}/member/${id}`)}>{name}</List.Header>
+              <List.Header>{name}</List.Header>
               <List.Description>
                 <Label size={'small'} color={pointBalance >= 0 ? 'green' : 'red'}>
                   {pointBalance} <Icon name='sort'/>
