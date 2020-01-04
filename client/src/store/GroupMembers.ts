@@ -16,7 +16,7 @@ import {
   objectContains,
   parseInvitationUrl,
 } from '@doko/common';
-import {arrayToList, createReducer} from 'src/Store/Reducer';
+import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';

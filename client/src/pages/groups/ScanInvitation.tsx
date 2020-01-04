@@ -1,7 +1,7 @@
 import React, {ReactElement, useCallback, useState} from 'react';
 import {Button, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import QrReader from 'react-qr-reader';
-import {useAcceptInvitation} from '../../Store/GroupMembers';
+import {useAcceptInvitation} from '../../store/GroupMembers';
 
 export default function ScanInvitation(): ReactElement {
   const [show, setShow] = useState(false);

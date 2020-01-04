@@ -1,10 +1,10 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {Button, Header, Icon, Modal, Segment} from 'semantic-ui-react';
-import {useCreateInvitation} from '../../Store/GroupMembers';
+import {useCreateInvitation} from '../../store/GroupMembers';
 import {generateInvitationUrl} from '@doko/common';
 import QrCode from 'qrcode.react';
 import {useSelector} from 'react-redux';
-import {usedInvitationTokensSelector} from '../../Store/Ui';
+import {usedInvitationTokensSelector} from '../../store/Ui';
 
 declare global {
   type ShareData = {

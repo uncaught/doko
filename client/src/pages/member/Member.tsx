@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import EditableName from '../../components/EditableName';
-import {useGroupMember, usePatchGroupMember} from '../../Store/GroupMembers';
+import {useGroupMember, usePatchGroupMember} from '../../store/GroupMembers';
 import {Divider} from 'semantic-ui-react';
 import InviteDevice from './InviteDevice';
 import Stats from './Stats';

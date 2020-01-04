@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import {Form} from 'semantic-ui-react';
-import {useGroup, usePatchGroup} from '../../../Store/Groups';
+import {useGroup, usePatchGroup} from '../../../store/Groups';
 import {bockEffectOptions, GroupSettings} from '@doko/common';
 import NumberStepper from '../../../components/NumberStepper';
 

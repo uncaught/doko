@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {Header, Icon, Label, List} from 'semantic-ui-react';
-import {useSortedGroupMembers} from '../../Store/GroupMembers';
-import {useGroup} from '../../Store/Groups';
+import {useSortedGroupMembers} from '../../store/GroupMembers';
+import {useGroup} from '../../store/Groups';
 import {asLink} from '../../AsLink';
 import {useFullParams} from '../../Page';
 

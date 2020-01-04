@@ -1,5 +1,5 @@
 import server from './Server';
 import './Auth';
-import './Channels';
+import './channels';
 
 server.listen();

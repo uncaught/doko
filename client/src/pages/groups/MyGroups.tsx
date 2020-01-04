@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {useSortedGroups} from '../../Store/Groups';
+import {useSortedGroups} from '../../store/Groups';
 import {Header, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
 import dayjs from 'dayjs';

@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
-import {useGroupMember} from '../../Store/GroupMembers';
+import {useGroupMember} from '../../store/GroupMembers';
 import {Icon, Label} from 'semantic-ui-react';
-import {useGroup} from '../../Store/Groups';
+import {useGroup} from '../../store/Groups';
 
 export default function Stats(): ReactElement {
   const {roundsCount: groupRoundsCount = 0} = useGroup() || {};

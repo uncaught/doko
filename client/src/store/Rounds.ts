@@ -11,7 +11,7 @@ import {
   RoundsLoaded,
   RoundsPatch,
 } from '@doko/common';
-import {arrayToList, createReducer} from 'src/Store/Reducer';
+import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';

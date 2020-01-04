@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import {Form, Label, Segment} from 'semantic-ui-react';
-import {useGroup, usePatchGroup} from '../../../Store/Groups';
+import {useGroup, usePatchGroup} from '../../../store/Groups';
 import {GroupSettings, SubType} from '@doko/common';
 import {CheckboxProps} from 'semantic-ui-react/dist/commonjs/modules/Checkbox/Checkbox';
 

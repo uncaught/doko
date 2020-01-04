@@ -17,7 +17,7 @@ import badgeMessages from '@logux/client/badge/en';
 import log from '@logux/client/log';
 // @ts-ignore
 // import IndexedStore from '@logux/client/indexed-store';
-import {storeReducer} from 'src/Store/Store';
+import {storeReducer} from 'src/store/Store';
 import {getAuth} from './Auth';
 
 const isDev = process.env.NODE_ENV === 'development';

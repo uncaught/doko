@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useAcceptInvitation} from '../Store/GroupMembers';
+import {useAcceptInvitation} from '../store/GroupMembers';
 import {Message} from 'semantic-ui-react';
 
 export default function HandleInvitation(): React.ReactElement {

@@ -7,8 +7,8 @@ import Rounds from '../rounds';
 import Members from './Members';
 import {Divider} from 'semantic-ui-react';
 import AddMember from './AddMember';
-import {useLoadGroupMembers} from '../../Store/GroupMembers';
-import {useLoadRounds} from '../../Store/Rounds';
+import {useLoadGroupMembers} from '../../store/GroupMembers';
+import {useLoadRounds} from '../../store/Rounds';
 import Settings from './Settings';
 
 export default function (): ReactElement {

@@ -12,7 +12,7 @@ import {
   mergeStates,
   objectContains,
 } from '@doko/common';
-import {arrayToList, createReducer} from 'src/Store/Reducer';
+import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import {useFullParams} from '../Page';

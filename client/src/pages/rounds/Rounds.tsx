@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {Header, Label, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
-import {useSortedRounds} from '../../Store/Rounds';
+import {useSortedRounds} from '../../store/Rounds';
 import dayjs from 'dayjs';
 import {useRouteMatch} from 'react-router-dom';
 

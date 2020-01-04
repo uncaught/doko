@@ -1,6 +1,6 @@
 import React, {FormEvent, ReactElement, useCallback} from 'react';
 import {Form, Header} from 'semantic-ui-react';
-import {useAddGroupMember} from '../../Store/GroupMembers';
+import {useAddGroupMember} from '../../store/GroupMembers';
 
 export default function AddMember(): ReactElement {
   const addMember = useAddGroupMember();

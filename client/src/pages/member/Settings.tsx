@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {useGroupMember, usePatchGroupMember} from '../../Store/GroupMembers';
+import {useGroupMember, usePatchGroupMember} from '../../store/GroupMembers';
 import {Checkbox} from 'semantic-ui-react';
 
 export default function Settings(): ReactElement {

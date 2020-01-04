@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {Form, InputOnChangeData} from 'semantic-ui-react';
-import {useGroup, usePatchGroup} from '../../../Store/Groups';
+import {useGroup, usePatchGroup} from '../../../store/Groups';
 
 export default function Name(): ReactElement {
   const group = useGroup();

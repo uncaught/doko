@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {Header, Icon} from 'semantic-ui-react';
 import {Link, useRouteMatch} from 'react-router-dom';
-import {useGroup} from '../../Store/Groups';
+import {useGroup} from '../../store/Groups';
 
 export default function GroupName(): ReactElement {
   const group = useGroup();
