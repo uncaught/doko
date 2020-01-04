@@ -1,4 +1,5 @@
 ### Dev
+- Have docker and docker-compose installed 
 - Get the dev started with `./start.sh`
 - Open http://127.0.0.1:3333
 
