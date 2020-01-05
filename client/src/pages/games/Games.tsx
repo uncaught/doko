@@ -1,0 +1,60 @@
+import React, {ReactElement} from 'react';
+import {Icon, Table} from 'semantic-ui-react';
+import {useActivePlayers} from '../../store/Players';
+import {useSortedGames} from '../../store/Games';
+import {useFullParams} from '../../Page';
+import {useSelector} from 'react-redux';
+import {groupMembersSelector} from '../../store/GroupMembers';
+import {useHistory, useRouteMatch} from 'react-router-dom';
+
+export default function Games(): ReactElement {
+  const players = useActivePlayers();
+  const games = useSortedGames();
+  const {groupId} = useFullParams<{ groupId: string }>();
+  const members = useSelector(groupMembersSelector)[groupId];
+  const sumMap = new Map<string, number>();
+  const history = useHistory();
+  const {url} = useRouteMatch();
+
+  return <section>
+    <Table basic unstackable striped className="gamesTable" textAlign='center'>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell collapsing>#</Table.HeaderCell>
+          <Table.HeaderCell collapsing><Icon name={'hand paper'}/></Table.HeaderCell>
+          <Table.HeaderCell collapsing><Icon name={'bullseye'}/></Table.HeaderCell>
+          {players.map((p) =>
+            <Table.HeaderCell key={p.groupMemberId}>{members[p.groupMemberId].name[0]}</Table.HeaderCell>)}
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {games.map(({id, gameNumber, data, dealerGroupMemberId}) => {
+          const {gamePoints, re, contra, isComplete, winner} = data;
+          return <Table.Row key={id} onClick={() => history.push(`${url}/game/${id}`)}>
+            <Table.Cell>{gameNumber}</Table.Cell>
+            <Table.Cell>{members[dealerGroupMemberId].name[0]}</Table.Cell>
+            <Table.Cell>{isComplete ? gamePoints : ''}</Table.Cell>
+            {players.map((p) => {
+              const isRe = re.members.includes(p.groupMemberId);
+              const isContra = !isRe && contra.members.includes(p.groupMemberId);
+
+              const points = data[isRe ? 're' : 'contra'].totalPoints;
+              const newPoints = (sumMap.get(p.groupMemberId) || 0) + points;
+              sumMap.set(p.groupMemberId, newPoints);
+
+              const hasWon = isComplete
+                && ((winner === 're' && isRe) || (winner === 'contra' && isContra));
+              const hasLost = isComplete && !hasWon;
+
+              return <Table.Cell positive={hasWon}
+                                 negative={hasLost}
+                                 key={p.groupMemberId}>
+                {isComplete ? newPoints : ''}
+              </Table.Cell>;
+            })}
+          </Table.Row>;
+        })}
+      </Table.Body>
+    </Table>
+  </section>;
+}

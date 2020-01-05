@@ -1,5 +1,12 @@
 import server from '../Server';
-import {GamesPatch, PlayerSittingOrderPatch, PlayersPatch, RoundDetailsLoad, RoundDetailsLoaded} from '@doko/common';
+import {
+  GamesAdd,
+  GamesPatch,
+  PlayerSittingOrderPatch,
+  PlayersPatch,
+  RoundDetailsLoad,
+  RoundDetailsLoaded,
+} from '@doko/common';
 import {canReadGroup} from '../Auth';
 import {getGroupForRound} from './Rounds';
 import {loadGames} from './Games';
@@ -25,6 +32,7 @@ server.channel<RoundDetailsLoad>('roundDetails/load', {
   },
   async filter(ctx, {roundId: subRoundId}) {
     const {addFilter, combinedFilter} = createFilter();
+    addFilter<GamesAdd>('games/add', (_, {game}) => game.roundId === subRoundId);
     addFilter<GamesPatch>('games/patch', (_, {roundId}) => roundId === subRoundId);
     addFilter<PlayerSittingOrderPatch>('players/patchSittingOrder', (_, {roundId}) => roundId === subRoundId);
     addFilter<PlayersPatch>('players/patch', (_, {roundId}) => roundId === subRoundId);

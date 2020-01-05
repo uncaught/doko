@@ -1,6 +1,6 @@
 import server from '../Server';
-import {fromDbValue, query, updateSingleEntity} from '../Connection';
-import {Game, GamesPatch} from '@doko/common';
+import {fromDbValue, insertSingleEntity, query, updateSingleEntity} from '../Connection';
+import {Game, GamesAdd, GamesPatch} from '@doko/common';
 import {canEditGroup} from '../Auth';
 import {gamesDbConfig} from '../DbTypes';
 import {getGroupForRound} from './Rounds';
@@ -21,6 +21,19 @@ export async function loadGames(roundId: string): Promise<Game[]> {
   fromDbValue(games, gamesDbConfig.types);
   return games;
 }
+
+server.type<GamesAdd>('games/add', {
+  async access(ctx, {game}) {
+    const groupId = await getGroupForRound(game.roundId);
+    return groupId !== null && await canEditGroup(ctx.userId!, groupId);
+  },
+  resend() {
+    return {channel: 'roundDetails/load'};
+  },
+  async process(ctx, action) {
+    await insertSingleEntity<Game>(ctx.userId!, gamesDbConfig, action.game);
+  },
+});
 
 server.type<GamesPatch>('games/patch', {
   async access(ctx, {id, roundId}) {

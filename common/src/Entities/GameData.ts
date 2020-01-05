@@ -51,12 +51,48 @@ export interface Party {
   totalPoints: number; //total, already multiplied times 3 for solo, negative for the losing party
 }
 
+export type GameType =
+  'normal'
+  | 'poverty'
+  | 'wedding'
+  | 'silentWedding'
+  | 'dutySolo'
+  | 'lustSolo'
+  | 'forcedSolo'
+  | 'penalty';
+
 export interface GameData {
-  gameType: 'normal' | 'poverty' | 'wedding' | 'silentWedding' | 'dutySolo' | 'lustSolo' | 'forcedSolo' | 'penalty';
+  gameType: GameType;
   soloType: null | SoloType;
   re: Party;
   contra: Party;
   isComplete: boolean;
   gamePoints: number;
-  winner: 're' | 'contra';
+  winner: 'stalemate' | 're' | 'contra';
+}
+
+function getDefaultParty(): Party {
+  return {
+    announced: null,
+    no9: null,
+    no6: null,
+    no3: null,
+    no0: null,
+    members: [],
+    pips: '120',
+    extraPoints: [],
+    totalPoints: 0,
+  };
+}
+
+export function getDefaultGameData(): GameData {
+  return {
+    gameType: 'normal',
+    soloType: null,
+    re: getDefaultParty(),
+    contra: getDefaultParty(),
+    isComplete: false,
+    gamePoints: 0,
+    winner: 'stalemate',
+  };
 }

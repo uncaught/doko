@@ -3,13 +3,15 @@ import {useRouteMatch} from 'react-router-dom';
 import IconLink from '../../components/IconLink';
 import Players from './Players';
 import {Divider} from 'semantic-ui-react';
+import GamesInfo from './GamesInfo';
 
 export default function Round(): ReactElement {
   const {url} = useRouteMatch();
   return <section>
     <IconLink to={`${url}/players`}>Sitzfolge / Teilnahme</IconLink>
-    <IconLink to={`${url}/games`}>Spiele</IconLink>
-    <Divider section/>
+    <Divider/>
+    <GamesInfo/>
+    <Divider/>
     <Players/>
   </section>;
 }

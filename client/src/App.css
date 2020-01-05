@@ -118,3 +118,19 @@
 .icon.listDragHandle {
   margin-top: 10px;
 }
+
+.gamesTable i.icon {
+  margin: 0;
+}
+
+.gamesTable.ui.table > thead > tr > th,
+.gamesTable.ui.table > tbody > tr > td,
+.gamesTable.ui.table > tr > td {
+  padding-left: .5em;
+  padding-right: .5em;
+}
+
+
+#dragItemListContainer {
+  margin: 0;
+}

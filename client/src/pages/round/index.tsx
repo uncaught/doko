@@ -4,7 +4,7 @@ import Page from '../../Page';
 import SittingOrder from './SittingOrder';
 import {useLoadRoundDetails} from '../../store/Rounds';
 import Round from './Round';
-import Games from './Games';
+import Games from '../games';
 
 export default function (): ReactElement {
   useLoadRoundDetails();
