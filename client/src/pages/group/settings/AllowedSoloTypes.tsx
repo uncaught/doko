@@ -4,11 +4,8 @@ import {useGroup, usePatchGroup} from '../../../store/Groups';
 import {soloTypeOptions, SoloType} from '@doko/common';
 
 export default function AllowedSoloTypes(): ReactElement | null {
-  const group = useGroup();
+  const group = useGroup()!;
   const patch = usePatchGroup();
-  if (!group) {
-    return null;
-  }
   return <Form.Dropdown placeholder='Erlaubte Soli'
                         fluid
                         multiple

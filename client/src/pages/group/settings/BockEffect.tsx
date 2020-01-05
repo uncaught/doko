@@ -5,11 +5,8 @@ import {bockEffectOptions, GroupSettings} from '@doko/common';
 import NumberStepper from '../../../components/NumberStepper';
 
 export default function BockEffect(): ReactElement | null {
-  const group = useGroup();
+  const group = useGroup()!;
   const patch = usePatchGroup();
-  if (!group) {
-    return null;
-  }
   return <>
     <Form.Dropdown label={'Bockspiel-Effekt'}
                    options={bockEffectOptions}

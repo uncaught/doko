@@ -27,6 +27,7 @@ export default function ScanInvitation(): ReactElement {
                     dimmer={'inverted'}
                     onClose={() => setShow(false)}
                     basic
+                    closeIcon
                     size='small'>
       <Header icon='camera' content='Scanning ...'/>
       <Modal.Content>
@@ -37,12 +38,9 @@ export default function ScanInvitation(): ReactElement {
           style={{width: '100%'}}
         />
       </Modal.Content>
-      <Modal.Actions>
-        <Button basic onClick={() => setShow(false)}>
-          <Icon name='cancel'/> Cancel
-        </Button>
-        {!!error && <Message negative>{error.message || error}</Message>}
-      </Modal.Actions>
+      {!!error && <Modal.Actions>
+        <Message negative>{error.message || error}</Message>
+      </Modal.Actions>}
     </Modal>}
   </section>;
 }

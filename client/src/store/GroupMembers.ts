@@ -3,6 +3,7 @@ import {
   DeepPartial,
   generateToken,
   generateUuid,
+  GroupGroupMembers,
   GroupMember,
   GroupMembers,
   GroupMembersAcceptInvitation,
@@ -117,7 +118,12 @@ export function useAcceptInvitation() {
   }, [dispatch, getState, history]);
 }
 
-export function useGroupMember(): GroupMember | void {
+export function useGroupMembers(): GroupGroupMembers {
+  const {groupId} = useFullParams<{ groupId: string }>();
+  return useSelector(groupMembersSelector)[groupId] || {};
+}
+
+export function useGroupMember(): GroupMember | undefined {
   const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
   const groupMembers = useSelector(groupMembersSelector)[groupId] || {};
   return groupMembers[groupMemberId];

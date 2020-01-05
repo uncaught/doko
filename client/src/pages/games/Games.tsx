@@ -2,16 +2,13 @@ import React, {ReactElement} from 'react';
 import {Icon, Table} from 'semantic-ui-react';
 import {useActivePlayers} from '../../store/Players';
 import {useSortedGames} from '../../store/Games';
-import {useFullParams} from '../../Page';
-import {useSelector} from 'react-redux';
-import {groupMembersSelector} from '../../store/GroupMembers';
+import {useGroupMembers} from '../../store/GroupMembers';
 import {useHistory, useRouteMatch} from 'react-router-dom';
 
 export default function Games(): ReactElement {
   const players = useActivePlayers();
   const games = useSortedGames();
-  const {groupId} = useFullParams<{ groupId: string }>();
-  const members = useSelector(groupMembersSelector)[groupId];
+  const members = useGroupMembers();
   const sumMap = new Map<string, number>();
   const history = useHistory();
   const {url} = useRouteMatch();

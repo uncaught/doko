@@ -16,7 +16,7 @@ import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
 import {useFullParams} from '../Page';
 import {useSortedGames} from './Games';
-import {groupMembersSelector} from './GroupMembers';
+import {useGroupMembers} from './GroupMembers';
 
 const {addReducer, combinedReducer} = createReducer<Players>({}, 'players');
 
@@ -78,9 +78,7 @@ interface PlayerStats {
 export function usePlayersWithStats(): PlayerStats[] {
   const players = useActivePlayers();
   const games = useSortedGames();
-
-  const {groupId} = useFullParams<{ groupId: string }>();
-  const members = useSelector(groupMembersSelector)[groupId];
+  const members = useGroupMembers();
 
   return useMemo(() => {
     const statsByMember = new Map<string, PlayerStats>();

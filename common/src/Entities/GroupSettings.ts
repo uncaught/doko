@@ -1,12 +1,11 @@
 export type SoloType =
-  'trump'
+  'trump' //also known as 'diamonds'
   | 'queens'
   | 'jacks'
   | 'kings'
-  | 'cross'
+  | 'clubs'
   | 'spades'
   | 'hearts'
-  | 'diamonds'
   | 'fleshless';
 
 function mapToOptions(map: Map<string, string>): { text: string; value: string }[] {
@@ -17,14 +16,13 @@ function mapToOptions(map: Map<string, string>): { text: string; value: string }
 }
 
 export const soloTypeTexts = new Map<SoloType, string>([
-  ['trump', 'Trumpf'],
   ['queens', 'Damen'],
   ['jacks', 'Buben'],
   ['kings', 'Könige'],
-  ['cross', 'Kreuz'],
+  ['trump', 'Trumpf'],
+  ['clubs', 'Kreuz'],
   ['spades', 'Pick'],
   ['hearts', 'Herz'],
-  ['diamonds', 'Karo'],
   ['fleshless', 'Fleischlos'],
 ]);
 
@@ -33,7 +31,7 @@ export const soloTypeOptions = mapToOptions(soloTypeTexts);
 export interface GroupSettings {
   allowedSoloTypes: SoloType[];
   extraPoints: {
-    wonAgainstRe: boolean; //only applies to game types `normal` and `wedding`
+    wonAgainstQueensOfClubs: boolean; //only applies to game types `normal` and `wedding`
     doppelkopf: boolean;
     foxCaught: boolean;
     karlGotLastTrick: boolean;
@@ -50,10 +48,11 @@ export interface GroupSettings {
     contraPartyLostWithAnnounce: boolean;
     soloLost: boolean;
   };
+  dividePenalties: boolean; //divide penalty with plus-minus-logic onto all players
 }
 
 export const extraPointsTranslations = new Map<keyof GroupSettings['extraPoints'], string>([
-  ['wonAgainstRe', 'Gegen die Alten gewinnen'],
+  ['wonAgainstQueensOfClubs', 'Gegen die Alten gewinnen'],
   ['doppelkopf', 'Doppelkopf'],
   ['foxCaught', 'Fuchs fangen'],
   ['karlGotLastTrick', 'Karlchen macht den letzten Stich'],
@@ -85,9 +84,9 @@ export const bockEffectTexts = new Map<GroupSettings['bockEffect'], string>([
 export const bockEffectOptions = mapToOptions(bockEffectTexts);
 
 export const defaultGroupSettings: GroupSettings = {
-  allowedSoloTypes: ['trump', 'queens', 'jacks', 'cross', 'spades', 'hearts', 'diamonds', 'fleshless'],
+  allowedSoloTypes: ['trump', 'queens', 'jacks', 'clubs', 'spades', 'hearts', 'fleshless'],
   extraPoints: {
-    wonAgainstRe: true,
+    wonAgainstQueensOfClubs: true,
     doppelkopf: true,
     foxCaught: true,
     karlGotLastTrick: true,
@@ -104,4 +103,5 @@ export const defaultGroupSettings: GroupSettings = {
     contraPartyLostWithAnnounce: false,
     soloLost: false,
   },
+  dividePenalties: false,
 };

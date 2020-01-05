@@ -97,7 +97,7 @@ export function useAddRound() {
   }, [dispatch, groupId, history, members]);
 }
 
-export function useRound(): Round | void {
+export function useRound(): Round | undefined {
   const {groupId, roundId} = useFullParams<{ groupId: string; roundId: string }>();
   const rounds = useSelector(roundsSelector)[groupId] || {};
   return rounds[roundId];

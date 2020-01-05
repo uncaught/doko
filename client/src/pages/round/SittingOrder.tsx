@@ -1,8 +1,7 @@
 import React, {ReactElement} from 'react';
 import {Header, List, Message} from 'semantic-ui-react';
-import {groupMembersSelector} from '../../store/GroupMembers';
+import {useGroupMembers} from '../../store/GroupMembers';
 import {useFullParams} from '../../Page';
-import {useSelector} from 'react-redux';
 import {usePatchAttendance, usePatchSittingOrder, usePlayers} from '../../store/Players';
 import arrayMove from 'array-move';
 import {SortableContainer, SortableElement, SortableHandle, SortEndHandler} from 'react-sortable-hoc';
@@ -66,8 +65,7 @@ const SortableList = SortableContainer<SortableListProps>(({members, players}: S
 });
 
 export default function SittingOrder(): ReactElement | null {
-  const {groupId} = useFullParams<{ groupId: string }>();
-  const members = useSelector(groupMembersSelector)[groupId];
+  const members = useGroupMembers();
   const players = usePlayers();
   const patchSittingOrder = usePatchSittingOrder();
   const {parents} = useFullParams();

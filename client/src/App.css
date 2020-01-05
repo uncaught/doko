@@ -54,6 +54,21 @@
   justify-content: space-between;
 }
 
+.u-flex-row {
+  display: flex !important;
+  flex-direction: row;
+}
+
+.u-flex-row-around {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.u-flex-wrap {
+  flex-wrap: wrap;
+}
+
 .u-flex-column {
   display: flex;
   flex-direction: column;
@@ -75,12 +90,20 @@
   cursor: pointer;
 }
 
+.u-text-center {
+  text-align: center;
+}
+
 .u-line-through {
   text-decoration: line-through;
 }
 
-.memberDetail + .memberDetail {
-  margin-top: 0.5rem;
+.memberDetail {
+  margin: 0.5rem;
+}
+
+.u-flex-row-around .memberDetail {
+  margin: 0.25rem;
 }
 
 .editableNameHeader {

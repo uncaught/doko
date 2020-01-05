@@ -85,7 +85,7 @@ export function useAddGroup() {
   }, [dispatch, history]);
 }
 
-export function useGroup(): Group | void {
+export function useGroup(): Group | undefined {
   const {groupId} = useFullParams<{ groupId: string }>();
   const groups = useSelector(groupsSelector);
   return groups[groupId];

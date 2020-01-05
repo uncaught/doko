@@ -3,7 +3,7 @@ import {Header, Icon, Input, InputOnChangeData, SemanticICONS} from 'semantic-ui
 
 interface EditableNameProps<T extends { name: string }> {
   icon: SemanticICONS;
-  useGet: () => T | void;
+  useGet: () => T | undefined;
   usePatch: () => (patch: { name: string }) => void;
 }
 

@@ -10,11 +10,8 @@ interface RadioGroupProps {
 }
 
 export default function RadioGroup({label, parentKey, options}: RadioGroupProps): ReactElement | null {
-  const group = useGroup();
+  const group = useGroup()!;
   const patch = usePatchGroup();
-  if (!group) {
-    return null;
-  }
   const groupValue = group.settings[parentKey];
   return <Segment>
     <Label attached={'top'}>{label}</Label>

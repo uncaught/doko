@@ -51,6 +51,10 @@ export interface Party {
   totalPoints: number; //total, already multiplied times 3 for solo, negative for the losing party
 }
 
+export type Announce = 'announced' | 'no9' | 'no6' | 'no3' | 'no0';
+
+export const announceChain: Announce[] = ['announced', 'no9', 'no6', 'no3', 'no0'];
+
 export type GameType =
   'normal'
   | 'poverty'
@@ -61,9 +65,39 @@ export type GameType =
   | 'forcedSolo'
   | 'penalty';
 
+export const gameTypes: GameType[] = [
+  'normal',
+  'wedding',
+  'poverty',
+  'dutySolo',
+  'lustSolo',
+  'forcedSolo',
+  'silentWedding',
+  'penalty',
+];
+export const reDealGameTypes: GameType[] = ['dutySolo', 'penalty'];
+
+//fulfillment of solo with:
+export const soloGameTypes: GameType[] = ['dutySolo', 'lustSolo', 'forcedSolo'];
+
+//for team building and point calculation:
+export const soloLikeGameTypes: GameType[] = [...soloGameTypes, 'silentWedding', 'penalty'];
+
+export const gameTypeTexts = new Map<GameType, string>([
+  ['normal', 'Normalspiel'],
+  ['wedding', 'Hochzeit'],
+  ['poverty', 'Armut'],
+  ['dutySolo', 'Pflichtsolo'],
+  ['lustSolo', 'Lustsolo'],
+  ['forcedSolo', 'Vorführung'],
+  ['silentWedding', 'Stille Hochzeit'],
+  ['penalty', 'Strafe'],
+]);
+
 export interface GameData {
   gameType: GameType;
-  soloType: null | SoloType;
+  gameTypeMemberId: string | null; //soloist, poor guy of poverty, wedding announcer or penalty receiver
+  soloType: null | SoloType; //only for regular soli, not weddings or penalties
   re: Party;
   contra: Party;
   isComplete: boolean;
@@ -88,6 +122,7 @@ function getDefaultParty(): Party {
 export function getDefaultGameData(): GameData {
   return {
     gameType: 'normal',
+    gameTypeMemberId: null,
     soloType: null,
     re: getDefaultParty(),
     contra: getDefaultParty(),

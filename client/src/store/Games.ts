@@ -1,13 +1,16 @@
 import {
+  DeepPartial,
   Game,
   Games,
   GamesAdd,
   GamesPatch,
-  GameType,
   generateUuid,
   getDefaultGameData,
+  GroupMember,
   mergeStates,
+  objectContains,
   Player,
+  reDealGameTypes,
   RoundDetailsLoaded,
   RoundsAdd,
 } from '@doko/common';
@@ -20,6 +23,7 @@ import {LoguxDispatch} from './Logux';
 import {useRound} from './Rounds';
 import {useActivePlayers} from './Players';
 import {useHistory} from 'react-router-dom';
+import {useGroupMembers} from './GroupMembers';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -54,16 +58,19 @@ export function useSortedGames(): Game[] {
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
 
-const reDealGameTypes: GameType[] = ['dutySolo', 'penalty'];
+export function findPlayerIndex(players: Player[], memberId: string): number {
+  const index = players.findIndex(({groupMemberId}) => groupMemberId === memberId);
+  if (index === -1) {
+    throw new Error(`Unkonwn id '${memberId}' in players`);
+  }
+  return index;
+}
 
 function getNextDealer(players: Player[], lastGame: Game): string {
   if (reDealGameTypes.includes(lastGame.data.gameType)) {
     return lastGame.dealerGroupMemberId;
   }
-  const index = players.findIndex(({groupMemberId}) => groupMemberId === lastGame.dealerGroupMemberId);
-  if (index === -1) {
-    throw new Error(`Unkonwn dealer id '${lastGame.dealerGroupMemberId}' in players`);
-  }
+  const index = findPlayerIndex(players, lastGame.dealerGroupMemberId);
   const nextIndex = (index + 1) % players.length;
   return players[nextIndex].groupMemberId;
 }
@@ -90,4 +97,76 @@ export function useAddGame() {
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
     history.push(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${id}`);
   }, [currentGames, currentRound, dispatch, history, players]);
+}
+
+export function useGame(): Game | undefined {
+  const {gameId, roundId} = useFullParams<{ gameId: string; roundId: string }>();
+  const games = useSelector(gamesSelector)[roundId] || {};
+  return games[gameId];
+}
+
+export function usePatchGame() {
+  const currentGame = useGame();
+  const dispatch = useDispatch<LoguxDispatch>();
+  return useCallback((game: DeepPartial<Omit<Game, 'id' | 'roundId'>>) => {
+    if (!currentGame) {
+      throw new Error(`No currentGame`);
+    }
+    if (!objectContains(currentGame, game)) {
+      dispatch.sync<GamesPatch>({
+        game,
+        id: currentGame.id,
+        roundId: currentGame.roundId,
+        type: 'games/patch',
+      });
+    }
+  }, [currentGame, dispatch]);
+}
+
+interface GamePlayer {
+  member: GroupMember;
+  player: Player;
+}
+
+interface GamePlayers {
+  dealer: GamePlayer;
+  all: GamePlayer[];
+  undecided: GamePlayer[];
+  re: GamePlayer[];
+  contra: GamePlayer[];
+}
+
+export function useGamePlayers(): GamePlayers | null {
+  const game = useGame();
+  const members = useGroupMembers();
+  const players = useActivePlayers();
+  if (!game) {
+    return null;
+  }
+
+  const dealerIndex = findPlayerIndex(players, game.dealerGroupMemberId);
+
+  const gamePlayers: GamePlayers = {
+    dealer: {member: members[players[dealerIndex].groupMemberId], player: players[dealerIndex]},
+    all: [],
+    undecided: [],
+    re: [],
+    contra: [],
+  };
+
+  for (let i = 1; i < 5; i++) {
+    const pIndex = (dealerIndex + i) % players.length;
+    const player = players[pIndex];
+    const gamePlayer: GamePlayer = {member: members[player.groupMemberId], player};
+    gamePlayers.all.push(gamePlayer);
+    if (game.data.re.members.includes(player.groupMemberId)) {
+      gamePlayers.re.push(gamePlayer);
+    } else if (game.data.contra.members.includes(player.groupMemberId)) {
+      gamePlayers.contra.push(gamePlayer);
+    } else {
+      gamePlayers.undecided.push(gamePlayer);
+    }
+  }
+
+  return gamePlayers;
 }
