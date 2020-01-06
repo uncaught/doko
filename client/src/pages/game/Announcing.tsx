@@ -3,7 +3,7 @@ import React, {ReactElement, useState} from 'react';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
 
-export default function Announcing({type, label, isRe}: { type: Announce; label: string; isRe: boolean }): ReactElement {
+export default function Announcing({type, label, text, isRe}: { type: Announce; label: string; text?: string; isRe: boolean }): ReactElement {
   const game = useGame()!;
   const [open, setOpen] = useState(false);
   const gamePlayers = useGamePlayers()!;
@@ -80,7 +80,7 @@ export default function Announcing({type, label, isRe}: { type: Announce; label:
     <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
       <Header>
         <Icon name={'trophy'}/>
-        "{label}" {type === 'announced' ? 'angesagt' : 'abgesagt'} von
+        "{text || label}" {type === 'announced' ? 'angesagt' : 'abgesagt'} von
       </Header>
       <Modal.Content>
         {[...sidePlayers, ...gamePlayers.undecided].map(({member}) => <p key={member.id}>
