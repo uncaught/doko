@@ -49,10 +49,7 @@ export default function GamePlayer({member}: { member: GroupMember }): ReactElem
 
   return <div className="memberDetail">
     <Label onClick={() => setOpen(true)}>
-      {member.name}
-      <Label.Detail>
-        <Icon name={'user'}/>
-      </Label.Detail>
+      {member.name} <Icon name={'user'}/>
     </Label>
 
     <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>

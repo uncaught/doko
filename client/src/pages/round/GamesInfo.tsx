@@ -18,7 +18,7 @@ export default function GamesInfo(): ReactElement {
       <Label as={asLink(`${url}/games`)} color={'orange'}>
         Alle Spiele
         <Label.Detail>
-          {games.length} <Icon name={'bullseye'}/>
+          {games.length} <Icon name={'hashtag'}/>
         </Label.Detail>
       </Label>
     </div>

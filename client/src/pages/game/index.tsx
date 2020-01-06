@@ -5,6 +5,7 @@ import GameTypeSelection from './GameTypeSelection';
 import SoloTypeSelection from './SoloTypeSelection';
 import Penalty from './Penalty';
 import NonPenalty from './NonPenalty';
+import Dealer from './Dealer';
 
 export default function (): ReactElement | null {
   const game = useGame();
@@ -15,6 +16,7 @@ export default function (): ReactElement | null {
   const isPenalty = game.data.gameType === 'penalty';
 
   return <section>
+    <Dealer/>
     <Segment vertical className="u-flex-row u-flex-wrap">
       <GameTypeSelection/>
       <SoloTypeSelection/>

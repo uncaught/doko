@@ -7,9 +7,9 @@ import GroupName from './GroupName';
 export default function Group(): ReactElement {
   return <div>
     <GroupName/>
-    <Divider section/>
+    <Divider />
     <RoundsInfo/>
-    <Divider section/>
+    <Divider />
     <Members/>
   </div>;
 }

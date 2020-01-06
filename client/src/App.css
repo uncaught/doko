@@ -48,6 +48,11 @@
   margin-left: .5em;
 }
 
+.ui.label.iconOnly > .icon {
+  margin-right: 0 !important;
+  margin-left: 0 !important;;
+}
+
 .u-flex-row-between {
   display: flex;
   flex-direction: row;
@@ -102,8 +107,24 @@
   margin: 0.5rem;
 }
 
+.memberDetail .ui.label > .detail {
+  opacity: 1;
+}
+
 .u-flex-wrap .memberDetail {
   margin: 0.25rem;
+}
+
+.ui.divider.small {
+  margin: .5rem 0;
+}
+
+.ui.divider.tiny {
+  margin: .25rem 0;
+}
+
+.u-visibility-hidden {
+  visibility: hidden;
 }
 
 .editableNameHeader {
@@ -112,6 +133,11 @@
   margin-bottom: 1rem;
 }
 
+.groupNameHeader {
+  align-items: center;
+}
+
+.groupNameHeader .header,
 .editableNameHeader .header {
   margin: 0;
 }
@@ -174,4 +200,13 @@
 
 #dragItemListContainer {
   margin: 0;
+}
+
+.ui.checkbox label.inverted,
+.ui.checkbox + label.inverted {
+  color: rgba(255, 255, 255, .87);
+}
+
+.ui.checkbox input:focus ~ label.inverted {
+  color: rgba(255, 255, 255, .95);
 }

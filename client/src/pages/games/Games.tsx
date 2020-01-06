@@ -18,7 +18,7 @@ export default function Games(): ReactElement {
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell collapsing>#</Table.HeaderCell>
-          <Table.HeaderCell collapsing><Icon name={'hand paper'}/></Table.HeaderCell>
+          <Table.HeaderCell collapsing><Icon name={'hand paper outline'}/></Table.HeaderCell>
           <Table.HeaderCell collapsing><Icon name={'bullseye'}/></Table.HeaderCell>
           {players.map((p) =>
             <Table.HeaderCell key={p.groupMemberId}>{members[p.groupMemberId].name[0]}</Table.HeaderCell>)}

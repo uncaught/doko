@@ -9,8 +9,8 @@ export default function NonPenalty(): ReactElement {
   return <>
     <Segment vertical>
       <Grid columns={2} relaxed='very'>
-        <Side re/>
-        <Side contra/>
+        <Side isRe={true}/>
+        <Side isRe={false}/>
       </Grid>
       <Divider vertical>VS</Divider>
     </Segment>

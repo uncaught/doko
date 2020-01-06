@@ -34,9 +34,9 @@ export const pipRanges: PipRange[] = [
   '240',
 ];
 
-interface ExtraPoint {
+export interface ExtraPoint {
   from?: string; //e.g. fox from member x
-  to?: string; // e.g. caught by member y
+  to: string; // e.g. caught by member y
   type: keyof GroupSettings['extraPoints'];
 }
 
@@ -110,7 +110,7 @@ export interface GameData {
   winner: 'stalemate' | 're' | 'contra';
 }
 
-function getDefaultParty(): Party {
+export function getDefaultParty(): Party {
   return {
     announced: null,
     no9: null,

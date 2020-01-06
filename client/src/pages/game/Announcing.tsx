@@ -74,10 +74,7 @@ export default function Announcing({type, label, isRe}: { type: Announce; label:
 
   return <div className="memberDetail">
     <Label color={party[type] ? 'green' : undefined} onClick={doOpen}>
-      {label}
-      <Label.Detail>
-        <Icon name={'trophy'}/>
-      </Label.Detail>
+      {label} <Icon name={'trophy'}/>
     </Label>
 
     <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>

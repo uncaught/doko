@@ -1,27 +1,19 @@
 import React, {ReactElement} from 'react';
-import {Divider, Grid} from 'semantic-ui-react';
-import {useGamePlayers} from '../../store/Games';
+import {Grid} from 'semantic-ui-react';
 import Announcing from './Announcing';
-import GamePlayer from './GamePlayer';
+import SidePlayers from './SidePlayers';
+import ExtraPoints from './ExtraPoints';
 
-interface SideProps {
-  re?: boolean;
-  contra?: boolean;
-}
-
-export default function Side({re: isRe = false}: SideProps): ReactElement | null {
-  const gamePlayers = useGamePlayers()!;
-  const sidePlayers = gamePlayers[isRe ? 're' : 'contra'];
-
+export default function Side({isRe}: { isRe: boolean }): ReactElement | null {
   return <Grid.Column>
-    <Announcing type={'announced'} label={isRe ? 'Re' : 'Contra'} isRe={!!isRe}/>
-    <Announcing type={'no9'} label={'keine 9'} isRe={isRe}/>
-    <Announcing type={'no6'} label={'keine 6'} isRe={isRe}/>
-    <Announcing type={'no3'} label={'keine 3'} isRe={isRe}/>
-    <Announcing type={'no0'} label={'schwarz'} isRe={isRe}/>
-    {sidePlayers.length > 0 && <>
-      <Divider/>
-      {sidePlayers.map(({member}) => <GamePlayer key={member.id} member={member}/>)}
-    </>}
+    <div className="u-flex-row u-flex-wrap">
+      <Announcing type={'announced'} label={isRe ? 'Re' : 'Contra'} isRe={isRe}/>
+      <Announcing type={'no9'} label={'keine 9'} isRe={isRe}/>
+      <Announcing type={'no6'} label={'keine 6'} isRe={isRe}/>
+      <Announcing type={'no3'} label={'keine 3'} isRe={isRe}/>
+      <Announcing type={'no0'} label={'schwarz'} isRe={isRe}/>
+    </div>
+    <ExtraPoints isRe={isRe}/>
+    <SidePlayers isRe={isRe}/>
   </Grid.Column>;
 }
