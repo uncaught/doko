@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {Button, Segment} from 'semantic-ui-react';
+import {Segment} from 'semantic-ui-react';
 import {useGame} from '../../store/Games';
 import GameTypeSelection from './GameTypeSelection';
 import SoloTypeSelection from './SoloTypeSelection';
@@ -21,7 +21,5 @@ export default function (): ReactElement | null {
     </Segment>
     {isPenalty && <Penalty/>}
     {!isPenalty && <NonPenalty/>}
-
-    <Button>Abschließen</Button>
   </section>;
 }

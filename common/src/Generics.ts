@@ -18,3 +18,11 @@ export type AnyArray = any[];
 export type SubType<Base, Condition> = Pick<Base, {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
+
+/**
+ * Duck-typing for typescript
+ */
+export function isDuck<A extends AnyObject>(obj: AnyObject, key: keyof A | Array<keyof A>): obj is A {
+  const keys = Array.isArray(key) ? key : [key];
+  return keys.every((k) => obj.hasOwnProperty(k));
+}

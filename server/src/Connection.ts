@@ -91,6 +91,7 @@ async function getToDbTransformer<O extends AnyObject>(
   upsertData: DeepPartial<O>,
   types: DatabaseTypes<O> = {},
   oldEntity?: O | null,
+  merger = mergeStates,
 ) {
   return (key: keyof O): string | number | null => {
     const newValue = upsertData[key] as O[keyof O];
@@ -104,7 +105,7 @@ async function getToDbTransformer<O extends AnyObject>(
           return JSON.stringify(upsertData[key]);
         }
         const oldJson = JSON.parse(oldValue);
-        return JSON.stringify(mergeStates(oldJson, newValue));
+        return JSON.stringify(merger(oldJson, newValue));
       case 'unix':
         return dayjs.unix(newValue).format('YYYY-MM-DD HH:mm:ss');
       case 'bool':
@@ -154,6 +155,7 @@ export async function updateEntity<O extends AnyObject>(
   {table, types, updateFields}: DbConfig<O>,
   id: string | Partial<O>,
   partial: DeepPartial<O>,
+  merger = mergeStates,
 ) {
   const ids = typeof id === 'string' ? {id} : id;
   const keysToUpdate = difference<keyof O>(
@@ -167,7 +169,7 @@ export async function updateEntity<O extends AnyObject>(
     const oldEntity = keysToUpdate.some((key) => types[key] === 'json')
       ? (await update<O>(`SELECT * FROM ${table} WHERE ${where}`, parameters))[0]
       : null;
-    const toDbValue = await getToDbTransformer<O>(partial, types, oldEntity);
+    const toDbValue = await getToDbTransformer<O>(partial, types, oldEntity, merger);
     const updateKeys = keysToUpdate.map((key: keyof O) => {
       parameters[key] = toDbValue(key);
       return `${snakeCase(key as string)} = :${key}`;
@@ -181,8 +183,9 @@ export async function updateSingleEntity<O extends AnyObject>(
   dbConfig: DbConfig<O>,
   id: string | Partial<O>,
   partialEntity: DeepPartial<O>,
+  merger = mergeStates,
 ) {
   await getTransactional(deviceId, async (update) => {
-    await updateEntity<O>(update, dbConfig, id, partialEntity);
+    await updateEntity<O>(update, dbConfig, id, partialEntity, merger);
   });
 }

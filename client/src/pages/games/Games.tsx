@@ -35,6 +35,10 @@ export default function Games(): ReactElement {
               const isRe = re.members.includes(p.groupMemberId);
               const isContra = !isRe && contra.members.includes(p.groupMemberId);
 
+              if (!isRe && !isContra) {
+                return <Table.Cell key={p.groupMemberId}>-</Table.Cell>;
+              }
+
               const points = data[isRe ? 're' : 'contra'].totalPoints;
               const newPoints = (sumMap.get(p.groupMemberId) || 0) + points;
               sumMap.set(p.groupMemberId, newPoints);
@@ -45,8 +49,10 @@ export default function Games(): ReactElement {
 
               return <Table.Cell positive={hasWon}
                                  negative={hasLost}
-                                 key={p.groupMemberId}>
+                                 key={p.groupMemberId}
+                                 className={isRe ? 'gamesTable-cell--isRe' : 'gamesTable-cell--isContra'}>
                 {isComplete ? newPoints : ''}
+                {isRe && <span className={'gamesTable-cell-re'}>RE</span>}
               </Table.Cell>;
             })}
           </Table.Row>;

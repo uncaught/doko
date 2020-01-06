@@ -1,5 +1,4 @@
 import {
-  DeepPartial,
   Game,
   Games,
   GamesAdd,
@@ -9,7 +8,9 @@ import {
   GroupMember,
   mergeStates,
   objectContains,
+  PatchableGame,
   Player,
+  recalcPoints,
   reDealGameTypes,
   RoundDetailsLoaded,
   RoundsAdd,
@@ -24,6 +25,7 @@ import {useRound} from './Rounds';
 import {useActivePlayers} from './Players';
 import {useHistory} from 'react-router-dom';
 import {useGroupMembers} from './GroupMembers';
+import {useGroup} from './Groups';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -38,13 +40,22 @@ addReducer<GamesAdd>('games/add', (state, {game}) => ({
   },
 }));
 
-addReducer<GamesPatch>('games/patch', (state, {id, roundId, game}) => ({
-  ...state,
-  [roundId]: {
-    ...state[id],
-    [id]: mergeStates<Game>(state[roundId][id], game),
-  },
-}));
+addReducer<GamesPatch>('games/patch', (state, {id, roundId, game}) => {
+  if (state[roundId][id]) {
+    const newGame = mergeStates<Game>(state[roundId][id], game);
+    if (newGame !== state[roundId][id]) {
+      newGame.data = recalcPoints(newGame.data);
+      return {
+        ...state,
+        [roundId]: {
+          ...state[roundId],
+          [id]: newGame,
+        },
+      };
+    }
+  }
+  return state;
+});
 
 addReducer<RoundsAdd>('rounds/add', (state, {round}) => ({...state, [round.id]: {}}));
 
@@ -76,6 +87,7 @@ function getNextDealer(players: Player[], lastGame: Game): string {
 }
 
 export function useAddGame() {
+  const {settings} = useGroup()!;
   const currentRound = useRound();
   const currentGames = useSortedGames();
   const players = useActivePlayers();
@@ -92,11 +104,11 @@ export function useAddGame() {
       roundId: currentRound.id,
       gameNumber: (lastGame ? lastGame.gameNumber : 0) + 1,
       dealerGroupMemberId: lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId,
-      data: getDefaultGameData(),
+      data: getDefaultGameData(settings),
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
     history.push(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${id}`);
-  }, [currentGames, currentRound, dispatch, history, players]);
+  }, [currentGames, currentRound, dispatch, history, players, settings]);
 }
 
 export function useGame(): Game | undefined {
@@ -108,7 +120,7 @@ export function useGame(): Game | undefined {
 export function usePatchGame() {
   const currentGame = useGame();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((game: DeepPartial<Omit<Game, 'id' | 'roundId'>>) => {
+  return useCallback((game: PatchableGame) => {
     if (!currentGame) {
       throw new Error(`No currentGame`);
     }

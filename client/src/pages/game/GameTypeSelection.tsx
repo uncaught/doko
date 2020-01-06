@@ -3,6 +3,7 @@ import {Button, Dropdown, Header, Icon, Modal} from 'semantic-ui-react';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {GameType, gameTypeTexts, soloGameTypes, soloLikeGameTypes} from '@doko/common';
 import {usePlayersWithStats} from '../../store/Players';
+import {useGroup} from '../../store/Groups';
 
 type DropdownType = 'normal'
   | 'solo'
@@ -66,6 +67,7 @@ export default function GameTypeSelection(): ReactElement {
             ? gamePlayers.all.filter(({member}) => member.id !== memberId).map(({member}) => member.id)
             : [],
         },
+        gamePoints: realType === 'penalty' ? 1 : 0,
         soloType: null,
         winner: realType === 'penalty' ? 'contra' : 'stalemate',
       },

@@ -3,6 +3,7 @@ export * from './Auth';
 export * from './CreatePromise';
 export * from './Debug';
 export * from './Entities';
+export * from './GameCalc';
 export * from './Generics';
 export * from './Invitation';
 export * from './ObjectContains';

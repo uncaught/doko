@@ -1,4 +1,5 @@
 import {GroupSettings, SoloType} from './GroupSettings';
+import {GameCalcLog} from '../GameCalc';
 
 type PipRange =
   '0'
@@ -95,11 +96,15 @@ export const gameTypeTexts = new Map<GameType, string>([
 ]);
 
 export interface GameData {
+  gameCalcLog: GameCalcLog;
   gameType: GameType;
   gameTypeMemberId: string | null; //soloist, poor guy of poverty, wedding announcer or penalty receiver
   soloType: null | SoloType; //only for regular soli, not weddings or penalties
   re: Party;
   contra: Party;
+  isBockGame: boolean;
+  bockEffect: GroupSettings['bockEffect'];
+  bockEffectExtraPoints: number;
   isComplete: boolean;
   gamePoints: number;
   winner: 'stalemate' | 're' | 'contra';
@@ -119,13 +124,17 @@ function getDefaultParty(): Party {
   };
 }
 
-export function getDefaultGameData(): GameData {
+export function getDefaultGameData(settings: GroupSettings): GameData {
   return {
+    gameCalcLog: [],
     gameType: 'normal',
     gameTypeMemberId: null,
     soloType: null,
     re: getDefaultParty(),
     contra: getDefaultParty(),
+    isBockGame: false,
+    bockEffect: settings.bockEffect, //copied to avoid corruption after changes
+    bockEffectExtraPoints: settings.bockEffectExtraPoints,
     isComplete: false,
     gamePoints: 0,
     winner: 'stalemate',

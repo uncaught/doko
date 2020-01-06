@@ -7,7 +7,6 @@ import {bockGamesTranslations, bockInBockBehaviorOptions, extraPointsTranslation
 import RadioGroup from './settings/RadioGroup';
 import BockEffect from './settings/BockEffect';
 import {useGroup} from '../../store/Groups';
-import Checkbox from './settings/Checkbox';
 
 export default function Settings(): ReactElement | null {
   const {settings} = useGroup()!;
@@ -17,8 +16,6 @@ export default function Settings(): ReactElement | null {
       <Name/>
       <AllowedSoloTypes/>
       <CheckboxGroup label={'Zusatzpunkte bei ...'} options={extraPointsTranslations} parentKey={'extraPoints'}/>
-
-      <Checkbox label={'Strafpunkte auch den Gegenspielern gutschreiben'} path={'dividePenalties'}/>
 
       <Divider section/>
 

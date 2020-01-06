@@ -1,6 +1,6 @@
 import server from '../Server';
 import {fromDbValue, insertSingleEntity, query, updateSingleEntity} from '../Connection';
-import {Game, GamesAdd, GamesPatch} from '@doko/common';
+import {DeepPartial, Game, GameData, GamesAdd, GamesPatch, isDuck, mergeStates, recalcPoints} from '@doko/common';
 import {canEditGroup} from '../Auth';
 import {gamesDbConfig} from '../DbTypes';
 import {getGroupForRound} from './Rounds';
@@ -44,6 +44,12 @@ server.type<GamesPatch>('games/patch', {
     return {channel: 'roundDetails/load'};
   },
   async process(ctx, action) {
-    await updateSingleEntity<Game>(ctx.userId!, gamesDbConfig, action.id, action.game);
+    const gamePatchMerger = <S>(oldData: S, newData: DeepPartial<S>): S => {
+      if (isDuck<GameData>(oldData, 'gameType')) {
+        return recalcPoints(mergeStates<GameData>(oldData, newData)) as unknown as S;
+      }
+      return oldData;
+    };
+    await updateSingleEntity<Game>(ctx.userId!, gamesDbConfig, action.id, action.game, gamePatchMerger);
   },
 });

@@ -1,4 +1,4 @@
-import {DeepPartial, Game, GroupMember, soloLikeGameTypes} from '@doko/common';
+import {GroupMember, PatchableGame, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
@@ -18,7 +18,7 @@ export default function GamePlayer({member}: { member: GroupMember }): ReactElem
       return; //nothing to do, already in party
     }
 
-    const gamePatch: DeepPartial<Omit<Game, 'id' | 'roundId'>> = {
+    const gamePatch: PatchableGame = {
       data: {
         [sideKey]: {
           members: [

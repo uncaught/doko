@@ -102,7 +102,7 @@
   margin: 0.5rem;
 }
 
-.u-flex-row-around .memberDetail {
+.u-flex-wrap .memberDetail {
   margin: 0.25rem;
 }
 
@@ -144,6 +144,24 @@
 
 .gamesTable i.icon {
   margin: 0;
+}
+
+.gamesTable-cell--isRe {
+  position: relative;
+  overflow: hidden;
+}
+
+.gamesTable-cell-re {
+  position: absolute;
+  top: 2px;
+  right: -5px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  font-size: 6px;
+  transform: rotate(45deg);
+  line-height: 6px;
+  width: 20px;
 }
 
 .gamesTable.ui.table > thead > tr > th,

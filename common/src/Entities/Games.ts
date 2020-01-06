@@ -9,6 +9,8 @@ export interface Game {
   data: GameData;
 }
 
+export type PatchableGame = DeepPartial<Omit<Game, 'id' | 'roundId'>>;
+
 export interface RoundGames {
   [id: string]: Game;
 }
@@ -26,5 +28,5 @@ export interface GamesPatch {
   type: 'games/patch';
   id: string;
   roundId: string;
-  game: DeepPartial<Omit<Game, 'id' | 'roundId'>>;
+  game: PatchableGame;
 }

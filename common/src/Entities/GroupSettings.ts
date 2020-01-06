@@ -48,7 +48,6 @@ export interface GroupSettings {
     contraPartyLostWithAnnounce: boolean;
     soloLost: boolean;
   };
-  dividePenalties: boolean; //divide penalty with plus-minus-logic onto all players
 }
 
 export const extraPointsTranslations = new Map<keyof GroupSettings['extraPoints'], string>([
@@ -103,5 +102,4 @@ export const defaultGroupSettings: GroupSettings = {
     contraPartyLostWithAnnounce: false,
     soloLost: false,
   },
-  dividePenalties: false,
 };

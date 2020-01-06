@@ -1,4 +1,4 @@
-import {Announce, announceChain, DeepPartial, Game, soloGameTypes, soloLikeGameTypes} from '@doko/common';
+import {Announce, announceChain, PatchableGame, soloGameTypes, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
@@ -15,7 +15,7 @@ export default function Announcing({type, label, isRe}: { type: Announce; label:
   const isSoloLike = soloLikeGameTypes.includes(game.data.gameType);
 
   const selectAnnounce = (memberId: string) => {
-    const gamePatch: DeepPartial<Omit<Game, 'id' | 'roundId'>> = {data: {[sideKey]: {[type]: memberId}}};
+    const gamePatch: PatchableGame = {data: {[sideKey]: {[type]: memberId}}};
 
     //Add member if not already existing on party:
     if (!party.members.includes(memberId)) {
@@ -47,7 +47,7 @@ export default function Announcing({type, label, isRe}: { type: Announce; label:
   };
 
   const cancel = () => {
-    const gamePatch: DeepPartial<Omit<Game, 'id' | 'roundId'>> = {data: {[sideKey]: {[type]: null}}};
+    const gamePatch: PatchableGame = {data: {[sideKey]: {[type]: null}}};
     for (const key of [...announceChain].reverse()) {
       if (key === type) {
         break;
