@@ -60,11 +60,16 @@ export const logTexts = {
   bock_double_game_and_extra_points: 'Bock: Verdopplung der Spiel- und Sonderpunkte',
   bock_extra_points: 'Bock-Sonderpunkte',
 
-  extra_point_wonAgainstQueensOfClubs: 'Gegen die Alten gewonnen',
-  extra_point_doppelkopf: 'Doppelkopf',
-  extra_point_foxCaught: 'Fuchs gefangen',
-  extra_point_karlGotLastTrick: 'Karlchen hat den letzten Stich gemacht',
-  extra_point_karlCaught: 'Karlchen im letzten Stich fangen',
+  re_extra_point_doppelkopf: 'Doppelkopf für Re-Partei',
+  re_extra_point_foxCaught: 'Fuchs von Contra-Partei gefangen',
+  re_extra_point_karlGotLastTrick: 'Karlchen hat den letzten Stich für Re-Partei gemacht',
+  re_extra_point_karlCaught: 'Karlchen im letzten Stich von Contra-Partei gefangen',
+
+  contra_extra_point_wonAgainstQueensOfClubs: 'Gegen die Alten',
+  contra_extra_point_doppelkopf: 'Doppelkopf für Contra-Partei',
+  contra_extra_point_foxCaught: 'Fuchs von Re-Partei gefangen',
+  contra_extra_point_karlGotLastTrick: 'Karlchen hat den letzten Stich für Contra-Partei gemacht',
+  contra_extra_point_karlCaught: 'Karlchen im letzten Stich von Re-Partei gefangen',
 };
 
 export type GameCalcLogKey = keyof typeof logTexts;

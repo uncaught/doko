@@ -124,6 +124,9 @@ export function usePatchGame() {
     if (!currentGame) {
       throw new Error(`No currentGame`);
     }
+    if (currentGame.data.isComplete && game.data?.isComplete !== false) {
+      return; //block edits on complete games
+    }
     if (!objectContains(currentGame, game)) {
       dispatch.sync<GamesPatch>({
         game,

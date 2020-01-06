@@ -6,7 +6,7 @@ import {useLoadRoundDetails} from '../../store/Rounds';
 import Round from './Round';
 import Games from '../games';
 
-export default function (): ReactElement {
+export default function RoundIndex(): ReactElement {
   useLoadRoundDetails();
   const {url} = useRouteMatch();
   return <Switch>

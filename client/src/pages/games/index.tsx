@@ -4,7 +4,7 @@ import Page from '../../Page';
 import Games from './Games';
 import Game from '../game';
 
-export default function (): ReactElement {
+export default function GamesIndex(): ReactElement {
   const {url} = useRouteMatch();
   return <Switch>
     <Page path={`${url}/game/:gameId`} displayName={'Spiel'}>

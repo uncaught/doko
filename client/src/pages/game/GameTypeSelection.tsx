@@ -34,6 +34,7 @@ export default function GameTypeSelection(): ReactElement {
     if (type === 'normal') {
       patchGame({
         data: {
+          isComplete: false,
           gameType: type,
           gameTypeMemberId: null,
           soloType: null,

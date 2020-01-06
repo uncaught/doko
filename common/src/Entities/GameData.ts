@@ -1,12 +1,15 @@
 import {GroupSettings, SoloType} from './GroupSettings';
 import {GameCalcLog} from '../GameCalc';
 
-type PipRange =
+export type PipRange =
   '0'
   | '1-29'
-  | '30-59'
-  | '60-89'
-  | '90-119'
+  | '30'
+  | '31-59'
+  | '60'
+  | '61-89'
+  | '90'
+  | '91-119'
   | '120'
   | '121-149'
   | '150'
@@ -20,9 +23,12 @@ type PipRange =
 export const pipRanges: PipRange[] = [
   '0',
   '1-29',
-  '30-59',
-  '60-89',
-  '90-119',
+  '30',
+  '31-59',
+  '60',
+  '61-89',
+  '90',
+  '91-119',
   '120',
   '121-149',
   '150',
@@ -33,6 +39,7 @@ export const pipRanges: PipRange[] = [
   '211-239',
   '240',
 ];
+export const reversedPipRanges = pipRanges.slice(0).reverse();
 
 export interface ExtraPoint {
   from?: string; //e.g. fox from member x
@@ -102,7 +109,9 @@ export interface GameData {
   soloType: null | SoloType; //only for regular soli, not weddings or penalties
   re: Party;
   contra: Party;
+  wonAgainstQueensOfClubsExtraPoint: boolean;
   isBockGame: boolean;
+  qualifiesNewBockGames: boolean;
   bockEffect: GroupSettings['bockEffect'];
   bockEffectExtraPoints: number;
   isComplete: boolean;
@@ -132,7 +141,9 @@ export function getDefaultGameData(settings: GroupSettings): GameData {
     soloType: null,
     re: getDefaultParty(),
     contra: getDefaultParty(),
+    wonAgainstQueensOfClubsExtraPoint: settings.extraPoints.wonAgainstQueensOfClubs,
     isBockGame: false,
+    qualifiesNewBockGames: false,
     bockEffect: settings.bockEffect, //copied to avoid corruption after changes
     bockEffectExtraPoints: settings.bockEffectExtraPoints,
     isComplete: false,

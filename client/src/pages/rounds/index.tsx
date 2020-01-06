@@ -4,7 +4,7 @@ import Page from '../../Page';
 import Round from '../round';
 import Rounds from './Rounds';
 
-export default function (): ReactElement {
+export default function RoundsIndex(): ReactElement {
   const {url} = useRouteMatch();
   return <Switch>
     <Page path={`${url}/round/:roundId`} displayName={'Runde'}>

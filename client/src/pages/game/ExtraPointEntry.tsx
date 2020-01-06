@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
-import {Divider, Form, Header, Icon, Label, Modal, Radio, SemanticICONS} from 'semantic-ui-react';
+import {Button, Divider, Form, Header, Icon, Label, Modal, Radio, SemanticICONS} from 'semantic-ui-react';
 import {ExtraPoint, GroupSettings} from '@doko/common';
 import {useGroup} from '../../store/Groups';
 
@@ -48,9 +48,16 @@ export default function ExtraPointEntry({isRe, index}: { isRe: boolean; index: n
     setPoint(newPoint);
   };
 
+  const remove = () => {
+    const newPoints = [...extraPoints];
+    newPoints.splice(index, 1);
+    patchGame({data: {[sideKey]: {extraPoints: newPoints}}});
+    setOpen(false);
+  };
+
   return <div className="memberDetail">
     {index === -1 && <>
-      <Label className={'iconOnly'} color={'green'} onClick={() => setOpen(true)}>
+      <Label className={'iconOnly'} onClick={() => setOpen(true)}>
         <Icon name={'plus'}/>
       </Label>
     </>}
@@ -109,6 +116,11 @@ export default function ExtraPointEntry({isRe, index}: { isRe: boolean; index: n
           </div>
         </Form>
       </Modal.Content>
+      {index > -1 && <Modal.Actions>
+        <Button basic inverted onClick={remove}>
+          <Icon name='ban'/> Sonderpunkt entfernen
+        </Button>
+      </Modal.Actions>}
     </Modal>
   </div>;
 }

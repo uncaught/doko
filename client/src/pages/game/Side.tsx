@@ -3,6 +3,8 @@ import {Grid} from 'semantic-ui-react';
 import Announcing from './Announcing';
 import SidePlayers from './SidePlayers';
 import ExtraPoints from './ExtraPoints';
+import GamePips from './GamePips';
+import Points from './Points';
 
 export default function Side({isRe}: { isRe: boolean }): ReactElement | null {
   return <Grid.Column>
@@ -17,5 +19,7 @@ export default function Side({isRe}: { isRe: boolean }): ReactElement | null {
     </div>
     <ExtraPoints isRe={isRe}/>
     <SidePlayers isRe={isRe}/>
+    <GamePips isRe={isRe}/>
+    <Points isRe={isRe}/>
   </Grid.Column>;
 }

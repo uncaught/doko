@@ -3,8 +3,6 @@ import {Button, Checkbox, Form, Header, Icon, Modal, Segment} from 'semantic-ui-
 import {useActivePlayers} from '../../store/Players';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
-import {useFullParams} from '../../Page';
-import {useHistory} from 'react-router-dom';
 
 export default function Penalty(): ReactElement {
   const {data} = useGame()!;
@@ -15,12 +13,9 @@ export default function Penalty(): ReactElement {
   const penaltyMemId = data.gameTypeMemberId;
   const allOtherPlayerIds = activePlayers.map(({groupMemberId}) => groupMemberId).filter((id) => id !== penaltyMemId);
   const contraLength = data.contra.members.length;
-  const affectsFullRound = contraLength === allOtherPlayerIds.length;
   const gameOtherPlayers = gamePlayers.all.filter(({member}) => member.id !== penaltyMemId);
   const gameOtherPlayerIds = gameOtherPlayers.map(({member}) => member.id);
   const [open, setOpen] = useState(false);
-  const {parents} = useFullParams();
-  const history = useHistory();
 
   const getPoints = useCallback(() => (data.gamePoints * contraLength).toString(),
     [data.gamePoints, contraLength]);
@@ -52,7 +47,7 @@ export default function Penalty(): ReactElement {
             label='Nur die 3 Gegenspieler dieses Spiels erhalten positive Punkte'
             name='penaltyDivision'
             value='game'
-            checked={!affectsFullRound && contraLength > 1}
+            checked={contraLength === 3}
             onChange={() => patchGame({data: {contra: {members: gameOtherPlayerIds}}})}
           />
         </Form.Field>
@@ -63,7 +58,7 @@ export default function Penalty(): ReactElement {
               label={`Alle ${allOtherPlayerIds.length} Gegenspieler dieser Runde erhalten positive Punkte`}
               name='penaltyDivision'
               value='all'
-              checked={affectsFullRound}
+              checked={contraLength === allOtherPlayerIds.length}
               onChange={() => patchGame({data: {contra: {members: allOtherPlayerIds}}})}
             />
           </Form.Field>
@@ -91,11 +86,6 @@ export default function Penalty(): ReactElement {
                     }}/>
 
         <p>Die Strafpunkte müssen unter den Gegenspielern aufteilbar sein.</p>
-
-        <Form.Button onClick={() => {
-          patchGame({data: {isComplete: true}});
-          history.push(parents[0].url);
-        }}>Abschließen</Form.Button>
       </Form>
 
       <Modal open={open} onClose={() => setOpen(false)} basic size='small'>

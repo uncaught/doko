@@ -5,9 +5,10 @@ import GameTypeSelection from './GameTypeSelection';
 import SoloTypeSelection from './SoloTypeSelection';
 import Penalty from './Penalty';
 import NonPenalty from './NonPenalty';
-import Dealer from './Dealer';
+import GameLabels from './GameLabels';
+import FinishButton from './FinishButton';
 
-export default function (): ReactElement | null {
+export default function GameIndex(): ReactElement | null {
   const game = useGame();
   if (!game) {
     return null;
@@ -16,12 +17,14 @@ export default function (): ReactElement | null {
   const isPenalty = game.data.gameType === 'penalty';
 
   return <section>
-    <Dealer/>
+    <GameLabels/>
     <Segment vertical className="u-flex-row u-flex-wrap">
       <GameTypeSelection/>
       <SoloTypeSelection/>
     </Segment>
     {isPenalty && <Penalty/>}
     {!isPenalty && <NonPenalty/>}
+
+    <FinishButton/>
   </section>;
 }

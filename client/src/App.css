@@ -95,8 +95,12 @@
   cursor: pointer;
 }
 
+.u-margin-none {
+  margin: 0 !important;;
+}
+
 .u-text-center {
-  text-align: center;
+  text-align: center !important;
 }
 
 .u-line-through {
@@ -209,4 +213,23 @@
 
 .ui.checkbox input:focus ~ label.inverted {
   color: rgba(255, 255, 255, .95);
+}
+
+.pointsGroup.ui.labels > .label {
+  margin: .25em !important;
+}
+
+.pointsGroup.ui.labels > .label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pointsGroup.ui.labels > .label.range {
+  font-size: 0.7rem;
+}
+
+.ui.grid.tinyVertical > .column:not(.row) {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
 }

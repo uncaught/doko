@@ -82,7 +82,7 @@ export default function Announcing({type, label, text, isRe}: { type: Announce; 
         <Icon name={'trophy'}/>
         "{text || label}" {type === 'announced' ? 'angesagt' : 'abgesagt'} von
       </Header>
-      <Modal.Content>
+      <Modal.Content className="u-flex-row-around u-flex-wrap">
         {[...sidePlayers, ...gamePlayers.undecided].map(({member}) => <p key={member.id}>
           <Button onClick={() => selectAnnounce(member.id)}
                   color={party[type] === member.id ? 'green' : undefined}
@@ -91,7 +91,7 @@ export default function Announcing({type, label, text, isRe}: { type: Announce; 
           </Button>
         </p>)}
       </Modal.Content>
-      {!!party[type] && <Modal.Actions>
+      {!!party[type] && <Modal.Actions className="u-text-center">
         <Button basic inverted onClick={cancel}>
           <Icon name='ban'/> {type === 'announced' ? 'Ansage' : 'Absage'} aufheben
         </Button>

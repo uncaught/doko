@@ -12,7 +12,7 @@ import {useLoadRounds} from '../../store/Rounds';
 import Settings from './Settings';
 import {useGroup} from '../../store/Groups';
 
-export default function (): ReactElement | null {
+export default function GroupIndex(): ReactElement | null {
   useLoadGroupMembers();
   useLoadRounds();
   const {url} = useRouteMatch();

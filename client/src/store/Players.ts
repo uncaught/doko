@@ -70,7 +70,7 @@ export function useActivePlayers(): Player[] {
 interface PlayerStats {
   member: GroupMember;
   player: Player;
-  euros: number;
+  euros: string;
   pointBalance: number;
   dutySoloPlayed: boolean;
 }
@@ -87,7 +87,7 @@ export function usePlayersWithStats(): PlayerStats[] {
       statsByMember.set(player.groupMemberId, {
         player,
         member: members[player.groupMemberId],
-        euros: 0,
+        euros: '',
         pointBalance: 0,
         dutySoloPlayed: false,
       });
@@ -114,8 +114,8 @@ export function usePlayersWithStats(): PlayerStats[] {
     });
 
     const sorted = [...statsByMember.values()].sort((a, b) => b.pointBalance - a.pointBalance);
-    const topPoints = sorted[0].pointBalance;
-    sorted.forEach((stat) => stat.euros = (topPoints - stat.pointBalance) * 0.05);
+    const topPoints = sorted.length ? sorted[0].pointBalance : 0;
+    sorted.forEach((stat) => stat.euros = ((topPoints - stat.pointBalance) * 0.05).toFixed(2));
     return sorted;
   }, [games, members, players]);
 }

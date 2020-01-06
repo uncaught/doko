@@ -7,7 +7,7 @@ import {Switch, useRouteMatch} from 'react-router-dom';
 import Page from '../../Page';
 import Group from '../group';
 
-export default function (): ReactElement {
+export default function GroupsIndex(): ReactElement {
   const {url} = useRouteMatch();
   return <Switch>
     <Page path={`${url}/group/:groupId`} displayName={'Gruppe'}>

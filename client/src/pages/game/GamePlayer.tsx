@@ -54,7 +54,7 @@ export default function GamePlayer({member}: { member: GroupMember }): ReactElem
 
     <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
       <Header>Partei von {member.name}</Header>
-      <Modal.Content className="u-flex-row-around">
+      <Modal.Content className="u-flex-row-around u-flex-wrap">
         <Button inverted
                 color={game.data.re.members.includes(member.id) ? 'green' : undefined}
                 onClick={() => chooseSide(true)}>Re</Button>

@@ -101,7 +101,7 @@ function addPointsForAnnounces(log: GameCalcLog, data: GameData, add: AddingFn):
 function addExtraPoints(log: GameCalcLog, party: Party, add: AddingFn, prefix: 're' | 'contra'): void {
   party.extraPoints.forEach(({type}) => {
     add(1);
-    log.push(`extra_point_${type}` as GameCalcLogKey);
+    log.push(`${prefix}_extra_point_${type}` as GameCalcLogKey);
   });
 }
 
@@ -159,9 +159,9 @@ function game(data: GameData): GameData {
 
   //Extra points (7.2.3):
   if (!isSoloLike) {
-    if (contraWon && data.gameType !== 'poverty') {
+    if (contraWon && data.gameType !== 'poverty' && data.wonAgainstQueensOfClubsExtraPoint) {
       addContra(1);
-      log.push('extra_point_wonAgainstQueensOfClubs');
+      log.push('contra_extra_point_wonAgainstQueensOfClubs');
     }
     addExtraPoints(log, data.re, addRe, 're');
     addExtraPoints(log, data.contra, addContra, 'contra');
@@ -181,6 +181,8 @@ function game(data: GameData): GameData {
       log.push('bock_extra_points');
     }
   }
+
+  //TODO: qualifiesNewBockGames
 
   return mergeStates<GameData>(data, {
     gameCalcLog: log,

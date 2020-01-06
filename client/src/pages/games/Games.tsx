@@ -4,6 +4,7 @@ import {useActivePlayers} from '../../store/Players';
 import {useSortedGames} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {useHistory, useRouteMatch} from 'react-router-dom';
+import AddGame from '../round/AddGame';
 
 export default function Games(): ReactElement {
   const players = useActivePlayers();
@@ -14,7 +15,7 @@ export default function Games(): ReactElement {
   const {url} = useRouteMatch();
 
   return <section>
-    <Table basic unstackable striped className="gamesTable" textAlign='center'>
+    <Table basic unstackable className="gamesTable" textAlign='center'>
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell collapsing>#</Table.HeaderCell>
@@ -35,23 +36,22 @@ export default function Games(): ReactElement {
               const isRe = re.members.includes(p.groupMemberId);
               const isContra = !isRe && contra.members.includes(p.groupMemberId);
 
-              if (!isRe && !isContra) {
-                return <Table.Cell key={p.groupMemberId}>-</Table.Cell>;
+              if ((!isRe && !isContra) || !isComplete) {
+                return <Table.Cell key={p.groupMemberId}>{isComplete ? '-' : ''}</Table.Cell>;
               }
 
               const points = data[isRe ? 're' : 'contra'].totalPoints;
               const newPoints = (sumMap.get(p.groupMemberId) || 0) + points;
               sumMap.set(p.groupMemberId, newPoints);
 
-              const hasWon = isComplete
-                && ((winner === 're' && isRe) || (winner === 'contra' && isContra));
-              const hasLost = isComplete && !hasWon;
+              const hasWon = (winner === 're' && isRe) || (winner === 'contra' && isContra);
+              const hasLost = !hasWon && winner !== 'stalemate';
 
               return <Table.Cell positive={hasWon}
                                  negative={hasLost}
                                  key={p.groupMemberId}
                                  className={isRe ? 'gamesTable-cell--isRe' : 'gamesTable-cell--isContra'}>
-                {isComplete ? newPoints : ''}
+                {newPoints}
                 {isRe && <span className={'gamesTable-cell-re'}>RE</span>}
               </Table.Cell>;
             })}
@@ -59,5 +59,7 @@ export default function Games(): ReactElement {
         })}
       </Table.Body>
     </Table>
+
+    <AddGame/>
   </section>;
 }
