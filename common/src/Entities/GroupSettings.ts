@@ -91,7 +91,7 @@ export const defaultGroupSettings: GroupSettings = {
     karlGotLastTrick: true,
     karlCaught: false,
   },
-  bockEffect: 'extraPoints',
+  bockEffect: 'doubleGameAndExtraPoints',
   bockEffectExtraPoints: 2,
   bockInBockBehavior: 'stack',
   bockGames: {

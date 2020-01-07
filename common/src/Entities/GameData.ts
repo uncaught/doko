@@ -110,10 +110,11 @@ export interface GameData {
   re: Party;
   contra: Party;
   wonAgainstQueensOfClubsExtraPoint: boolean;
-  isBockGame: boolean;
+  bockGameWeight: number;
   qualifiesNewBockGames: boolean;
   bockEffect: GroupSettings['bockEffect'];
   bockEffectExtraPoints: number;
+  bockGameConditions: GroupSettings['bockGames'];
   heartsTrickWentThrough: boolean;
   isComplete: boolean;
   gamePoints: number;
@@ -134,6 +135,9 @@ export function getDefaultParty(): Party {
   };
 }
 
+/**
+ * The settings required to calculate the game-state are copied over to the game to avoid conflicts with setting-changes
+ */
 export function getDefaultGameData(settings: GroupSettings): GameData {
   return {
     gameCalcLog: [],
@@ -143,10 +147,11 @@ export function getDefaultGameData(settings: GroupSettings): GameData {
     re: getDefaultParty(),
     contra: getDefaultParty(),
     wonAgainstQueensOfClubsExtraPoint: settings.extraPoints.wonAgainstQueensOfClubs,
-    isBockGame: false,
+    bockGameWeight: 0,
     qualifiesNewBockGames: false,
-    bockEffect: settings.bockEffect, //copied to avoid corruption after changes
+    bockEffect: settings.bockEffect,
     bockEffectExtraPoints: settings.bockEffectExtraPoints,
+    bockGameConditions: settings.bockGames,
     heartsTrickWentThrough: false,
     isComplete: false,
     gamePoints: 0,

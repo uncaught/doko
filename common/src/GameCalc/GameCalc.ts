@@ -117,7 +117,6 @@ function game(data: GameData): GameData {
   const reWon = reHasWon(data, log, reMinPips);
   const contraWon = !reWon && contraHasWon(data, log, contraMinPips);
   const hasWinner = reWon || contraWon;
-  const useBockEffect = hasWinner && data.isBockGame;
   if (!hasWinner) {
     log.push('no_party_won');
   }
@@ -151,10 +150,12 @@ function game(data: GameData): GameData {
   addPointsAgainstRejection(log, reMinPips, addRe, 're', data.contra); //7.2.2 (e)
   addPointsAgainstRejection(log, contraMinPips, addContra, 'contra', data.re); //7.2.2 (f)
 
-  if (useBockEffect && data.bockEffect === 'doubleGamePoints') {
-    rePoints *= 2;
-    contraPoints *= 2;
-    log.push('bock_double_game_points');
+  if (hasWinner && data.bockGameWeight && data.bockEffect === 'doubleGamePoints') {
+    for (let i = 0; i < data.bockGameWeight; i++) {
+      rePoints *= 2;
+      contraPoints *= 2;
+      log.push('bock_double_game_points');
+    }
   }
 
   //Extra points (7.2.3):
@@ -167,24 +168,36 @@ function game(data: GameData): GameData {
     addExtraPoints(log, data.contra, addContra, 'contra');
   }
 
-  if (useBockEffect) {
-    if (data.bockEffect === 'doubleGameAndExtraPoints') {
-      rePoints *= 2;
-      contraPoints *= 2;
-      log.push('bock_double_game_and_extra_points');
-    } else if (data.bockEffect === 'extraPoints') {
-      if (reWon) {
-        addRe(data.bockEffectExtraPoints);
-      } else {
-        addContra(data.bockEffectExtraPoints);
+  if (hasWinner && data.bockGameWeight) {
+    for (let i = 0; i < data.bockGameWeight; i++) {
+      if (data.bockEffect === 'doubleGameAndExtraPoints') {
+        rePoints *= 2;
+        contraPoints *= 2;
+        log.push('bock_double_game_and_extra_points');
+      } else if (data.bockEffect === 'extraPoints') {
+        if (reWon) {
+          addRe(data.bockEffectExtraPoints);
+        } else {
+          addContra(data.bockEffectExtraPoints);
+        }
+        log.push('bock_extra_points');
       }
-      log.push('bock_extra_points');
     }
   }
 
-  //TODO: qualifiesNewBockGames
+  const qualifiesNewBockGames = (data.bockGameConditions.heartsTrick && data.heartsTrickWentThrough)
+    || (data.bockGameConditions.bothParties120Points && data.re.pips === '120')
+    || (data.bockGameConditions.zeroGame && contraPoints === 0)
+    || (data.bockGameConditions.rePartyLostWithAnnounce && contraWon && !!data.re.announced)
+    || (data.bockGameConditions.contraPartyLostWithAnnounce && reWon && !!data.contra.announced)
+    || (data.bockGameConditions.soloLost && contraWon && isSoloLike);
+
+  if (qualifiesNewBockGames) {
+    log.push('qualifies_new_bock_games');
+  }
 
   return mergeStates<GameData>(data, {
+    qualifiesNewBockGames,
     gameCalcLog: log,
     re: {
       totalPoints: rePoints * (isSoloLike ? 3 : 1),

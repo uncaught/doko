@@ -70,6 +70,8 @@ export const logTexts = {
   contra_extra_point_foxCaught: 'Fuchs für Contra',
   contra_extra_point_karlGotLastTrick: 'Karlchen im letzten Stich für Contra',
   contra_extra_point_karlCaught: 'Karlchen im letzten Stich gefangen für Contra',
+
+  qualifies_new_bock_games: 'Die nächsten Spiele sind Bockspiele!',
 };
 
 export type GameCalcLogKey = keyof typeof logTexts;
