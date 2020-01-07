@@ -6,7 +6,6 @@ import {
   generateUuid,
   getDefaultGameData,
   GroupMember,
-  GroupSettings,
   mergeStates,
   objectContains,
   PatchableGame,
@@ -27,6 +26,7 @@ import {useGameParticipatingPlayers} from './Players';
 import {useHistory} from 'react-router-dom';
 import {useGroupMembers} from './GroupMembers';
 import {useGroup} from './Groups';
+import {getBockGameWeight} from '../BockGameDetection';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -87,54 +87,6 @@ function getNextDealer(players: Player[], lastGame: Game): string {
   return players[nextIndex].groupMemberId;
 }
 
-function getBockGameWeight({bockInBockBehavior}: GroupSettings, sortedGames: Game[], newGameDealerId: string): number {
-  let bockStack: Array<{ startingDealerId: string; hasDealerChangedOnce: boolean }> = [];
-  let bockExtends = 0;
-
-  sortedGames.forEach(({data, dealerGroupMemberId}, idx) => {
-    if (data.gameType === 'penalty') {
-      return;
-    }
-
-    //Clean bock stack of bocks that are over:
-    bockStack = bockStack.filter(({startingDealerId, hasDealerChangedOnce}) => {
-      return !hasDealerChangedOnce || startingDealerId !== dealerGroupMemberId;
-    });
-
-    //Mark if the dealer has changed
-    bockStack.forEach((bock) => {
-      if (!bock.hasDealerChangedOnce && bock.startingDealerId !== dealerGroupMemberId) {
-        bock.hasDealerChangedOnce = true;
-      }
-    });
-
-    const nextGame = sortedGames[idx + 1];
-    const nextDealerId = nextGame ? nextGame.dealerGroupMemberId : newGameDealerId;
-    const newBock = {startingDealerId: nextDealerId, hasDealerChangedOnce: false};
-
-    if (bockStack.length === 0 && bockExtends > 0) {
-      bockStack = [newBock];
-      bockExtends--;
-    }
-
-    if (data.qualifiesNewBockGames) {
-      if (bockStack.length > 0) {
-        if (bockInBockBehavior === 'extend') {
-          bockExtends++;
-        } else if (bockInBockBehavior === 'restart') {
-          bockStack = [newBock];
-        } else if (bockInBockBehavior === 'stack') {
-          bockStack.push(newBock);
-        }
-      } else {
-        bockStack = [newBock];
-      }
-    }
-  });
-
-  return bockStack.length;
-}
-
 export function useAddGame() {
   const {settings} = useGroup()!;
   const currentRound = useRound();
@@ -149,8 +101,8 @@ export function useAddGame() {
     const id = generateUuid();
     const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
     const dealerGroupMemberId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
-    const data = getDefaultGameData(settings);
-    data.bockGameWeight = getBockGameWeight(settings, currentGames, dealerGroupMemberId);
+    const data = getDefaultGameData(settings, lastGame);
+    data.bockGameWeight = getBockGameWeight(data.bockInBockBehavior, currentGames, dealerGroupMemberId);
     const game: Game = {
       id,
       data,

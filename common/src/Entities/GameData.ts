@@ -1,5 +1,6 @@
 import {GroupSettings, SoloType} from './GroupSettings';
 import {GameCalcLog} from '../GameCalc';
+import {Game} from './Games';
 
 export type PipRange =
   '0'
@@ -115,6 +116,7 @@ export interface GameData {
   bockEffect: GroupSettings['bockEffect'];
   bockEffectExtraPoints: number;
   bockGameConditions: GroupSettings['bockGames'];
+  bockInBockBehavior: GroupSettings['bockInBockBehavior'];
   heartsTrickWentThrough: boolean;
   isComplete: boolean;
   gamePoints: number;
@@ -138,7 +140,7 @@ export function getDefaultParty(): Party {
 /**
  * The settings required to calculate the game-state are copied over to the game to avoid conflicts with setting-changes
  */
-export function getDefaultGameData(settings: GroupSettings): GameData {
+export function getDefaultGameData(settings: GroupSettings, lastGame: Game | null = null): GameData {
   return {
     gameCalcLog: [],
     gameType: 'normal',
@@ -152,6 +154,7 @@ export function getDefaultGameData(settings: GroupSettings): GameData {
     bockEffect: settings.bockEffect,
     bockEffectExtraPoints: settings.bockEffectExtraPoints,
     bockGameConditions: settings.bockGames,
+    bockInBockBehavior: lastGame ? lastGame.data.bockInBockBehavior : settings.bockInBockBehavior,
     heartsTrickWentThrough: false,
     isComplete: false,
     gamePoints: 0,
