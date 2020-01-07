@@ -6,7 +6,7 @@ export default function AddGame(): ReactElement | null {
   const sortedGames = useSortedGames();
   const addGame = useAddGame();
   const lastGame = sortedGames[sortedGames.length - 1];
-  if (!!lastGame && !lastGame.data.isComplete) {
+  if (lastGame && (!lastGame.data.isComplete || lastGame.data.isLastGame)) {
     return null;
   }
   return <div className="memberDetail">

@@ -1,5 +1,5 @@
 import server from '../Server';
-import {getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
+import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
@@ -11,6 +11,18 @@ export async function getGroupForRound(roundId: string): Promise<string | null> 
   return result.length ? result[0].groupId : null;
 }
 
+export async function loadRounds(groupId: string): Promise<Round[]> {
+  const rounds = await query<Round>(`SELECT id, 
+                                            group_id as groupId,
+                                            UNIX_TIMESTAMP(start_date) as startDate,
+                                            UNIX_TIMESTAMP(end_date) as endDate,
+                                            data
+                                       FROM rounds
+                                      WHERE group_id = ?`, [groupId]);
+  fromDbValue(rounds, roundsDbConfig.types);
+  return rounds;
+}
+
 server.channel<RoundsLoad>('rounds/load', {
   access(ctx, {groupId}) {
     return canReadGroup(ctx.userId!, groupId);
@@ -19,12 +31,7 @@ server.channel<RoundsLoad>('rounds/load', {
     await ctx.sendBack<RoundsLoaded>({
       groupId,
       type: 'rounds/loaded',
-      rounds: await query<Round>(`SELECT id, 
-                                         group_id as groupId,
-                                         UNIX_TIMESTAMP(start_date) as startDate,
-                                         UNIX_TIMESTAMP(end_date) as endDate
-                                    FROM rounds
-                                   WHERE group_id = ?`, [groupId]),
+      rounds: await loadRounds(groupId),
     });
   },
   async filter(ctx, {groupId: subGroupId}) {

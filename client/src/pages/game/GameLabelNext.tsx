@@ -18,10 +18,10 @@ export default function GameLabelNext(): ReactElement {
              color={'blue'}>
         <Icon className="u-margin-none" name={'hashtag'}/> <Icon name={'arrow right'}/>
       </Label>}
-      {!nextGame && !game.data.isComplete && <Label>
+      {!nextGame && (!game.data.isComplete || game.data.isLastGame) && <Label>
         <Icon className="u-margin-none" name={'hashtag'}/> <Icon name={'arrow right'}/>
       </Label>}
-      {!nextGame && game.data.isComplete && <Label color={'green'} onClick={addGame}>
+      {!nextGame && game.data.isComplete && !game.data.isLastGame && <Label color={'green'} onClick={addGame}>
         <Icon className="u-margin-none" name={'plus'}/> <Icon name={'arrow right'}/>
       </Label>}
     </div>

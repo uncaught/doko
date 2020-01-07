@@ -6,6 +6,7 @@ import {useGroupMembers} from '../../store/GroupMembers';
 import {useHistory, useRouteMatch} from 'react-router-dom';
 import AddGame from '../round/AddGame';
 import {GameData, soloGameTypes} from '@doko/common';
+import RoundEndInfo from '../round/RoundEndInfo';
 
 function RoundIndicators({data}: { data: GameData }): ReactElement {
   const indicators: ReactElement[] = [];
@@ -80,6 +81,7 @@ export default function Games(): ReactElement {
       </Table.Body>
     </Table>
 
+    <RoundEndInfo/>
     <AddGame/>
   </section>;
 }

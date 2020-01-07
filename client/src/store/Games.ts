@@ -103,6 +103,9 @@ export function useAddGame() {
     }
     const id = generateUuid();
     const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
+    if (lastGame && lastGame.data.isLastGame) {
+      return;
+    }
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
     const data = getDefaultGameData(settings, lastGame);
     data.runNumber = detectRunNumber(currentGames, nextDealerId);
