@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpileOnly src/index.ts",
-    "start": "ts-node src/index.ts",
+    "start": "ts-node -T src/index.ts",
     "tsc": "tsc"
   },
   "dependencies": {
