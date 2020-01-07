@@ -1,6 +1,6 @@
 import React, {ReactElement, useCallback, useEffect, useState} from 'react';
 import {Button, Checkbox, Form, Header, Icon, Modal, Segment} from 'semantic-ui-react';
-import {useActivePlayers} from '../../store/Players';
+import {useGameParticipatingPlayers} from '../../store/Players';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 
@@ -8,7 +8,7 @@ export default function Penalty(): ReactElement {
   const {data} = useGame()!;
   const patchGame = usePatchGame();
   const groupGroupMembers = useGroupMembers();
-  const activePlayers = useActivePlayers();
+  const activePlayers = useGameParticipatingPlayers();
   const gamePlayers = useGamePlayers()!;
   const penaltyMemId = data.gameTypeMemberId;
   const allOtherPlayerIds = activePlayers.map(({groupMemberId}) => groupMemberId).filter((id) => id !== penaltyMemId);

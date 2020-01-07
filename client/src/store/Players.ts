@@ -76,9 +76,20 @@ export function usePlayers(): Player[] {
   return useSelector(playersSelector)[roundId] || emptyPlayers;
 }
 
-export function useActivePlayers(): Player[] {
+/**
+ * Includes players that already left the round
+ */
+export function useRoundParticipatingPlayers(): Player[] {
   const players = usePlayers();
   return useMemo(() => players.filter((p) => p.leftAfterGameNumber !== 0), [players]);
+}
+
+/**
+ * Includes only players that have not left
+ */
+export function useGameParticipatingPlayers(): Player[] {
+  const players = usePlayers();
+  return useMemo(() => players.filter((p) => p.leftAfterGameNumber === null), [players]);
 }
 
 interface PlayerStats {
@@ -90,7 +101,7 @@ interface PlayerStats {
 }
 
 export function usePlayersWithStats(): PlayerStats[] {
-  const players = useActivePlayers();
+  const players = useRoundParticipatingPlayers();
   const games = useSortedGames();
   const members = useGroupMembers();
 

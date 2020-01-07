@@ -23,7 +23,7 @@ import {State} from './Store';
 import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
 import {useRound} from './Rounds';
-import {useActivePlayers} from './Players';
+import {useGameParticipatingPlayers} from './Players';
 import {useHistory} from 'react-router-dom';
 import {useGroupMembers} from './GroupMembers';
 import {useGroup} from './Groups';
@@ -139,7 +139,7 @@ export function useAddGame() {
   const {settings} = useGroup()!;
   const currentRound = useRound();
   const currentGames = useSortedGames();
-  const players = useActivePlayers();
+  const players = useGameParticipatingPlayers();
   const history = useHistory();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((): void => {
@@ -206,7 +206,7 @@ interface GamePlayers {
 export function useGamePlayers(): GamePlayers | null {
   const game = useGame();
   const members = useGroupMembers();
-  const players = useActivePlayers();
+  const players = useGameParticipatingPlayers();
   if (!game) {
     return null;
   }

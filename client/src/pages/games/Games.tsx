@@ -1,13 +1,13 @@
 import React, {ReactElement} from 'react';
 import {Icon, Table} from 'semantic-ui-react';
-import {useActivePlayers} from '../../store/Players';
+import {useRoundParticipatingPlayers} from '../../store/Players';
 import {useSortedGames} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {useHistory, useRouteMatch} from 'react-router-dom';
 import AddGame from '../round/AddGame';
 
 export default function Games(): ReactElement {
-  const players = useActivePlayers();
+  const players = useRoundParticipatingPlayers();
   const games = useSortedGames();
   const members = useGroupMembers();
   const sumMap = new Map<string, number>();
