@@ -1,6 +1,7 @@
 import {State} from './Store';
 import {
   GroupMember,
+  GroupMembersAdd,
   mergeStates,
   Party,
   Player,
@@ -19,6 +20,19 @@ import {useSortedGames} from './Games';
 import {useGroupMembers} from './GroupMembers';
 
 const {addReducer, combinedReducer} = createReducer<Players>({}, 'players');
+
+addReducer<GroupMembersAdd>('groupMembers/add', (state, {newRoundPlayer}) => {
+  if (newRoundPlayer && state[newRoundPlayer.roundId]) {
+    return {
+      ...state,
+      [newRoundPlayer.roundId]: [
+        ...state[newRoundPlayer.roundId],
+        newRoundPlayer,
+      ],
+    };
+  }
+  return state;
+});
 
 addReducer<RoundsAdd>('rounds/add', (state, {round, players}) => ({...state, [round.id]: players}));
 

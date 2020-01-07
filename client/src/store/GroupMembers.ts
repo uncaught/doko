@@ -16,6 +16,7 @@ import {
   mergeStates,
   objectContains,
   parseInvitationUrl,
+  Player,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector, useStore} from 'react-redux';
@@ -26,6 +27,9 @@ import {useFullParams} from '../Page';
 import {acceptedInvitationsSelector, rejectedInvitationsSelector} from './Ui';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
+import {useSortedRounds} from './Rounds';
+import {gamesSelector} from './Games';
+import {playersSelector} from './Players';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
@@ -78,13 +82,34 @@ export function useLoadGroupMembers() {
 export function useAddGroupMember() {
   const {groupId} = useFullParams<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
+  const rounds = useSortedRounds();
+  const games = useSelector(gamesSelector);
+  const players = useSelector(playersSelector);
   return useCallback((name: string): void => {
     if (!name) {
       throw new Error('Invalid name');
     }
     const groupMember: GroupMember = {groupId, name, id: generateUuid(), isRegular: true};
-    dispatch.sync<GroupMembersAdd>({groupMember, type: 'groupMembers/add'});
-  }, [dispatch, groupId]);
+
+    //Add the new member to the last open round if all data is there - otherwise bad luck
+    let newRoundPlayer: Player | null = null;
+    if (rounds.length && rounds[rounds.length - 1].endDate === null) {
+      const lastOpenRoundId = rounds[rounds.length - 1].id;
+      const roundGames = games[lastOpenRoundId];
+      const roundPlayers = players[lastOpenRoundId];
+      if (roundGames && roundPlayers) {
+        newRoundPlayer = {
+          roundId: lastOpenRoundId,
+          groupMemberId: groupMember.id,
+          sittingOrder: roundPlayers.length,
+          joinedAfterGameNumber: Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0].gameNumber,
+          leftAfterGameNumber: null,
+        };
+      }
+    }
+
+    dispatch.sync<GroupMembersAdd>({groupMember, newRoundPlayer, type: 'groupMembers/add'});
+  }, [dispatch, games, groupId, players, rounds]);
 }
 
 export function useCreateInvitation() {

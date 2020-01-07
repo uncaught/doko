@@ -1,5 +1,12 @@
 import server from '../Server';
-import {fromDbValue, insertSingleEntity, query, updateSingleEntity} from '../Connection';
+import {
+  fromDbValue,
+  getTransactional,
+  insertEntity,
+  insertSingleEntity,
+  query,
+  updateSingleEntity,
+} from '../Connection';
 import {createFilter} from '../logux/Filter';
 import {
   GroupMember,
@@ -12,9 +19,10 @@ import {
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
+  Player,
 } from '@doko/common';
 import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
-import {groupMemberDevicesDbConfig, groupMembersDbConfig} from '../DbTypes';
+import {groupMemberDevicesDbConfig, groupMembersDbConfig, playersDbConfig} from '../DbTypes';
 import {loadGroups} from './Groups';
 
 export async function memberIdsBelongToGroup(groupId: string, memberIds: string[]): Promise<boolean> {
@@ -68,7 +76,12 @@ server.type<GroupMembersAdd>('groupMembers/add', {
     return {channel: 'groupMembers/load'};
   },
   async process(ctx, action) {
-    await insertSingleEntity<GroupMember>(ctx.userId!, groupMembersDbConfig, action.groupMember);
+    await getTransactional(ctx.userId!, async (update) => {
+      await insertEntity<GroupMember>(update, groupMembersDbConfig, action.groupMember);
+      if (action.newRoundPlayer) {
+        await insertEntity<Player>(update, playersDbConfig, action.newRoundPlayer);
+      }
+    });
   },
 });
 

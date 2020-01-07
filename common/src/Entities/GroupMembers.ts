@@ -1,5 +1,6 @@
 import {Group} from './Groups';
 import {DeepPartial} from '../Generics';
+import {Player} from './Players';
 
 export interface GroupMember {
   id: string;
@@ -34,6 +35,7 @@ export interface GroupMembersLoaded {
 export interface GroupMembersAdd {
   type: 'groupMembers/add';
   groupMember: GroupMember;
+  newRoundPlayer: Player | null;
 }
 
 export interface GroupMembersPatch {
