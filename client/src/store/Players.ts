@@ -70,7 +70,7 @@ export function useActivePlayers(): Player[] {
 interface PlayerStats {
   member: GroupMember;
   player: Player;
-  euros: string;
+  euros: string; //toFixed(2)
   pointBalance: number;
   dutySoloPlayed: boolean;
 }

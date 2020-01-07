@@ -7,6 +7,7 @@ import Penalty from './Penalty';
 import NonPenalty from './NonPenalty';
 import GameLabels from './GameLabels';
 import FinishButton from './FinishButton';
+import HeartsTrickToggle from './HeartsTrickToggle';
 
 export default function GameIndex(): ReactElement | null {
   const game = useGame();
@@ -21,6 +22,7 @@ export default function GameIndex(): ReactElement | null {
     <Segment vertical className="u-flex-row u-flex-wrap">
       <GameTypeSelection/>
       <SoloTypeSelection/>
+      <HeartsTrickToggle/>
     </Segment>
     {isPenalty && <Penalty/>}
     {!isPenalty && <NonPenalty/>}

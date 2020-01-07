@@ -114,6 +114,7 @@ export interface GameData {
   qualifiesNewBockGames: boolean;
   bockEffect: GroupSettings['bockEffect'];
   bockEffectExtraPoints: number;
+  heartsTrickWentThrough: boolean;
   isComplete: boolean;
   gamePoints: number;
   winner: 'stalemate' | 're' | 'contra';
@@ -146,6 +147,7 @@ export function getDefaultGameData(settings: GroupSettings): GameData {
     qualifiesNewBockGames: false,
     bockEffect: settings.bockEffect, //copied to avoid corruption after changes
     bockEffectExtraPoints: settings.bockEffectExtraPoints,
+    heartsTrickWentThrough: false,
     isComplete: false,
     gamePoints: 0,
     winner: 'stalemate',
