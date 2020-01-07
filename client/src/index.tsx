@@ -28,7 +28,7 @@ const createStore = createLoguxCreator({
     ? window.location.protocol === 'https:'
       ? `wss://${window.location.hostname}/api`
       : `ws://${window.location.hostname}:3030`
-    : 'wss://logux.example.com',
+    : `wss://${window.location.hostname}/api`,
   // store: new IndexedStore(),
   ...getAuth(),
 });
