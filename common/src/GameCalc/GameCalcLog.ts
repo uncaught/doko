@@ -47,14 +47,14 @@ export const logTexts = {
   contra_no0: 'Contra hat "schwarz" abgesagt',
 
   re_120_against_no9: 'Re hat 120 Augen gegen "keine 9" erreicht',
-  re_90_against_no6: 'Re hat 120 Augen gegen "keine 6" erreicht',
-  re_60_against_no3: 'Re hat 120 Augen gegen "keine 3" erreicht',
-  re_30_against_no0: 'Re hat 120 Augen gegen "schwarz" erreicht',
+  re_90_against_no6: 'Re hat 90 Augen gegen "keine 6" erreicht',
+  re_60_against_no3: 'Re hat 60 Augen gegen "keine 3" erreicht',
+  re_30_against_no0: 'Re hat 30 Augen gegen "schwarz" erreicht',
 
   contra_120_against_no9: 'Contra hat 120 Augen gegen "keine 9" erreicht',
-  contra_90_against_no6: 'Contra hat 120 Augen gegen "keine 6" erreicht',
-  contra_60_against_no3: 'Contra hat 120 Augen gegen "keine 3" erreicht',
-  contra_30_against_no0: 'Contra hat 120 Augen gegen "schwarz" erreicht',
+  contra_90_against_no6: 'Contra hat 90 Augen gegen "keine 6" erreicht',
+  contra_60_against_no3: 'Contra hat 60 Augen gegen "keine 3" erreicht',
+  contra_30_against_no0: 'Contra hat 30 Augen gegen "schwarz" erreicht',
 
   bock_double_game_points: 'Bock: Verdopplung der Spielpunkte',
   bock_double_game_and_extra_points: 'Bock: Verdopplung der Spiel- und Sonderpunkte',
