@@ -23,7 +23,7 @@ services:
     volumes:
       - ./doko:/doko:rw
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - LOGUX_HOST=0.0.0.0
       - LOGUX_PORT=3030
       - DB_HOST=database
