@@ -99,6 +99,10 @@
   margin: 0 !important;;
 }
 
+.u-margin-top-tiny {
+  margin-top: .25rem;
+}
+
 .u-text-center {
   text-align: center !important;
 }
@@ -232,4 +236,9 @@
 .ui.grid.tinyVertical > .column:not(.row) {
   padding-top: .25rem;
   padding-bottom: .25rem;
+}
+
+.ui.grid.tinyVertical > .row {
+  padding-top: 0;
+  padding-bottom: 0;
 }
