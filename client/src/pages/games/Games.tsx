@@ -5,6 +5,23 @@ import {useSortedGames} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {useHistory, useRouteMatch} from 'react-router-dom';
 import AddGame from '../round/AddGame';
+import {GameData, soloGameTypes} from '@doko/common';
+
+function RoundIndicators({data}: { data: GameData }): ReactElement {
+  const indicators: ReactElement[] = [];
+  for (let i = 0; i < data.bockGameWeight; i++) {
+    indicators.push(<Icon key={`bock_${i}`} size={'tiny'} color={'purple'} name={'btc'}/>);
+  }
+  return <div className="gamesTable-cell-gameIndicators">{indicators}</div>;
+}
+
+function RoundPlayerIndicators({data, memberId}: { data: GameData; memberId: string }): ReactElement {
+  const indicators: ReactElement[] = [];
+  if (soloGameTypes.includes(data.gameType) && data.re.members.includes(memberId)) {
+    indicators.push(<Icon key={'solo'} size={'tiny'} color={'blue'} name={'dollar'}/>);
+  }
+  return <div className="gamesTable-cell-gameIndicators">{indicators}</div>;
+}
 
 export default function Games(): ReactElement {
   const players = useRoundParticipatingPlayers();
@@ -29,7 +46,10 @@ export default function Games(): ReactElement {
         {games.map(({id, gameNumber, data, dealerGroupMemberId}) => {
           const {gamePoints, re, contra, isComplete, winner} = data;
           return <Table.Row key={id} onClick={() => history.push(`${url}/game/${id}`)}>
-            <Table.Cell>{gameNumber}</Table.Cell>
+            <Table.Cell className="u-relative">
+              {gameNumber}
+              <RoundIndicators data={data}/>
+            </Table.Cell>
             <Table.Cell>{members[dealerGroupMemberId].name[0]}</Table.Cell>
             <Table.Cell>{isComplete ? gamePoints : ''}</Table.Cell>
             {players.map((p) => {
@@ -50,9 +70,9 @@ export default function Games(): ReactElement {
               return <Table.Cell positive={hasWon}
                                  negative={hasLost}
                                  key={p.groupMemberId}
-                                 className={isRe ? 'gamesTable-cell--isRe' : 'gamesTable-cell--isContra'}>
+                                 className="u-relative">
                 {newPoints}
-                {isRe && <span className={'gamesTable-cell-re'}>RE</span>}
+                <RoundPlayerIndicators data={data} memberId={p.groupMemberId}/>
               </Table.Cell>;
             })}
           </Table.Row>;

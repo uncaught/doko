@@ -1,4 +1,4 @@
-import {Announce, announceChain, PatchableGame, soloGameTypes, soloLikeGameTypes} from '@doko/common';
+import {Announce, announceChain, PatchableGame, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
 import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
@@ -61,7 +61,7 @@ export default function Announcing({type, label, text, isRe}: { type: Announce; 
   };
 
   const doOpen = () => {
-    if (isRe && soloGameTypes.includes(game.data.gameType)) {
+    if (isRe && isSoloLike) {
       if (party[type]) {
         cancel();
       } else {

@@ -15,11 +15,11 @@ export default function GameLabelComplete(): ReactElement | null {
 
   return <>
     <div className="memberDetail">
-      {game.data.isComplete && <Label color={'red'} onClick={() => setOpen(true)}>
-        Zu <Icon name={'lock'}/>
+      {game.data.isComplete && <Label className={'iconOnly'} color={'red'} onClick={() => setOpen(true)}>
+        <Icon name={'lock'}/>
       </Label>}
-      {!game.data.isComplete && <Label color={'yellow'}>
-        Offen <Icon name={'lock open'}/>
+      {!game.data.isComplete && <Label className={'iconOnly'} color={'yellow'}>
+        <Icon name={'lock open'}/>
       </Label>}
     </div>
 

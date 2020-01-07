@@ -185,6 +185,7 @@
   overflow: hidden;
 }
 
+
 .gamesTable-cell-re {
   position: absolute;
   top: 2px;
@@ -196,6 +197,13 @@
   transform: rotate(45deg);
   line-height: 6px;
   width: 20px;
+}
+
+.gamesTable-cell-gameIndicators {
+  position: absolute;
+  top: -5px;
+  left: 1px;
+  white-space: nowrap;
 }
 
 .gamesTable.ui.table > thead > tr > th,

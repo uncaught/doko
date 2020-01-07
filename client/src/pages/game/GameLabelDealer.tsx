@@ -9,7 +9,7 @@ export default function GameLabelDealer(): ReactElement {
   const dealer = groupMembers[game.dealerGroupMemberId];
   return <div className="memberDetail">
     <Label color={dealer.isYou ? 'teal' : 'blue'}>
-      {dealer.name} <Icon name={'hand paper outline'}/>
+      {dealer.name[0]} <Icon name={'hand paper outline'}/>
     </Label>
   </div>;
 }
