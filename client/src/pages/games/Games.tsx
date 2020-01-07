@@ -31,6 +31,7 @@ export default function Games(): ReactElement {
   const sumMap = new Map<string, number>();
   const history = useHistory();
   const {url} = useRouteMatch();
+  let lastRunNumber = 0;
 
   return <section>
     <Table basic unstackable className="gamesTable" textAlign='center'>
@@ -45,8 +46,12 @@ export default function Games(): ReactElement {
       </Table.Header>
       <Table.Body>
         {games.map(({id, gameNumber, data, dealerGroupMemberId}) => {
-          const {gamePoints, re, contra, isComplete, winner} = data;
-          return <Table.Row key={id} onClick={() => history.push(`${url}/game/${id}`)}>
+          const {gamePoints, re, contra, isComplete, winner, runNumber} = data;
+          const isNewRun = lastRunNumber !== runNumber;
+          lastRunNumber = runNumber;
+          return <Table.Row key={id}
+                            className={isNewRun ? 'newRunRow' : ''}
+                            onClick={() => history.push(`${url}/game/${id}`)}>
             <Table.Cell className="u-relative">
               {gameNumber}
               <RoundIndicators data={data}/>
