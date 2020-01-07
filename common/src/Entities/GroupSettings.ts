@@ -48,6 +48,7 @@ export interface GroupSettings {
     contraPartyLostWithAnnounce: boolean;
     soloLost: boolean;
   };
+  dynamicRoundDuration: boolean;
 }
 
 export const extraPointsTranslations = new Map<keyof GroupSettings['extraPoints'], string>([
@@ -102,4 +103,5 @@ export const defaultGroupSettings: GroupSettings = {
     contraPartyLostWithAnnounce: false,
     soloLost: false,
   },
+  dynamicRoundDuration: false,
 };

@@ -7,6 +7,7 @@ import {bockGamesTranslations, bockInBockBehaviorOptions, extraPointsTranslation
 import RadioGroup from './settings/RadioGroup';
 import BockEffect from './settings/BockEffect';
 import {useGroup} from '../../store/Groups';
+import Checkbox from './settings/Checkbox';
 
 export default function Settings(): ReactElement | null {
   const {settings} = useGroup()!;
@@ -14,6 +15,7 @@ export default function Settings(): ReactElement | null {
   return <section>
     <Form>
       <Name/>
+      <Checkbox path={`dynamicRoundDuration`} label={'Dynamische Rundenlänge - sonst 24 Spiele'}/>
       <AllowedSoloTypes/>
       <CheckboxGroup label={'Zusatzpunkte bei ...'} options={extraPointsTranslations} parentKey={'extraPoints'}/>
 

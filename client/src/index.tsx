@@ -37,7 +37,9 @@ const createStore = createLoguxCreator({
 const enhancer = isDev && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({name: 'Doko'});
 const store = createStore(storeReducer, enhancer);
 badge(store.client, {messages: badgeMessages, styles: badgeStyles});
-log(store.client);
+if (isDev) {
+  log(store.client);
+}
 store.client.start();
 
 ReactDOM.render(
@@ -47,5 +49,5 @@ ReactDOM.render(
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+// Learn more about service workers: https://create-react-app.dev/docs/making-a-progressive-web-app/
 serviceWorker.unregister();
