@@ -51,7 +51,7 @@ server.type<GroupsAdd>('groups/add', {
         groupMemberId: action.groupMember.id,
         deviceId: ctx.userId,
         inviterDeviceId: ctx.userId,
-        invitedOn: Date.now() / 1000,
+        invitedOn: Math.round(Date.now() / 1000),
       });
     });
     await updateUserGroupIdsCache(ctx.userId!, action.group.id);

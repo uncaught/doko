@@ -4,6 +4,7 @@ import IconLink from '../../components/IconLink';
 import Players from './Players';
 import {Divider} from 'semantic-ui-react';
 import GamesInfo from './GamesInfo';
+import FinishRound from './FinishRound';
 
 export default function Round(): ReactElement {
   const {url} = useRouteMatch();
@@ -13,5 +14,7 @@ export default function Round(): ReactElement {
     <GamesInfo/>
     <Divider/>
     <Players/>
+    <Divider/>
+    <FinishRound/>
   </section>;
 }

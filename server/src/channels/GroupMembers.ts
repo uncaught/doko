@@ -167,7 +167,7 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
         groupMemberId,
         inviterDeviceId,
         deviceId: ctx.userId,
-        invitedOn: Date.now() / 1000,
+        invitedOn: Math.round(Date.now() / 1000),
       });
       await updateUserGroupIdsCache(ctx.userId!, groupId);
     }

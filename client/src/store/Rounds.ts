@@ -117,6 +117,9 @@ export function usePatchRound() {
     if (!currentRound) {
       throw new Error(`No currentRound`);
     }
+    if (currentRound.endDate) {
+      return;
+    }
     if (!objectContains(currentRound, round)) {
       dispatch.sync<RoundsPatch>({
         round,

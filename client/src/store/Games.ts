@@ -91,6 +91,7 @@ function getNextDealer(players: Player[], lastGame: Game): string {
 
 export function useAddGame() {
   const {settings} = useGroup()!;
+  const round = useRound()!;
   const currentRound = useRound();
   const currentGames = useSortedGames();
   const players = useGameParticipatingPlayers();
@@ -103,7 +104,7 @@ export function useAddGame() {
     }
     const id = generateUuid();
     const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
-    if (lastGame && lastGame.data.isLastGame) {
+    if ((lastGame && lastGame.data.isLastGame) || round.endDate) {
       return;
     }
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
@@ -120,7 +121,7 @@ export function useAddGame() {
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
     history.push(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${id}`);
-  }, [currentGames, currentRound, dispatch, history, players, playersWithStats, settings]);
+  }, [currentGames, currentRound, dispatch, history, players, playersWithStats, round.endDate, settings]);
 }
 
 export function useGame(): Game | undefined {
@@ -132,11 +133,12 @@ export function useGame(): Game | undefined {
 export function usePatchGame() {
   const currentGame = useGame();
   const dispatch = useDispatch<LoguxDispatch>();
+  const round = useRound()!;
   return useCallback((game: PatchableGame) => {
     if (!currentGame) {
       throw new Error(`No currentGame`);
     }
-    if (currentGame.data.isComplete && game.data?.isComplete !== false) {
+    if (round.endDate || (currentGame.data.isComplete && game.data?.isComplete !== false)) {
       return; //block edits on complete games
     }
     if (!objectContains(currentGame, game)) {
@@ -147,7 +149,7 @@ export function usePatchGame() {
         type: 'games/patch',
       });
     }
-  }, [currentGame, dispatch]);
+  }, [currentGame, dispatch, round.endDate]);
 }
 
 interface GamePlayer {

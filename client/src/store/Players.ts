@@ -18,6 +18,7 @@ import {LoguxDispatch} from './Logux';
 import {useFullParams} from '../Page';
 import {useSortedGames} from './Games';
 import {useGroupMembers} from './GroupMembers';
+import {useRound} from './Rounds';
 
 const {addReducer, combinedReducer} = createReducer<Players>({}, 'players');
 
@@ -146,19 +147,23 @@ export function usePlayersWithStats(): PlayerStats[] {
 }
 
 export function usePatchSittingOrder() {
-  const {roundId} = useFullParams<{ roundId: string }>();
+  const round = useRound()!;
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((order: string[]) => {
+    if (round.endDate) {
+      return;
+    }
     dispatch.sync<PlayerSittingOrderPatch>({
       order,
-      roundId,
+      roundId: round.id,
       type: 'players/patchSittingOrder',
     });
-  }, [dispatch, roundId]);
+  }, [dispatch, round]);
 }
 
 export function usePatchAttendance() {
-  const {roundId} = useFullParams<{ roundId: string }>();
+  const round = useRound()!;
+  const roundId = round.id;
   const dispatch = useDispatch<LoguxDispatch>();
   const players = usePlayers();
   const games = useSortedGames();
@@ -166,6 +171,9 @@ export function usePatchAttendance() {
     const player = players.find(({groupMemberId: memberId}) => groupMemberId === memberId);
     if (!player) {
       throw new Error(`Missing player '${groupMemberId}' in loaded round players`);
+    }
+    if (round.endDate) {
+      return;
     }
     const isAttending = player.leftAfterGameNumber === null;
     const currentGameNumber = games.length ? games[games.length - 1].gameNumber : 0;
@@ -178,5 +186,5 @@ export function usePatchAttendance() {
       },
       type: 'players/patch',
     });
-  }, [dispatch, games, players, roundId]);
+  }, [dispatch, games, players, round.endDate, roundId]);
 }
