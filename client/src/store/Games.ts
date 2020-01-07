@@ -22,11 +22,13 @@ import {State} from './Store';
 import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
 import {useRound} from './Rounds';
-import {useGameParticipatingPlayers} from './Players';
+import {useGameParticipatingPlayers, usePlayersWithStats} from './Players';
 import {useHistory} from 'react-router-dom';
 import {useGroupMembers} from './GroupMembers';
 import {useGroup} from './Groups';
-import {getBockGameWeight} from '../BockGameDetection';
+import {detectRunNumber} from './Games/DetectRunNumber';
+import {detectBockGame} from './Games/DetectBockGame';
+import {detectLastGameAndForcedSolo} from './Games/DetectLastGameAndForcedSolo';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -92,6 +94,7 @@ export function useAddGame() {
   const currentRound = useRound();
   const currentGames = useSortedGames();
   const players = useGameParticipatingPlayers();
+  const playersWithStats = usePlayersWithStats();
   const history = useHistory();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((): void => {
@@ -100,19 +103,21 @@ export function useAddGame() {
     }
     const id = generateUuid();
     const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
-    const dealerGroupMemberId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
+    const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
     const data = getDefaultGameData(settings, lastGame);
-    data.bockGameWeight = getBockGameWeight(data.bockInBockBehavior, currentGames, dealerGroupMemberId);
+    data.runNumber = detectRunNumber(currentGames, nextDealerId);
+    detectBockGame(currentRound.data, data, currentGames, nextDealerId);
+    detectLastGameAndForcedSolo(currentRound.data, data, currentGames, nextDealerId, players, playersWithStats);
     const game: Game = {
       id,
       data,
-      dealerGroupMemberId,
+      dealerGroupMemberId: nextDealerId,
       roundId: currentRound.id,
       gameNumber: (lastGame ? lastGame.gameNumber : 0) + 1,
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
     history.push(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${id}`);
-  }, [currentGames, currentRound, dispatch, history, players, settings]);
+  }, [currentGames, currentRound, dispatch, history, players, playersWithStats, settings]);
 }
 
 export function useGame(): Game | undefined {

@@ -1,10 +1,11 @@
-import {Game, GroupSettings} from '@doko/common';
+import {Game, GameData, RoundData} from '@doko/common';
 
-export function getBockGameWeight(
-  bockInBockBehavior: GroupSettings['bockInBockBehavior'],
+export function detectBockGame(
+  roundData: RoundData,
+  gameData: GameData,
   sortedGames: Game[],
   newGameDealerId: string,
-): number {
+): void {
   let bockStack: Array<{ startingDealerId: string; hasDealerChangedOnce: boolean }> = [];
   let bockExtends = 0;
 
@@ -39,11 +40,11 @@ export function getBockGameWeight(
     if (data.qualifiesNewBockGames) {
       const newBock = {startingDealerId: nextDealerId, hasDealerChangedOnce: false};
       if (bockStack.length > 0) {
-        if (bockInBockBehavior === 'extend') {
+        if (roundData.bockInBockBehavior === 'extend') {
           bockExtends++;
-        } else if (bockInBockBehavior === 'restart') {
+        } else if (roundData.bockInBockBehavior === 'restart') {
           bockStack = [newBock];
-        } else if (bockInBockBehavior === 'stack') {
+        } else if (roundData.bockInBockBehavior === 'stack') {
           bockStack.push(newBock);
         }
       } else {
@@ -54,5 +55,5 @@ export function getBockGameWeight(
 
   cleanForDealer(newGameDealerId);
 
-  return bockStack.length;
+  gameData.bockGameWeight = bockStack.length;
 }

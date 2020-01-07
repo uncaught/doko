@@ -2,6 +2,7 @@ import {State} from './Store';
 import {
   DeepPartial,
   generateUuid,
+  getDefaultRoundData,
   mergeStates,
   objectContains,
   Player,
@@ -20,7 +21,7 @@ import useSubscription from '@logux/redux/use-subscription';
 import {useFullParams} from '../Page';
 import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
-import {groupsSelector} from './Groups';
+import {groupsSelector, useGroup} from './Groups';
 import {useHistory} from 'react-router-dom';
 import {useSortedGroupMembers} from './GroupMembers';
 
@@ -71,13 +72,19 @@ export function useLoadRoundDetails() {
 }
 
 export function useAddRound() {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {id: groupId, settings} = useGroup()!;
   const dispatch = useDispatch<LoguxDispatch>();
   const members = useSortedGroupMembers();
   const history = useHistory();
   return useCallback(() => {
     const roundId = generateUuid();
-    const round: Round = {groupId, startDate: dayjs().unix(), endDate: null, id: roundId};
+    const round: Round = {
+      groupId,
+      data: getDefaultRoundData(settings),
+      startDate: dayjs().unix(),
+      endDate: null,
+      id: roundId,
+    };
     const players = members.reduce<Player[]>((acc, {id, isRegular}, idx) => {
       acc.push({
         roundId,
@@ -94,7 +101,7 @@ export function useAddRound() {
       type: 'rounds/add',
     });
     history.push(`/groups/group/${groupId}/rounds/round/${roundId}/players`);
-  }, [dispatch, groupId, history, members]);
+  }, [dispatch, groupId, history, members, settings]);
 }
 
 export function useRound(): Round | undefined {

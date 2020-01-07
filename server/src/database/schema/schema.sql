@@ -66,6 +66,7 @@ CREATE TABLE rounds (
   group_id CHAR(36) NOT NULL,
   start_date DATETIME NOT NULL,
   end_date DATETIME DEFAULT NULL,
+  data JSON NOT NULL,
   INDEX IDX_ROUNDS_GROUP (group_id),
   PRIMARY KEY(id)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;
@@ -77,6 +78,7 @@ CREATE TABLE history_rounds (
   group_id CHAR(36) NOT NULL,
   start_date DATETIME NOT NULL,
   end_date DATETIME DEFAULT NULL,
+  data JSON NOT NULL,
   revision INT AUTO_INCREMENT NOT NULL,
   revision_device_id CHAR(36) NOT NULL,
   revision_on DATETIME NOT NULL,

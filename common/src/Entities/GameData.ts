@@ -108,6 +108,8 @@ export interface GameData {
   gameType: GameType;
   gameTypeMemberId: string | null; //soloist, poor guy of poverty, wedding announcer or penalty receiver
   soloType: null | SoloType; //only for regular soli, not weddings or penalties
+  runNumber: number;
+  isLastGame: boolean;
   re: Party;
   contra: Party;
   wonAgainstQueensOfClubsExtraPoint: boolean;
@@ -116,7 +118,6 @@ export interface GameData {
   bockEffect: GroupSettings['bockEffect'];
   bockEffectExtraPoints: number;
   bockGameConditions: GroupSettings['bockGames'];
-  bockInBockBehavior: GroupSettings['bockInBockBehavior'];
   heartsTrickWentThrough: boolean;
   isComplete: boolean;
   gamePoints: number;
@@ -146,6 +147,8 @@ export function getDefaultGameData(settings: GroupSettings, lastGame: Game | nul
     gameType: 'normal',
     gameTypeMemberId: null,
     soloType: null,
+    runNumber: 0,
+    isLastGame: false,
     re: getDefaultParty(),
     contra: getDefaultParty(),
     wonAgainstQueensOfClubsExtraPoint: settings.extraPoints.wonAgainstQueensOfClubs,
@@ -154,7 +157,6 @@ export function getDefaultGameData(settings: GroupSettings, lastGame: Game | nul
     bockEffect: settings.bockEffect,
     bockEffectExtraPoints: settings.bockEffectExtraPoints,
     bockGameConditions: settings.bockGames,
-    bockInBockBehavior: lastGame ? lastGame.data.bockInBockBehavior : settings.bockInBockBehavior,
     heartsTrickWentThrough: false,
     isComplete: false,
     gamePoints: 0,

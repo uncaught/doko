@@ -1,11 +1,30 @@
 import {DeepPartial} from '../Generics';
 import {Player} from './Players';
+import {GroupSettings} from './GroupSettings';
+
+export interface RoundData {
+  bockInBockBehavior: GroupSettings['bockInBockBehavior'];
+  dynamicRoundDuration: boolean;
+  roundDuration: null | number; //number of runs (1 run = everyone dealt once)
+}
+
+/**
+ * Settings not allowed to change during a round are copied over
+ */
+export function getDefaultRoundData(settings: GroupSettings): RoundData {
+  return {
+    bockInBockBehavior: settings.bockInBockBehavior,
+    dynamicRoundDuration: settings.dynamicRoundDuration,
+    roundDuration: null,
+  };
+}
 
 export interface Round {
   id: string;
   groupId: string;
   startDate: number; //unix
   endDate: number | null; //unix
+  data: RoundData;
 }
 
 export interface Rounds {

@@ -58,9 +58,10 @@ export const roundsDbConfig: DbConfig<Round> = {
   types: {
     startDate: 'unix',
     endDate: 'unix',
+    data: 'json',
   },
-  insertFields: ['id', 'groupId', 'startDate', 'endDate'],
-  updateFields: ['startDate', 'endDate'],
+  insertFields: ['id', 'groupId', 'startDate', 'endDate', 'data'],
+  updateFields: ['startDate', 'endDate', 'data'],
 };
 
 export const playersDbConfig: DbConfig<Player> = {

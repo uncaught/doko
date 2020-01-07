@@ -92,7 +92,7 @@ export function useGameParticipatingPlayers(): Player[] {
   return useMemo(() => players.filter((p) => p.leftAfterGameNumber === null), [players]);
 }
 
-interface PlayerStats {
+export interface PlayerStats {
   member: GroupMember;
   player: Player;
   euros: string; //toFixed(2)

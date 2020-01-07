@@ -15,7 +15,8 @@ CREATE TRIGGER rounds_after_insert AFTER INSERT ON `rounds`
    id,
    group_id,
    start_date,
-   end_date)
+   end_date,
+   data)
   VALUES
   (@__currentDeviceId,
    now(),
@@ -23,7 +24,8 @@ CREATE TRIGGER rounds_after_insert AFTER INSERT ON `rounds`
    NEW.id,
    NEW.group_id,
    NEW.start_date,
-   NEW.end_date);
+   NEW.end_date,
+   NEW.data);
 END $$
 
 CREATE TRIGGER rounds_after_update AFTER UPDATE ON `rounds`
@@ -41,7 +43,8 @@ thisTrigger: BEGIN
    id,
    group_id,
    start_date,
-   end_date)
+   end_date,
+   data)
   VALUES
   (@__currentDeviceId,
    now(),
@@ -49,7 +52,8 @@ thisTrigger: BEGIN
    NEW.id,
    NEW.group_id,
    NEW.start_date,
-   NEW.end_date);
+   NEW.end_date,
+   NEW.data);
 END $$
 
 CREATE TRIGGER rounds_before_delete BEFORE DELETE ON `rounds`
@@ -67,7 +71,8 @@ thisTrigger: BEGIN
    id,
    group_id,
    start_date,
-   end_date)
+   end_date,
+   data)
   VALUES
   (@__currentDeviceId,
    now(),
@@ -75,7 +80,8 @@ thisTrigger: BEGIN
    OLD.id,
    OLD.group_id,
    OLD.start_date,
-   OLD.end_date);
+   OLD.end_date,
+   OLD.data);
 END $$
 
 DELIMITER ;
