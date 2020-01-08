@@ -1,12 +1,15 @@
 version: "3.7"
 
 services:
+  # Import:
+  # cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
   database:
     image: mariadb:10.4.11-bionic
     restart: always
     environment:
       - MYSQL_DATABASE=doko
       - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
+      - MYSQL_PWD=sKAmqtzkQ1-QhmSdmiH2
     volumes:
       - ./server/src/database/schema:/docker-entrypoint-initdb.d:ro
       - dblib:/var/lib/mysql:rw
