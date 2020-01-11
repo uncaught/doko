@@ -1,11 +1,11 @@
 import {
   Game,
+  GameData,
   Games,
   GamesAdd,
   GamesPatch,
   generateUuid,
   getDefaultGameData,
-  GroupMember,
   mergeStates,
   objectContains,
   PatchableGame,
@@ -22,13 +22,14 @@ import {State} from './Store';
 import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
 import {useRound} from './Rounds';
+import {difference} from 'lodash';
 import {useGameParticipatingPlayers, usePlayersWithStats} from './Players';
 import {useHistory} from 'react-router-dom';
-import {useGroupMembers} from './GroupMembers';
 import {useGroup} from './Groups';
 import {detectRunNumber} from './Games/DetectRunNumber';
 import {detectBockGame} from './Games/DetectBockGame';
 import {detectLastGameAndForcedSolo} from './Games/DetectLastGameAndForcedSolo';
+import {detectPlayers} from './Games/DetectPlayers';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -110,6 +111,7 @@ export function useAddGame() {
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
     const data = getDefaultGameData(settings, lastGame);
     data.runNumber = detectRunNumber(currentGames, nextDealerId);
+    detectPlayers(data, nextDealerId, players);
     detectBockGame(currentRound.data, data, currentGames, nextDealerId);
     detectLastGameAndForcedSolo(currentRound.data, data, currentGames, nextDealerId, players, playersWithStats);
     const game: Game = {
@@ -152,50 +154,6 @@ export function usePatchGame() {
   }, [currentGame, dispatch, round.endDate]);
 }
 
-interface GamePlayer {
-  member: GroupMember;
-  player: Player;
-}
-
-interface GamePlayers {
-  dealer: GamePlayer;
-  all: GamePlayer[];
-  undecided: GamePlayer[];
-  re: GamePlayer[];
-  contra: GamePlayer[];
-}
-
-export function useGamePlayers(): GamePlayers | null {
-  const game = useGame();
-  const members = useGroupMembers();
-  const players = useGameParticipatingPlayers();
-  if (!game) {
-    return null;
-  }
-
-  const dealerIndex = findPlayerIndex(players, game.dealerGroupMemberId);
-
-  const gamePlayers: GamePlayers = {
-    dealer: {member: members[players[dealerIndex].groupMemberId], player: players[dealerIndex]},
-    all: [],
-    undecided: [],
-    re: [],
-    contra: [],
-  };
-
-  for (let i = 1; i < 5; i++) {
-    const pIndex = (dealerIndex + i) % players.length;
-    const player = players[pIndex];
-    const gamePlayer: GamePlayer = {member: members[player.groupMemberId], player};
-    gamePlayers.all.push(gamePlayer);
-    if (game.data.re.members.includes(player.groupMemberId)) {
-      gamePlayers.re.push(gamePlayer);
-    } else if (game.data.contra.members.includes(player.groupMemberId)) {
-      gamePlayers.contra.push(gamePlayer);
-    } else {
-      gamePlayers.undecided.push(gamePlayer);
-    }
-  }
-
-  return gamePlayers;
+export function undecided(data: GameData): string[] {
+  return difference(data.players, data.re.members, data.contra.members);
 }

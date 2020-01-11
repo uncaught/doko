@@ -1,18 +1,18 @@
 import {Announce, announceChain, PatchableGame, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
-import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
+import {undecided, useGame, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
+import {useGroupMembers} from '../../store/GroupMembers';
 
 export default function Announcing({type, label, text, isRe}: { type: Announce; label: string; text?: string; isRe: boolean }): ReactElement {
-  const game = useGame()!;
+  const {data} = useGame()!;
   const [open, setOpen] = useState(false);
-  const gamePlayers = useGamePlayers()!;
+  const members = useGroupMembers();
   const patchGame = usePatchGame();
   const sideKey = isRe ? 're' : 'contra';
   const otherSideKey = isRe ? 'contra' : 're';
-  const sidePlayers = gamePlayers[sideKey];
-  const party = game.data[sideKey];
-  const isSoloLike = soloLikeGameTypes.includes(game.data.gameType);
+  const party = data[sideKey];
+  const isSoloLike = soloLikeGameTypes.includes(data.gameType);
 
   const selectAnnounce = (memberId: string) => {
     const gamePatch: PatchableGame = {data: {[sideKey]: {[type]: memberId}}};
@@ -23,11 +23,8 @@ export default function Announcing({type, label, text, isRe}: { type: Announce; 
 
       //Move undecided players to the other party once two members are known:
       if (gamePatch.data![sideKey]!.members!.length === 2 || (isSoloLike && isRe)) {
-        const otherPartyMembers = new Set([
-          ...game.data[otherSideKey].members,
-          ...gamePlayers.undecided.map(({member}) => member.id),
-        ]);
-        otherPartyMembers.delete(memberId);
+        const otherPartyMembers = new Set(data.players);
+        gamePatch.data![sideKey]!.members!.forEach((id) => otherPartyMembers.delete(id));
         gamePatch.data![otherSideKey] = {members: [...otherPartyMembers]};
       }
     }
@@ -65,7 +62,7 @@ export default function Announcing({type, label, text, isRe}: { type: Announce; 
       if (party[type]) {
         cancel();
       } else {
-        selectAnnounce(game.data.gameTypeMemberId!);
+        selectAnnounce(data.gameTypeMemberId!);
       }
     } else {
       setOpen(true);
@@ -83,11 +80,11 @@ export default function Announcing({type, label, text, isRe}: { type: Announce; 
         "{text || label}" {type === 'announced' ? 'angesagt' : 'abgesagt'} von
       </Header>
       <Modal.Content className="u-flex-row-around u-flex-wrap">
-        {[...sidePlayers, ...gamePlayers.undecided].map(({member}) => <p key={member.id}>
-          <Button onClick={() => selectAnnounce(member.id)}
-                  color={party[type] === member.id ? 'green' : undefined}
+        {[...party.members, ...undecided(data)].map((id) => <p key={id}>
+          <Button onClick={() => selectAnnounce(id)}
+                  color={party[type] === id ? 'green' : undefined}
                   inverted>
-            <Icon name='user'/> {member.name}
+            <Icon name='user'/> {members[id].name}
           </Button>
         </p>)}
       </Modal.Content>

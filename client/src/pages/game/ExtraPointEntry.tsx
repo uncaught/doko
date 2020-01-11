@@ -1,8 +1,9 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
+import {useGame, usePatchGame} from '../../store/Games';
 import {Button, Divider, Form, Header, Icon, Label, Modal, Radio, SemanticICONS} from 'semantic-ui-react';
 import {ExtraPoint, GroupSettings} from '@doko/common';
 import {useGroup} from '../../store/Groups';
+import {useGroupMembers} from '../../store/GroupMembers';
 
 const types = new Map<keyof GroupSettings['extraPoints'], { label: string; hasFrom?: true, icon: SemanticICONS }>([
   ['doppelkopf', {label: 'Doppelkopf', icon: 'diamond'}],
@@ -16,7 +17,7 @@ export default function ExtraPointEntry({isRe, index}: { isRe: boolean; index: n
   const {settings} = useGroup()!;
   const [open, setOpen] = useState(false);
   const patchGame = usePatchGame();
-  const gamePlayers = useGamePlayers()!;
+  const members = useGroupMembers();
 
   const sideKey = isRe ? 're' : 'contra';
   const otherSideKey = isRe ? 'contra' : 're';
@@ -89,13 +90,13 @@ export default function ExtraPointEntry({isRe, index}: { isRe: boolean; index: n
           <Form.Field>
             Punkt für
           </Form.Field>
-          {gamePlayers[sideKey].map(({member}) => <Form.Field key={member.id}>
+          {data[sideKey].members.map((id) => <Form.Field key={id}>
             <Radio
-              label={<label className="inverted">{member.name}</label>}
+              label={<label className="inverted">{members[id].name}</label>}
               name='to'
-              value={member.id}
-              checked={point.to === member.id}
-              onChange={() => save({to: member.id})}
+              value={id}
+              checked={point.to === id}
+              onChange={() => save({to: id})}
             />
           </Form.Field>)}
 
@@ -104,13 +105,13 @@ export default function ExtraPointEntry({isRe, index}: { isRe: boolean; index: n
             <Form.Field>
               Gefangen von
             </Form.Field>
-            {gamePlayers[otherSideKey].map(({member}) => <Form.Field key={member.id}>
+            {data[otherSideKey].members.map((id) => <Form.Field key={id}>
               <Radio
-                label={<label className="inverted">{member.name}</label>}
+                label={<label className="inverted">{members[id].name}</label>}
                 name='from'
-                value={member.id}
-                checked={point.from === member.id}
-                onChange={() => save({from: member.id})}
+                value={id}
+                checked={point.from === id}
+                onChange={() => save({from: id})}
               />
             </Form.Field>)}
           </div>

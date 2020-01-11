@@ -1,13 +1,12 @@
 import {GroupMember, PatchableGame, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
-import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
+import {useGame, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
 
 export default function GamePlayer({member}: { member: GroupMember }): ReactElement {
   const game = useGame()!;
   const [open, setOpen] = useState(false);
   const patchGame = usePatchGame();
-  const gamePlayers = useGamePlayers()!;
   const isSoloLike = soloLikeGameTypes.includes(game.data.gameType);
 
   const chooseSide = (shallBeRe: boolean) => {
@@ -35,11 +34,8 @@ export default function GamePlayer({member}: { member: GroupMember }): ReactElem
 
     //Move undecided players to the other party once two members are known:
     if (gamePatch.data![sideKey]!.members!.length === 2 || (isSoloLike && shallBeRe)) {
-      const otherPartyMembers = new Set([
-        ...game.data[otherSideKey].members.filter((id) => id !== member.id),
-        ...gamePlayers.undecided.map(({member}) => member.id),
-      ]);
-      otherPartyMembers.delete(member.id);
+      const otherPartyMembers = new Set(game.data.players);
+      gamePatch.data![sideKey]!.members!.forEach((id) => otherPartyMembers.delete(id));
       gamePatch.data![otherSideKey] = {members: [...otherPartyMembers]};
     }
 

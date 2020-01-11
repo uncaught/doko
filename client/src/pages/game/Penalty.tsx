@@ -1,20 +1,18 @@
 import React, {ReactElement, useCallback, useEffect, useState} from 'react';
 import {Button, Checkbox, Form, Header, Icon, Modal, Segment} from 'semantic-ui-react';
 import {useGameParticipatingPlayers} from '../../store/Players';
-import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
+import {useGame, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 
 export default function Penalty(): ReactElement {
   const {data} = useGame()!;
   const patchGame = usePatchGame();
-  const groupGroupMembers = useGroupMembers();
+  const members = useGroupMembers();
   const activePlayers = useGameParticipatingPlayers();
-  const gamePlayers = useGamePlayers()!;
   const penaltyMemId = data.gameTypeMemberId;
   const allOtherPlayerIds = activePlayers.map(({groupMemberId}) => groupMemberId).filter((id) => id !== penaltyMemId);
   const contraLength = data.contra.members.length;
-  const gameOtherPlayers = gamePlayers.all.filter(({member}) => member.id !== penaltyMemId);
-  const gameOtherPlayerIds = gameOtherPlayers.map(({member}) => member.id);
+  const gameOtherPlayerIds = data.players.filter((id) => id !== penaltyMemId);
   const [open, setOpen] = useState(false);
 
   const getPoints = useCallback(() => (data.gamePoints * contraLength).toString(),
@@ -27,13 +25,13 @@ export default function Penalty(): ReactElement {
 
   return <>
     <Segment vertical>
-      <Header>Regelverstoß von {groupGroupMembers[data.gameTypeMemberId!].name}</Header>
+      <Header>Regelverstoß von {members[data.gameTypeMemberId!].name}</Header>
       <Form>
         <Form.Field>
           <Checkbox
             radio
             label={<label>Nur {contraLength === 1
-              ? <b>{groupGroupMembers[data.contra.members[0]].name}</b>
+              ? <b>{members[data.contra.members[0]].name}</b>
               : `ein Solospieler`} erhält positive Punkte</label>}
             name='penaltyDivision'
             value='solo'
@@ -94,11 +92,11 @@ export default function Penalty(): ReactElement {
           Solo-Spieler gegen den der Regelverstoß begangen wurde
         </Header>
         <Modal.Content className="u-flex-row-around u-flex-wrap">
-          {gameOtherPlayers.map(({member}) => <p key={member.id}>
+          {gameOtherPlayerIds.map((id) => <p key={id}>
             <Button inverted onClick={() => {
-              patchGame({data: {contra: {members: [member.id]}}});
+              patchGame({data: {contra: {members: [id]}}});
               setOpen(false);
-            }}><Icon name='user'/> {member.name}</Button>
+            }}><Icon name='user'/> {members[id].name}</Button>
           </p>)}
         </Modal.Content>
       </Modal>

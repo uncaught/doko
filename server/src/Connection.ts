@@ -34,12 +34,17 @@ export async function query<R>(sql: string, values?: any[] | object): Promise<R[
   }
 }
 
-export async function getTransactional<R>(deviceId: string, fn: (update: typeof query) => Promise<R>): Promise<R> {
+export async function getTransactional<R>(
+  deviceId: string | null,
+  fn: (update: typeof query) => Promise<R>,
+): Promise<R> {
   const conn = await pool.getConnection();
   await conn.beginTransaction();
   let result;
   try {
-    await doQuery(conn, 'SET @__currentDeviceId = ?', [deviceId]);
+    if (deviceId) {
+      await doQuery(conn, 'SET @__currentDeviceId = ?', [deviceId]);
+    }
     result = await fn(doQuery.bind(null, conn) as typeof query);
     await conn.commit();
   } catch (e) {

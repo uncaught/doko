@@ -1,8 +1,9 @@
 import React, {ReactElement, useState} from 'react';
 import {Button, Dropdown, Header, Icon, Modal} from 'semantic-ui-react';
-import {useGame, useGamePlayers, usePatchGame} from '../../store/Games';
+import {useGame, usePatchGame} from '../../store/Games';
 import {GameType, gameTypeTexts, getDefaultParty, soloGameTypes, soloLikeGameTypes} from '@doko/common';
 import {usePlayersWithStats} from '../../store/Players';
+import {useGroupMembers} from '../../store/GroupMembers';
 
 type DropdownType = 'normal'
   | 'solo'
@@ -23,7 +24,7 @@ const types = new Map<DropdownType, { text: string }>([
 export default function GameTypeSelection(): ReactElement {
   const game = useGame()!;
   const patchGame = usePatchGame();
-  const gamePlayers = useGamePlayers()!;
+  const members = useGroupMembers();
   const playersWithStats = usePlayersWithStats();
   const [selectedType, setSelectedType] = useState<DropdownType>('normal');
   const [open, setOpen] = useState(false);
@@ -63,9 +64,7 @@ export default function GameTypeSelection(): ReactElement {
           members: [memberId],
         },
         contra: {
-          members: soloLikeGameTypes.includes(realType)
-            ? gamePlayers.all.filter(({member}) => member.id !== memberId).map(({member}) => member.id)
-            : [],
+          members: soloLikeGameTypes.includes(realType) ? game.data.players.filter((id) => id !== memberId) : [],
         },
         gamePoints: realType === 'penalty' ? 1 : 0,
         soloType: null,
@@ -103,11 +102,11 @@ export default function GameTypeSelection(): ReactElement {
         {(types.get(selectedType) || {}).text} von
       </Header>
       <Modal.Content className="u-flex-row-around u-flex-wrap">
-        {gamePlayers.all.map(({member}) => <p key={member.id}>
-          <Button onClick={() => commitType(member.id)}
-                  color={game.data.gameTypeMemberId === member.id ? 'green' : undefined}
+        {game.data.players.map((id) => <p key={id}>
+          <Button onClick={() => commitType(id)}
+                  color={game.data.gameTypeMemberId === id ? 'green' : undefined}
                   inverted>
-            <Icon name='user'/> {member.name}
+            <Icon name='user'/> {members[id].name}
           </Button>
         </p>)}
       </Modal.Content>

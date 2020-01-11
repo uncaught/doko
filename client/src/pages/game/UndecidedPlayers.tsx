@@ -1,14 +1,17 @@
 import React, {ReactElement} from 'react';
 import {Segment} from 'semantic-ui-react';
 import GamePlayer from './GamePlayer';
-import {useGamePlayers} from '../../store/Games';
+import {undecided, useGame} from '../../store/Games';
+import {useGroupMembers} from '../../store/GroupMembers';
 
 export default function UndecidedPlayers(): ReactElement {
-  const gamePlayers = useGamePlayers()!;
+  const {data} = useGame()!;
+  const members = useGroupMembers();
+  const undecidedPlayers = undecided(data);
   return <>
-    {gamePlayers.undecided.length > 0 && <>
+    {undecidedPlayers.length > 0 && <>
       <Segment vertical className="u-flex-row-around u-flex-wrap">
-        {gamePlayers.undecided.map(({member}) => <GamePlayer key={member.id} member={member}/>)}
+        {undecidedPlayers.map((id) => <GamePlayer key={id} member={members[id]}/>)}
       </Segment>
     </>}
   </>;

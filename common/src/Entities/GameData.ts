@@ -110,6 +110,7 @@ export interface GameData {
   soloType: null | SoloType; //only for regular soli, not weddings or penalties
   runNumber: number;
   isLastGame: boolean;
+  players: string[];
   re: Party;
   contra: Party;
   wonAgainstQueensOfClubsExtraPoint: boolean;
@@ -149,6 +150,7 @@ export function getDefaultGameData(settings: GroupSettings, lastGame: Game | nul
     soloType: null,
     runNumber: 0,
     isLastGame: false,
+    players: [],
     re: getDefaultParty(),
     contra: getDefaultParty(),
     wonAgainstQueensOfClubsExtraPoint: settings.extraPoints.wonAgainstQueensOfClubs,
