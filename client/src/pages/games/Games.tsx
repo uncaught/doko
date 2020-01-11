@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {Icon} from 'semantic-ui-react';
+import {Divider, Icon} from 'semantic-ui-react';
 import {useRoundParticipatingPlayers} from '../../store/Players';
 import {useSortedGames} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
@@ -101,7 +101,7 @@ export default function Games(): ReactElement {
         <div className="grid-table-th" key={p.groupMemberId}>{members[p.groupMemberId].name[0]}</div>)}
       {rowCells}
     </div>
-
+    <Divider hidden/>
     <RoundEndInfo/>
     <AddGame/>
   </section>;
