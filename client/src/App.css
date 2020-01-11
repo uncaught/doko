@@ -215,7 +215,7 @@
 
 .gamesTable-cell-gameIndicators {
   position: absolute;
-  top: -5px;
+  top: -2px;
   left: 1px;
   white-space: nowrap;
 }
@@ -267,7 +267,7 @@
 
 .grid-table {
   display: grid;
-  border: 1px solid #E3E4E4;
+  border: 1px solid rgba(34, 36, 38, .15);
 }
 
 .grid-table-th,
@@ -277,10 +277,10 @@
 }
 
 .grid-table-th {
-  background-color: #F9F9FA;
+  background-color: white;
   position: sticky;
   top: 0;
-  border-bottom: 1px solid #E3E4E4;
+  border-bottom: 1px solid black;
   z-index: 2;
 }
 

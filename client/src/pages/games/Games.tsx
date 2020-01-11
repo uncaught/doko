@@ -12,7 +12,7 @@ import classnames from 'classnames';
 function RoundIndicators({data}: { data: GameData }): ReactElement {
   const indicators: ReactElement[] = [];
   for (let i = 0; i < data.bockGameWeight; i++) {
-    indicators.push(<Icon key={`bock_${i}`} size={'tiny'} color={'purple'} name={'btc'}/>);
+    indicators.push(<Icon key={`bock_${i}`} size={'small'} color={'purple'} name={'btc'}/>);
   }
   return <div className="gamesTable-cell-gameIndicators">{indicators}</div>;
 }
@@ -20,7 +20,10 @@ function RoundIndicators({data}: { data: GameData }): ReactElement {
 function RoundPlayerIndicators({data, memberId}: { data: GameData; memberId: string }): ReactElement {
   const indicators: ReactElement[] = [];
   if (soloGameTypes.includes(data.gameType) && data.re.members.includes(memberId)) {
-    indicators.push(<Icon key={'solo'} size={'tiny'} color={'blue'} name={'dollar'}/>);
+    indicators.push(<Icon key={'solo'}
+                          size={'small'}
+                          color={data.gameType === 'lustSolo' ? 'blue' : 'red'}
+                          name={'dollar'}/>);
   }
   return <div className="gamesTable-cell-gameIndicators">{indicators}</div>;
 }
@@ -37,7 +40,7 @@ export default function Games(): ReactElement {
 
   games.forEach(({id, gameNumber, data, dealerGroupMemberId}) => {
     const {gamePoints, re, contra, isComplete, winner, runNumber} = data;
-    const isNewRun = lastRunNumber !== runNumber;
+    const isNewRun = lastRunNumber && lastRunNumber !== runNumber;
     lastRunNumber = runNumber;
 
     const rowClasses = ['grid-table-td'];
@@ -89,7 +92,8 @@ export default function Games(): ReactElement {
   });
 
   return <section>
-    <div className="grid-table gamesTable u-text-center" style={{gridTemplateColumns: `repeat(3, 2.5em) repeat(${players.length}, auto)`}}>
+    <div className="grid-table gamesTable u-text-center"
+         style={{gridTemplateColumns: `repeat(3, 2.3em) repeat(${players.length}, auto)`}}>
       <div className="grid-table-th">#</div>
       <div className="grid-table-th"><Icon name={'hand paper outline'}/></div>
       <div className="grid-table-th"><Icon name={'bullseye'}/></div>
