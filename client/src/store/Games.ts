@@ -4,6 +4,7 @@ import {
   Games,
   GamesAdd,
   GamesPatch,
+  GamesRemove,
   generateUuid,
   getDefaultGameData,
   mergeStates,
@@ -61,6 +62,15 @@ addReducer<GamesPatch>('games/patch', (state, {id, roundId, game}) => {
   return state;
 });
 
+addReducer<GamesRemove>('games/remove', (state, {id, roundId}) => {
+  if (state[roundId][id]) {
+    const newState = {...state, [roundId]: {...state[roundId]}};
+    delete newState[id];
+    return newState;
+  }
+  return state;
+});
+
 addReducer<RoundsAdd>('rounds/add', (state, {round}) => ({...state, [round.id]: {}}));
 
 export const gamesReducer = combinedReducer;
@@ -93,15 +103,14 @@ function getNextDealer(players: Player[], lastGame: Game): string {
 export function useAddGame() {
   const {settings} = useGroup()!;
   const round = useRound()!;
-  const currentRound = useRound();
   const currentGames = useSortedGames();
   const players = useGameParticipatingPlayers();
   const playersWithStats = usePlayersWithStats();
   const history = useHistory();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((): void => {
-    if (!currentRound) {
-      throw new Error(`No currentRound`);
+    if (!round) {
+      throw new Error(`No round`);
     }
     const id = generateUuid();
     const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
@@ -112,18 +121,39 @@ export function useAddGame() {
     const data = getDefaultGameData(settings, lastGame);
     data.runNumber = detectRunNumber(currentGames, nextDealerId);
     detectPlayers(data, nextDealerId, players);
-    detectBockGame(currentRound.data, data, currentGames, nextDealerId);
-    detectLastGameAndForcedSolo(currentRound.data, data, currentGames, nextDealerId, players, playersWithStats);
+    detectBockGame(round.data, data, currentGames, nextDealerId);
+    detectLastGameAndForcedSolo(round.data, data, currentGames, nextDealerId, players, playersWithStats);
     const game: Game = {
       id,
       data,
       dealerGroupMemberId: nextDealerId,
-      roundId: currentRound.id,
+      roundId: round.id,
       gameNumber: (lastGame ? lastGame.gameNumber : 0) + 1,
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
-    history.push(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${id}`);
-  }, [currentGames, currentRound, dispatch, history, players, playersWithStats, round.endDate, settings]);
+    history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
+  }, [currentGames, round, dispatch, history, players, playersWithStats, settings]);
+}
+
+export function useRemoveGame() {
+  const round = useRound()!;
+  const game = useGame();
+  const currentGames = useSortedGames();
+  const history = useHistory();
+  const dispatch = useDispatch<LoguxDispatch>();
+  const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
+  const isLastGame = lastGame === game;
+
+  return useCallback((): void => {
+    if (!round || !game) {
+      throw new Error(`No round/game`);
+    }
+    if (round.endDate || game.data.isComplete || !isLastGame) {
+      return;
+    }
+    dispatch.sync<GamesRemove>({id: game.id, roundId: round.id, type: 'games/remove'});
+    history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}`);
+  }, [round, game, isLastGame, dispatch, history]);
 }
 
 export function useGame(): Game | undefined {

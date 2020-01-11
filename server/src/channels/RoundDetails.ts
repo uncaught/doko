@@ -2,6 +2,7 @@ import server from '../Server';
 import {
   GamesAdd,
   GamesPatch,
+  GamesRemove,
   PlayerSittingOrderPatch,
   PlayersPatch,
   RoundDetailsLoad,
@@ -34,6 +35,7 @@ server.channel<RoundDetailsLoad>('roundDetails/load', {
     const {addFilter, combinedFilter} = createFilter();
     addFilter<GamesAdd>('games/add', (_, {game}) => game.roundId === subRoundId);
     addFilter<GamesPatch>('games/patch', (_, {roundId}) => roundId === subRoundId);
+    addFilter<GamesRemove>('games/remove', (_, {roundId}) => roundId === subRoundId);
     addFilter<PlayerSittingOrderPatch>('players/patchSittingOrder', (_, {roundId}) => roundId === subRoundId);
     addFilter<PlayersPatch>('players/patch', (_, {roundId}) => roundId === subRoundId);
     return combinedFilter;

@@ -30,3 +30,9 @@ export interface GamesPatch {
   roundId: string;
   game: PatchableGame;
 }
+
+export interface GamesRemove {
+  type: 'games/remove';
+  id: string;
+  roundId: string;
+}

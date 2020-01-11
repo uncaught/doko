@@ -11,6 +11,11 @@ export async function getGroupForRound(roundId: string): Promise<string | null> 
   return result.length ? result[0].groupId : null;
 }
 
+export async function isRoundOpen(roundId: string): Promise<boolean> {
+  const result = await query<{ endDate: number | null }>(`SELECT end_date as endDate FROM rounds WHERE id = ?`, [roundId]);
+  return result.length ? result[0].endDate === null : false;
+}
+
 export async function loadRounds(groupId: string): Promise<Round[]> {
   const rounds = await query<Round>(`SELECT id, 
                                             group_id as groupId,
@@ -63,7 +68,7 @@ server.type<RoundsAdd>('rounds/add', {
 server.type<RoundsPatch>('rounds/patch', {
   async access(ctx, {id, groupId}) {
     const realGroupId = await getGroupForRound(id);
-    return realGroupId ? realGroupId === groupId && (await canEditGroup(ctx.userId!, realGroupId)) : false;
+    return realGroupId === groupId && await canEditGroup(ctx.userId!, realGroupId) && await isRoundOpen(id);
   },
   resend() {
     return {channel: 'rounds/load'};
