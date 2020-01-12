@@ -7,8 +7,8 @@ export interface Group {
   name: string;
   settings: GroupSettings;
   isNew?: true;
-  lastRoundUnix?: number;
-  roundsCount?: number;
+  lastRoundUnix: number | null;
+  roundsCount: number;
 }
 
 export interface Groups {

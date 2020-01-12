@@ -12,6 +12,8 @@ import {
   GroupsPatch,
   mergeStates,
   objectContains,
+  RoundsAdd,
+  RoundsRemove,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
@@ -48,6 +50,32 @@ addReducer<GroupsPatch>('groups/patch', (state, action) => {
   return state;
 });
 
+addReducer<RoundsAdd>('rounds/add', (state, {round: {groupId}}) => {
+  if (state[groupId]) {
+    return {
+      ...state,
+      [groupId]: {
+        ...state[groupId],
+        roundsCount: state[groupId].roundsCount + 1,
+      },
+    };
+  }
+  return state;
+});
+
+addReducer<RoundsRemove>('rounds/remove', (state, {groupId}) => {
+  if (state[groupId]) {
+    return {
+      ...state,
+      [groupId]: {
+        ...state[groupId],
+        roundsCount: state[groupId].roundsCount - 1,
+      },
+    };
+  }
+  return state;
+});
+
 addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted', (state, action) => ({
   ...state,
   [action.group.id]: action.group,
@@ -71,6 +99,8 @@ export function useAddGroup() {
         name: groupName,
         isNew: true,
         settings: defaultGroupSettings,
+        lastRoundUnix: null,
+        roundsCount: 0,
       },
       groupMember: {
         id: generateUuid(),
