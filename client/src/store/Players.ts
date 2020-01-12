@@ -85,14 +85,6 @@ export function useRoundParticipatingPlayers(): Player[] {
   return useMemo(() => players.filter((p) => p.leftAfterGameNumber !== 0), [players]);
 }
 
-/**
- * Includes only players that have not left
- */
-export function useGameParticipatingPlayers(): Player[] {
-  const players = usePlayers();
-  return useMemo(() => players.filter((p) => p.leftAfterGameNumber === null), [players]);
-}
-
 export interface PlayerStats {
   member: GroupMember;
   player: Player;

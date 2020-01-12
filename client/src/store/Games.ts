@@ -24,7 +24,7 @@ import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
 import {useRound} from './Rounds';
 import {difference} from 'lodash';
-import {useGameParticipatingPlayers, usePlayersWithStats} from './Players';
+import {usePlayersWithStats, useRoundParticipatingPlayers} from './Players';
 import {useHistory} from 'react-router-dom';
 import {useGroup} from './Groups';
 import {detectRunNumber} from './Games/DetectRunNumber';
@@ -104,7 +104,7 @@ export function useAddGame() {
   const {settings} = useGroup()!;
   const round = useRound()!;
   const currentGames = useSortedGames();
-  const players = useGameParticipatingPlayers();
+  const roundParticipatingPlayers = useRoundParticipatingPlayers();
   const playersWithStats = usePlayersWithStats();
   const history = useHistory();
   const dispatch = useDispatch<LoguxDispatch>();
@@ -117,6 +117,7 @@ export function useAddGame() {
     if ((lastGame && lastGame.data.isLastGame) || round.endDate) {
       return;
     }
+    const players = roundParticipatingPlayers.filter((p) => p.leftAfterGameNumber === null);
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
     const data = getDefaultGameData(settings, lastGame);
     data.runNumber = detectRunNumber(currentGames, nextDealerId);
@@ -132,7 +133,7 @@ export function useAddGame() {
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
     history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
-  }, [currentGames, round, dispatch, history, players, playersWithStats, settings]);
+  }, [round, currentGames, roundParticipatingPlayers, settings, playersWithStats, dispatch, history]);
 }
 
 export function useRemoveGame() {

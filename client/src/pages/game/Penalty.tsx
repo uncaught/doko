@@ -1,6 +1,6 @@
 import React, {ReactElement, useCallback, useEffect, useState} from 'react';
 import {Button, Checkbox, Form, Header, Icon, Modal, Segment} from 'semantic-ui-react';
-import {useGameParticipatingPlayers} from '../../store/Players';
+import {useRoundParticipatingPlayers} from '../../store/Players';
 import {useGame, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 
@@ -8,9 +8,10 @@ export default function Penalty(): ReactElement {
   const {data} = useGame()!;
   const patchGame = usePatchGame();
   const members = useGroupMembers();
-  const activePlayers = useGameParticipatingPlayers();
+  const roundParticipatingPlayers = useRoundParticipatingPlayers();
   const penaltyMemId = data.gameTypeMemberId;
-  const allOtherPlayerIds = activePlayers.map(({groupMemberId}) => groupMemberId).filter((id) => id !== penaltyMemId);
+  const allOtherPlayerIds = roundParticipatingPlayers.map(({groupMemberId}) => groupMemberId)
+                                                     .filter((id) => id !== penaltyMemId);
   const contraLength = data.contra.members.length;
   const gameOtherPlayerIds = data.players.filter((id) => id !== penaltyMemId);
   const [open, setOpen] = useState(false);
@@ -49,7 +50,7 @@ export default function Penalty(): ReactElement {
             onChange={() => patchGame({data: {contra: {members: gameOtherPlayerIds}}})}
           />
         </Form.Field>
-        {activePlayers.length > 4 && <>
+        {roundParticipatingPlayers.length > 4 && <>
           <Form.Field>
             <Checkbox
               radio
