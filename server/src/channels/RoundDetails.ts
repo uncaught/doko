@@ -31,7 +31,7 @@ server.channel<RoundDetailsLoad>('roundDetails/load', {
       });
     }
   },
-  async filter(ctx, {roundId: subRoundId}) {
+  filter(ctx, {roundId: subRoundId}) {
     const {addFilter, combinedFilter} = createFilter();
     addFilter<GamesAdd>('games/add', (_, {game}) => game.roundId === subRoundId);
     addFilter<GamesPatch>('games/patch', (_, {roundId}) => roundId === subRoundId);

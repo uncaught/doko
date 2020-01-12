@@ -16,6 +16,7 @@ ON DUPLICATE KEY UPDATE last_seen_on = VALUES(last_seen_on), last_seen_creds = V
 });
 
 const cacheUserGroupIds = new Map<string, Promise<Set<string>>>();
+const cacheUserGroupIdsSync = new Map<string, Set<string>>();
 
 export function getUserGroupIds(deviceId: string): Promise<Set<string>> {
   if (!cacheUserGroupIds.has(deviceId)) {
@@ -23,10 +24,21 @@ export function getUserGroupIds(deviceId: string): Promise<Set<string>> {
                                                 FROM group_member_devices gmd
                                           INNER JOIN group_members gm ON gm.id = gmd.group_member_id
                                                WHERE gmd.device_id = :deviceId`, {deviceId})
-      .then((result) => result.reduce<Set<string>>((acc, {group_id}) => acc.add(group_id), new Set()));
+      .then((result) => {
+        const set = result.reduce<Set<string>>((acc, {group_id}) => acc.add(group_id), new Set());
+        cacheUserGroupIdsSync.set(deviceId, set);
+        return set;
+      });
     cacheUserGroupIds.set(deviceId, prom);
   }
   return cacheUserGroupIds.get(deviceId)!;
+}
+
+export function getUserGroupIdsSync(deviceId: string): Set<string> {
+  if (!cacheUserGroupIdsSync.has(deviceId)) {
+    throw new Error('user-group-ids-set not loaded');
+  }
+  return cacheUserGroupIdsSync.get(deviceId)!;
 }
 
 export async function updateUserGroupIdsCache(deviceId: string, groupId: string): Promise<void> {

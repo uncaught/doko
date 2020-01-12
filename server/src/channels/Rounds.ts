@@ -40,8 +40,9 @@ server.channel<RoundsLoad>('rounds/load', {
       rounds: await loadRounds(groupId),
     });
   },
-  async filter(ctx, {groupId: subGroupId}) {
+  filter(ctx, {groupId: subGroupId}) {
     const {addFilter, combinedFilter} = createFilter();
+    addFilter<RoundsAdd>('rounds/add', (_, {round: {groupId}}) => groupId === subGroupId);
     addFilter<RoundsPatch>('rounds/patch', (_, {groupId}) => groupId === subGroupId);
     addFilter<RoundsRemove>('rounds/remove', (_, {groupId}) => groupId === subGroupId);
     return combinedFilter;

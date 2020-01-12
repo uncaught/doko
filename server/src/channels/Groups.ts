@@ -2,7 +2,7 @@ import server from '../Server';
 import {Group, GroupsAdd, GroupsAdded, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
 import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
-import {canEditGroup, getUserGroupIds, updateUserGroupIdsCache} from '../Auth';
+import {canEditGroup, getUserGroupIds, getUserGroupIdsSync, updateUserGroupIdsCache} from '../Auth';
 import {groupMemberDevicesDbConfig, groupMembersDbConfig, groupsDbConfig} from '../DbTypes';
 
 export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
@@ -22,16 +22,16 @@ export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
 }
 
 server.channel<GroupsLoad>('groups/load', {
-  async access() {
+  async access(ctx) {
+    await getUserGroupIds(ctx.userId!); //fill cache for filter(), which is not async, yet
     return true; //everyone can read this channel, the result is filtered by membership
   },
   async init(ctx) {
     const groupIds = await getUserGroupIds(ctx.userId!);
     await ctx.sendBack<GroupsLoaded>({groups: await loadGroups(groupIds), type: 'groups/loaded'});
   },
-  async filter(ctx) {
-    //TODO: re-test once https://github.com/logux/server/pull/68 is released
-    const groupIds = await getUserGroupIds(ctx.userId!);
+  filter(ctx) {
+    const groupIds = getUserGroupIdsSync(ctx.userId!);
     const {addFilter, combinedFilter} = createFilter();
     addFilter<GroupsPatch>('groups/patch', (_, {id}) => groupIds.has(id));
     return combinedFilter;

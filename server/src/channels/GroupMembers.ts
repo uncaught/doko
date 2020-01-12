@@ -72,8 +72,9 @@ server.channel<GroupMembersLoad>('groupMembers/load', {
       groupMembers: await loadGroupMembers(ctx.userId!, groupId),
     });
   },
-  async filter(ctx, {groupId: subGroupId}) {
+  filter(ctx, {groupId: subGroupId}) {
     const {addFilter, combinedFilter} = createFilter();
+    addFilter<GroupMembersAdd>('groupMembers/add', (_, {groupMember: {groupId}}) => groupId === subGroupId);
     addFilter<GroupMembersPatch>('groupMembers/patch', (_, {groupId}) => groupId === subGroupId);
     return combinedFilter;
   },
