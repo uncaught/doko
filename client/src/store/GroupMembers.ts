@@ -1,6 +1,5 @@
 import {State} from './Store';
 import {
-  DeepPartial,
   generateToken,
   generateUuid,
   GroupGroupMembers,
@@ -16,6 +15,7 @@ import {
   mergeStates,
   objectContains,
   parseInvitationUrl,
+  PatchableGroupMember,
   Player,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/store/Reducer';
@@ -157,7 +157,7 @@ export function useGroupMember(): GroupMember | undefined {
 export function usePatchGroupMember() {
   const currentGroupMember = useGroupMember();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((groupMember: DeepPartial<Omit<GroupMember, 'id'>>) => {
+  return useCallback((groupMember: PatchableGroupMember) => {
     if (!currentGroupMember) {
       throw new Error(`No currentGroupMember`);
     }

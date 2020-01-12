@@ -11,6 +11,8 @@ export interface Group {
   roundsCount: number;
 }
 
+export type PatchableGroup = DeepPartial<Pick<Group, 'name' | 'settings'>>;
+
 export interface Groups {
   [id: string]: Group;
 }
@@ -38,5 +40,5 @@ export interface GroupsAdded {
 export interface GroupsPatch {
   type: 'groups/patch';
   id: string;
-  group: DeepPartial<Omit<Group, 'id'>>;
+  group: PatchableGroup;
 }

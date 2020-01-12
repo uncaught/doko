@@ -1,13 +1,14 @@
 import {State} from './Store';
 import {
-  DeepPartial,
   generateUuid,
   getDefaultRoundData,
   mergeStates,
   objectContains,
+  PatchableRound,
   Player,
   Round,
   RoundDetailsLoad,
+  RoundResults,
   Rounds,
   RoundsAdd,
   RoundsLoad,
@@ -26,6 +27,7 @@ import {groupsSelector, useGroup} from './Groups';
 import {useHistory} from 'react-router-dom';
 import {useSortedGroupMembers} from './GroupMembers';
 import {useSortedGames} from './Games';
+import {usePlayersWithStats} from './Players';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -124,7 +126,7 @@ export function useRound(): Round | undefined {
 export function usePatchRound() {
   const currentRound = useRound();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((round: DeepPartial<Omit<Round, 'id'>>) => {
+  return useCallback((round: PatchableRound) => {
     if (!currentRound) {
       throw new Error(`No currentRound`);
     }
@@ -140,6 +142,33 @@ export function usePatchRound() {
       });
     }
   }, [currentRound, dispatch]);
+}
+
+export function useFinishRound() {
+  const round = useRound();
+  const patchRound = usePatchRound();
+  const playersWithStats = usePlayersWithStats();
+  const sortedGames = useSortedGames();
+  const history = useHistory();
+  const lastGame = sortedGames[sortedGames.length - 1];
+  return useCallback(() => {
+    if (!round || !lastGame) {
+      return;
+    }
+    const results: RoundResults = {
+      gamesCount: sortedGames.length,
+      runsCount: lastGame.data.runNumber,
+      players: {},
+    };
+    playersWithStats.forEach(({member, pointBalance, pointDiffToTopPlayer}) => {
+      results.players[member.id] = {pointBalance, pointDiffToTopPlayer};
+    });
+    patchRound({
+      endDate: Math.round(Date.now() / 1000),
+      data: {results},
+    });
+    history.push(`/groups/group/${round.groupId}/rounds`);
+  }, [history, lastGame, patchRound, playersWithStats, round, sortedGames.length]);
 }
 
 export function useRemoveRound() {

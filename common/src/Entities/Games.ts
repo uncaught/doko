@@ -9,7 +9,7 @@ export interface Game {
   data: GameData;
 }
 
-export type PatchableGame = DeepPartial<Omit<Game, 'id' | 'roundId'>>;
+export type PatchableGame = DeepPartial<Pick<Game, 'data'>>;
 
 export interface RoundGames {
   [id: string]: Game;

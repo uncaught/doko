@@ -24,6 +24,8 @@ services:
     restart: always
     user: '1000:1000'
     working_dir: /doko/server
+    depends_on:
+      - database
     volumes:
       - ./:/doko:rw
     environment:

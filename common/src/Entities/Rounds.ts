@@ -2,10 +2,23 @@ import {DeepPartial} from '../Generics';
 import {Player} from './Players';
 import {GroupSettings} from './GroupSettings';
 
+export interface RoundResults {
+  gamesCount: number;
+  runsCount: number;
+  players: {
+    [memberId: string]: {
+      pointBalance: number;
+      pointDiffToTopPlayer: number;
+    }
+  };
+}
+
 export interface RoundData {
   bockInBockBehavior: GroupSettings['bockInBockBehavior'];
   dynamicRoundDuration: boolean;
+  eurosPerPointDiffToTopPlayer: GroupSettings['eurosPerPointDiffToTopPlayer'];
   roundDuration: null | number; //number of runs (1 run = everyone dealt once)
+  results: null | RoundResults;
 }
 
 /**
@@ -15,7 +28,9 @@ export function getDefaultRoundData(settings: GroupSettings): RoundData {
   return {
     bockInBockBehavior: settings.bockInBockBehavior,
     dynamicRoundDuration: settings.dynamicRoundDuration,
+    eurosPerPointDiffToTopPlayer: settings.eurosPerPointDiffToTopPlayer,
     roundDuration: null,
+    results: null,
   };
 }
 
@@ -26,6 +41,8 @@ export interface Round {
   endDate: number | null; //unix
   data: RoundData;
 }
+
+export type PatchableRound = DeepPartial<Pick<Round, 'startDate' | 'endDate' | 'data'>>;
 
 export interface Rounds {
   [groupId: string]: {
@@ -54,7 +71,7 @@ export interface RoundsPatch {
   type: 'rounds/patch';
   id: string;
   groupId: string;
-  round: DeepPartial<Omit<Round, 'id' | 'groupId'>>;
+  round: PatchableRound;
 }
 
 export interface RoundsRemove {

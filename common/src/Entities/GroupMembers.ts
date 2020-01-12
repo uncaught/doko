@@ -13,6 +13,8 @@ export interface GroupMember {
   euroBalance?: number;
 }
 
+export type PatchableGroupMember = DeepPartial<Pick<GroupMember, 'name' | 'isRegular'>>;
+
 export interface GroupGroupMembers {
   [id: string]: GroupMember;
 }
@@ -42,7 +44,7 @@ export interface GroupMembersPatch {
   type: 'groupMembers/patch';
   id: string;
   groupId: string;
-  groupMember: DeepPartial<Omit<GroupMember, 'id' | 'groupId'>>;
+  groupMember: PatchableGroupMember;
 }
 
 export interface GroupMembersInvite {

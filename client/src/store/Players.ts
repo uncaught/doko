@@ -96,8 +96,8 @@ export function useGameParticipatingPlayers(): Player[] {
 export interface PlayerStats {
   member: GroupMember;
   player: Player;
-  euros: string; //toFixed(2)
   pointBalance: number;
+  pointDiffToTopPlayer: number;
   dutySoloPlayed: boolean;
 }
 
@@ -113,8 +113,8 @@ export function usePlayersWithStats(): PlayerStats[] {
       statsByMember.set(player.groupMemberId, {
         player,
         member: members[player.groupMemberId],
-        euros: '',
         pointBalance: 0,
+        pointDiffToTopPlayer: 0,
         dutySoloPlayed: false,
       });
     });
@@ -141,7 +141,9 @@ export function usePlayersWithStats(): PlayerStats[] {
 
     const sorted = [...statsByMember.values()].sort((a, b) => b.pointBalance - a.pointBalance);
     const topPoints = sorted.length ? sorted[0].pointBalance : 0;
-    sorted.forEach((stat) => stat.euros = ((topPoints - stat.pointBalance) * 0.05).toFixed(2));
+    sorted.forEach((stat) => {
+      stat.pointDiffToTopPlayer = topPoints - stat.pointBalance;
+    });
     return sorted;
   }, [games, members, players]);
 }

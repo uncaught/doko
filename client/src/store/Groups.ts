@@ -1,6 +1,5 @@
 import {State} from './Store';
 import {
-  DeepPartial,
   defaultGroupSettings,
   generateUuid,
   Group,
@@ -12,6 +11,7 @@ import {
   GroupsPatch,
   mergeStates,
   objectContains,
+  PatchableGroup,
   RoundsAdd,
   RoundsRemove,
 } from '@doko/common';
@@ -124,7 +124,7 @@ export function useGroup(): Group | undefined {
 export function usePatchGroup() {
   const currentGroup = useGroup();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((group: DeepPartial<Omit<Group, 'id'>>) => {
+  return useCallback((group: PatchableGroup) => {
     if (!currentGroup) {
       throw new Error(`No currentGroup`);
     }

@@ -34,8 +34,7 @@ export function detectLastGameAndForcedSolo(
     return;
   }
 
-  const openMappedToPosition = open.map(({player}) => activePlayers.indexOf(player));
-  const nextForcedSoloistIndex = openMappedToPosition.sort((a, b) => a - b)[0];
+  const openIndexes = open.map(({player}) => activePlayers.indexOf(player));
 
   gameData.gameType = 'forcedSolo';
   gameData.re.members = [];
@@ -44,7 +43,7 @@ export function detectLastGameAndForcedSolo(
   for (let i = 1; i < 5; i++) {
     const pIndex = (nextDealerIndex + i) % activePlayers.length;
     const player = activePlayers[pIndex];
-    if (nextForcedSoloistIndex === pIndex) {
+    if (openIndexes.includes(pIndex) && gameData.re.members.length === 0) {
       gameData.re.members.push(player.groupMemberId);
     } else {
       gameData.contra.members.push(player.groupMemberId);

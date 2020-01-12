@@ -49,6 +49,7 @@ export interface GroupSettings {
     soloLost: boolean;
   };
   dynamicRoundDuration: boolean;
+  eurosPerPointDiffToTopPlayer: number | null;
 }
 
 export const extraPointsTranslations = new Map<keyof GroupSettings['extraPoints'], string>([
@@ -104,4 +105,5 @@ export const defaultGroupSettings: GroupSettings = {
     soloLost: false,
   },
   dynamicRoundDuration: false,
+  eurosPerPointDiffToTopPlayer: null,
 };

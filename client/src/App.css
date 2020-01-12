@@ -42,6 +42,7 @@
 }
 
 .item .ui.label > .icon,
+.item .ui.label > .detail > .icon,
 .memberDetail .ui.label > .icon,
 .memberDetail .ui.label > .detail > .icon {
   margin-right: 0;
