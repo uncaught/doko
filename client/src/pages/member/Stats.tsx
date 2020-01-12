@@ -31,7 +31,7 @@ export default function Stats(): ReactElement {
       <Label color={'blue'}>
         Euro-Bilanz
         <Label.Detail>
-          {euroBalance} <Icon name='euro sign'/>
+          {euroBalance.toFixed(2)} <Icon name='euro sign'/>
         </Label.Detail>
       </Label>
     </div>}

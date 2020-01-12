@@ -28,7 +28,7 @@ export default function Members(): ReactElement {
                   {pointDiffToTopPlayer} <Icon name='bullseye'/>
                 </Label>
                 {euroBalance !== null && <Label size={'small'} color={'blue'}>
-                  {euroBalance} <Icon name='euro sign'/>
+                  {euroBalance!.toFixed(2)} <Icon name='euro sign'/>
                 </Label>}
                 <Label size={'small'} color={'orange'}>
                   {roundsCount} / {groupRoundsCount
