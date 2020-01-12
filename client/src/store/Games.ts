@@ -65,7 +65,7 @@ addReducer<GamesPatch>('games/patch', (state, {id, roundId, game}) => {
 addReducer<GamesRemove>('games/remove', (state, {id, roundId}) => {
   if (state[roundId][id]) {
     const newState = {...state, [roundId]: {...state[roundId]}};
-    delete newState[id];
+    delete newState[roundId][id];
     return newState;
   }
   return state;
@@ -152,7 +152,7 @@ export function useRemoveGame() {
       return;
     }
     dispatch.sync<GamesRemove>({id: game.id, roundId: round.id, type: 'games/remove'});
-    history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}`);
+    history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}/games`);
   }, [round, game, isLastGame, dispatch, history]);
 }
 

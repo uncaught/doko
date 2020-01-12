@@ -2,7 +2,7 @@ import {RouteProps} from 'react-router';
 import React, {ReactElement, useCallback, useContext, useState} from 'react';
 import {Route, useParams, useRouteMatch} from 'react-router-dom';
 import {Menu, Sidebar} from 'semantic-ui-react';
-import PageMenu, {PageMenuItemConfig} from './PageMenu';
+import PageMenu, {PageMenuItems} from './PageMenu';
 import PageHeader from './PageHeader';
 
 const context = React.createContext<FullParams>({displayName: 'Doppelkopf', parents: []});
@@ -43,7 +43,7 @@ function PageContext({children, parentParams, displayName, parentUrl, isIndex}: 
 
 interface FullRouteProps extends RouteProps {
   displayName?: string;
-  menuItems?: PageMenuItemConfig[];
+  menuItems?: PageMenuItems;
 }
 
 export default function Page(props: FullRouteProps): ReactElement {
