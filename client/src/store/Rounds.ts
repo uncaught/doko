@@ -13,6 +13,7 @@ import {
   RoundsLoad,
   RoundsLoaded,
   RoundsPatch,
+  RoundsRemove,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
@@ -24,6 +25,7 @@ import {LoguxDispatch} from './Logux';
 import {groupsSelector, useGroup} from './Groups';
 import {useHistory} from 'react-router-dom';
 import {useSortedGroupMembers} from './GroupMembers';
+import {useSortedGames} from './Games';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -51,6 +53,15 @@ addReducer<RoundsPatch>('rounds/patch', (state, action) => {
         [action.id]: mergeStates<Round>(state[action.groupId][action.id], action.round),
       },
     };
+  }
+  return state;
+});
+
+addReducer<RoundsRemove>('rounds/remove', (state, {id, groupId}) => {
+  if (state[groupId][id]) {
+    const newState = {...state, [groupId]: {...state[groupId]}};
+    delete newState[groupId][id];
+    return newState;
   }
   return state;
 });
@@ -129,6 +140,23 @@ export function usePatchRound() {
       });
     }
   }, [currentRound, dispatch]);
+}
+
+export function useRemoveRound() {
+  const round = useRound();
+  const currentGames = useSortedGames();
+  const history = useHistory();
+  const dispatch = useDispatch<LoguxDispatch>();
+  return useCallback((): void => {
+    if (!round) {
+      throw new Error(`No round`);
+    }
+    if (round.endDate || currentGames.length) {
+      return;
+    }
+    dispatch.sync<RoundsRemove>({id: round.id, groupId: round.groupId, type: 'rounds/remove'});
+    history.push(`/groups/group/${round.groupId}`);
+  }, [round, currentGames.length, dispatch, history]);
 }
 
 export function useSortedRounds(): Round[] {

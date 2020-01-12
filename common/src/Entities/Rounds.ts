@@ -56,3 +56,9 @@ export interface RoundsPatch {
   groupId: string;
   round: DeepPartial<Omit<Round, 'id' | 'groupId'>>;
 }
+
+export interface RoundsRemove {
+  type: 'rounds/remove';
+  id: string;
+  groupId: string;
+}

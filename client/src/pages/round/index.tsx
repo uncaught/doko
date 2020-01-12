@@ -5,6 +5,7 @@ import SittingOrder from './SittingOrder';
 import {useLoadRoundDetails, useRound} from '../../store/Rounds';
 import Round from './Round';
 import Games from '../games';
+import RemoveRoundMenuItem from './RemoveRoundMenuItem';
 
 export default function RoundIndex(): ReactElement | null {
   useLoadRoundDetails();
@@ -19,7 +20,7 @@ export default function RoundIndex(): ReactElement | null {
     <Page path={`${url}/games`} displayName={'Spiele'}>
       <Games/>
     </Page>
-    <Page path={`${url}`}>
+    <Page path={`${url}`} menuItems={[RemoveRoundMenuItem]}>
       <Round/>
     </Page>
   </Switch>;

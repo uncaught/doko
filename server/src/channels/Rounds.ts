@@ -1,10 +1,11 @@
 import server from '../Server';
 import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
-import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch} from '@doko/common';
+import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch, RoundsRemove} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
 import {playersDbConfig, roundsDbConfig} from '../DbTypes';
 import {memberIdsBelongToGroup} from './GroupMembers';
+import {getGameCountForRound} from './Games';
 
 export async function getGroupForRound(roundId: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM rounds WHERE id = ?`, [roundId]);
@@ -42,6 +43,7 @@ server.channel<RoundsLoad>('rounds/load', {
   async filter(ctx, {groupId: subGroupId}) {
     const {addFilter, combinedFilter} = createFilter();
     addFilter<RoundsPatch>('rounds/patch', (_, {groupId}) => groupId === subGroupId);
+    addFilter<RoundsRemove>('rounds/remove', (_, {groupId}) => groupId === subGroupId);
     return combinedFilter;
   },
 });
@@ -65,15 +67,33 @@ server.type<RoundsAdd>('rounds/add', {
   },
 });
 
+async function canEditRound(deviceId: string, roundId: string, groupId: string) {
+  const realGroupId = await getGroupForRound(roundId);
+  return realGroupId === groupId && await canEditGroup(deviceId, realGroupId) && await isRoundOpen(roundId);
+}
+
 server.type<RoundsPatch>('rounds/patch', {
-  async access(ctx, {id, groupId}) {
-    const realGroupId = await getGroupForRound(id);
-    return realGroupId === groupId && await canEditGroup(ctx.userId!, realGroupId) && await isRoundOpen(id);
+  access(ctx, {id, groupId}) {
+    return canEditRound(ctx.userId!, id, groupId);
   },
   resend() {
     return {channel: 'rounds/load'};
   },
   async process(ctx, action) {
     await updateSingleEntity<Round>(ctx.userId!, roundsDbConfig, action.id, action.round);
+  },
+});
+
+server.type<RoundsRemove>('rounds/remove', {
+  async access(ctx, {id, groupId}) {
+    return await canEditRound(ctx.userId!, id, groupId) && await getGameCountForRound(id) === 0;
+  },
+  resend() {
+    return {channel: 'rounds/load'};
+  },
+  async process(ctx, {id}) {
+    await getTransactional(ctx.userId!, async (update) => {
+      await update(`DELETE FROM rounds WHERE id = ?`, [id]);
+    });
   },
 });

@@ -40,6 +40,11 @@ export async function loadGames(roundId: string): Promise<Game[]> {
   return games;
 }
 
+export async function getGameCountForRound(roundId: string): Promise<number> {
+  const rows = await query<{ c: number }>(`SELECT COUNT(id) as c FROM games WHERE round_id = ?`, [roundId]);
+  return rows.length ? +rows[0].c : 0;
+}
+
 export async function isLastGameOfRound(gameId: string, roundId: string): Promise<boolean> {
   const lastGame = await query<{ id: string }>(`SELECT id FROM games WHERE round_id = ? ORDER BY game_number DESC LIMIT 1`,
     [roundId]);
