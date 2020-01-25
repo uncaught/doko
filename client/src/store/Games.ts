@@ -31,6 +31,7 @@ import {detectRunNumber} from './Games/DetectRunNumber';
 import {detectBockGame} from './Games/DetectBockGame';
 import {detectLastGameAndForcedSolo} from './Games/DetectLastGameAndForcedSolo';
 import {detectPlayers} from './Games/DetectPlayers';
+import {useSimulatedGame, useSimulatedPatchGame, useSimulation} from './Simulation';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -119,7 +120,7 @@ export function useAddGame() {
     }
     const players = roundParticipatingPlayers.filter((p) => p.leftAfterGameNumber === null);
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
-    const data = getDefaultGameData(settings, lastGame);
+    const data = getDefaultGameData(settings);
     data.runNumber = detectRunNumber(currentGames, nextDealerId);
     detectPlayers(data, nextDealerId, players);
     detectBockGame(round.data, data, currentGames, nextDealerId);
@@ -157,13 +158,17 @@ export function useRemoveGame() {
   }, [round, game, isLastGame, dispatch, history]);
 }
 
-export function useGame(): Game | undefined {
+function useRealGame(): Game | undefined {
   const {gameId, roundId} = useFullParams<{ gameId: string; roundId: string }>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return games[gameId];
 }
 
-export function usePatchGame() {
+export function useGame(): Game | undefined {
+  return (useSimulation() ? useSimulatedGame : useRealGame)();
+}
+
+function useRealPatchGame() {
   const currentGame = useGame();
   const dispatch = useDispatch<LoguxDispatch>();
   const round = useRound()!;
@@ -183,6 +188,10 @@ export function usePatchGame() {
       });
     }
   }, [currentGame, dispatch, round.endDate]);
+}
+
+export function usePatchGame(): (game: PatchableGame) => void {
+  return (useSimulation() ? useSimulatedPatchGame : useRealPatchGame)();
 }
 
 export function undecided(data: GameData): string[] {

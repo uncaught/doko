@@ -26,6 +26,10 @@ export default function PageMenu({closeMenu, menuItems}: { closeMenu: () => void
       <Icon name='group'/>
       Meine Gruppen
     </Item>
+    <Item route={'/simulation'}>
+      <Icon name='gamepad'/>
+      Simulation
+    </Item>
     {!!menuItems && menuItems.map((MenuItem, idx) => {
       if (isConfig(MenuItem)) {
         return <Item key={idx} route={MenuItem.route}>

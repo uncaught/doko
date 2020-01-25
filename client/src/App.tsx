@@ -6,6 +6,7 @@ import Page from './Page';
 import useSubscription from '@logux/redux/use-subscription';
 import {GroupsLoad} from '@doko/common';
 import HandleInvitation from './pages/HandleInvitation';
+import Simulation from './pages/Simulation';
 
 export default function App(): ReactElement | null {
   useSubscription<GroupsLoad>(['groups/load']);
@@ -14,6 +15,9 @@ export default function App(): ReactElement | null {
     <Switch>
       <Page path="/invitation" displayName={'Einladung'}>
         <HandleInvitation/>
+      </Page>
+      <Page path="/simulation" displayName={'Simulation'}>
+        <Simulation/>
       </Page>
       <Page path="/" displayName={'Doppelkopf'}>
         <Groups/>

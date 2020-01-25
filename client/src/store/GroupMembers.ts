@@ -30,6 +30,7 @@ import {groupsSelector} from './Groups';
 import {useSortedRounds} from './Rounds';
 import {gamesSelector} from './Games';
 import {playersSelector} from './Players';
+import {useSimulatedGroupMembers, useSimulation} from './Simulation';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
@@ -143,9 +144,13 @@ export function useAcceptInvitation() {
   }, [dispatch, getState, history]);
 }
 
-export function useGroupMembers(): GroupGroupMembers {
+function useRealGroupMembers(): GroupGroupMembers {
   const {groupId} = useFullParams<{ groupId: string }>();
   return useSelector(groupMembersSelector)[groupId] || {};
+}
+
+export function useGroupMembers(): GroupGroupMembers {
+  return (useSimulation() ? useSimulatedGroupMembers : useRealGroupMembers)();
 }
 
 export function useGroupMember(): GroupMember | undefined {

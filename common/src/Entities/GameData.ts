@@ -1,6 +1,5 @@
 import {GroupSettings, SoloType} from './GroupSettings';
 import {GameCalcLog} from '../GameCalc';
-import {Game} from './Games';
 
 export type PipRange =
   '0'
@@ -142,7 +141,7 @@ export function getDefaultParty(): Party {
 /**
  * The settings required to calculate the game-state are copied over to the game to avoid conflicts with setting-changes
  */
-export function getDefaultGameData(settings: GroupSettings, lastGame: Game | null = null): GameData {
+export function getDefaultGameData(settings: GroupSettings): GameData {
   return {
     gameCalcLog: [],
     gameType: 'normal',

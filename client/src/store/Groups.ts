@@ -21,6 +21,7 @@ import {useCallback, useMemo} from 'react';
 import {useFullParams} from '../Page';
 import {LoguxDispatch} from './Logux';
 import {useHistory} from 'react-router-dom';
+import {useSimulatedGroup, useSimulation} from './Simulation';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 
@@ -115,10 +116,14 @@ export function useAddGroup() {
   }, [dispatch, history]);
 }
 
-export function useGroup(): Group | undefined {
+function useRealGroup(): Group | undefined {
   const {groupId} = useFullParams<{ groupId: string }>();
   const groups = useSelector(groupsSelector);
   return groups[groupId];
+}
+
+export function useGroup(): Group | undefined {
+  return (useSimulation() ? useSimulatedGroup : useRealGroup)();
 }
 
 export function usePatchGroup() {

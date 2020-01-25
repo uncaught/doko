@@ -4,6 +4,8 @@ export function generateUuid(): string {
   return v4().toString();
 }
 
+export const NIL = '00000000-0000-0000-0000-000000000000';
+
 const regExp = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const regExpToken = /^[0-9a-f]{32}$/;
 
