@@ -137,16 +137,20 @@ function game(data: GameData): GameData {
     addRe(1); //7.2.2 (a.1)
     addPointsForAnnounces(log, data, addRe); //7.2.2 (b)
     addPointsForRejection(log, data, addRe); //7.2.2 (c/d)
-  }
-  if (contraWon) {
+    addPointsForPips(log, reMinPips, addRe, 're'); //7.2.2 (a.2-5)
+    addPointsForPips(log, contraMinPips, addRe, 'contra'); //7.2.2 (a.2-5)
+  } else if (contraWon) {
     addContra(1); //7.2.2 (a.1)
     addPointsForAnnounces(log, data, addContra); //7.2.2 (b)
     addPointsForRejection(log, data, addContra); //7.2.2 (c/d)
+    addPointsForPips(log, reMinPips, addContra, 're'); //7.2.2 (a.2-5)
+    addPointsForPips(log, contraMinPips, addContra, 'contra'); //7.2.2 (a.2-5)
+  } else {
+    //Stalemate - no winner
+    addPointsForPips(log, reMinPips, addRe, 're'); //7.2.2 (a.2-5)
+    addPointsForPips(log, contraMinPips, addContra, 'contra'); //7.2.2 (a.2-5)
   }
 
-  //Also applied in stalemate situation:
-  addPointsForPips(log, reMinPips, addRe, 're'); //7.2.2 (a.2-5)
-  addPointsForPips(log, contraMinPips, addContra, 'contra'); //7.2.2 (a.2-5)
   addPointsAgainstRejection(log, reMinPips, addRe, 're', data.contra); //7.2.2 (e)
   addPointsAgainstRejection(log, contraMinPips, addContra, 'contra', data.re); //7.2.2 (f)
 
