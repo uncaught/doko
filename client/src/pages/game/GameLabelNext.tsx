@@ -14,7 +14,7 @@ export default function GameLabelNext(): ReactElement {
   return <>
     <div className="memberDetail">
       {!!nextGame &&
-      <Label as={asLink(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${nextGame.id}`)}
+      <Label as={asLink(`/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${nextGame.id}`)}
              color={'blue'}>
         <Icon className="u-margin-none" name={'hashtag'}/> <Icon name={'arrow right'}/>
       </Label>}

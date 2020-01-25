@@ -111,7 +111,7 @@ export function useAddGroup() {
       },
       type: 'groups/add',
     });
-    history.push(`/groups/group/${groupId}/addMembers`);
+    history.push(`/group/${groupId}/addMembers`);
   }, [dispatch, history]);
 }
 

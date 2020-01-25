@@ -16,7 +16,7 @@ export default function Members(): ReactElement {
     {groupMembers.length > 0 && <div className="">
       <List divided relaxed>
         {groupMembers.map(({id, name, pointBalance = 0, pointDiffToTopPlayer = 0, roundsCount = 0, euroBalance = 0, isYou}) =>
-          <List.Item as={asLink(`/groups/group/${groupId}/member/${id}`)} key={id}>
+          <List.Item as={asLink(`/group/${groupId}/member/${id}`)} key={id}>
             <List.Icon color={'black'} size={'large'} name='user' verticalAlign='middle'/>
             <List.Content>
               <List.Header>{name}</List.Header>

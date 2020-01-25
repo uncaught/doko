@@ -133,7 +133,7 @@ export function useAcceptInvitation() {
       const state = getState();
       const groupId = acceptedInvitationsSelector(state)[token];
       if (groupId) {
-        history.push(`/groups/group/${groupId}`);
+        history.push(`/group/${groupId}`);
         return true;
       } else if (!rejectedInvitationsSelector(state).includes(token)) {
         console.error('Missing invited groupId');

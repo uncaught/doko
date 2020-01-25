@@ -10,7 +10,7 @@ export default function MyGroups(): ReactElement {
     <Header as='h4'>Meine Gruppen</Header>
 
     {groups.length > 0 && <List divided relaxed>
-      {groups.map(({id, name, lastRoundUnix}) => <List.Item key={id} as={asLink(`/groups/group/${id}`)}>
+      {groups.map(({id, name, lastRoundUnix}) => <List.Item key={id} as={asLink(`/group/${id}`)}>
         <List.Icon color={'black'} size={'large'} name='group' verticalAlign='middle'/>
         <List.Content>
           <List.Header>{name}</List.Header>

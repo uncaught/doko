@@ -23,10 +23,6 @@ export default function PageMenu({closeMenu, menuItems}: { closeMenu: () => void
   }, [closeMenu]);
   return <>
     <Item route={'/'}>
-      <Icon name='home'/>
-      Home
-    </Item>
-    <Item route={'/groups'}>
       <Icon name='group'/>
       Meine Gruppen
     </Item>

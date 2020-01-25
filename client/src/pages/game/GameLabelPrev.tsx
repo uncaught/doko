@@ -13,7 +13,7 @@ export default function GameLabelPrev(): ReactElement {
   return <>
     <div className="memberDetail">
       {!!prevGame &&
-      <Label as={asLink(`/groups/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${prevGame.id}`)}
+      <Label as={asLink(`/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${prevGame.id}`)}
              color={'blue'}>
         <Icon className="u-margin-none" name={'arrow left'}/> <Icon name={'hashtag'}/>
       </Label>}

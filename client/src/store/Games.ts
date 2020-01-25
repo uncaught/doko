@@ -132,7 +132,7 @@ export function useAddGame() {
       gameNumber: (lastGame ? lastGame.gameNumber : 0) + 1,
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
-    history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
+    history.push(`/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
   }, [round, currentGames, roundParticipatingPlayers, settings, playersWithStats, dispatch, history]);
 }
 
@@ -153,7 +153,7 @@ export function useRemoveGame() {
       return;
     }
     dispatch.sync<GamesRemove>({id: game.id, roundId: round.id, type: 'games/remove'});
-    history.push(`/groups/group/${round.groupId}/rounds/round/${round.id}/games`);
+    history.push(`/group/${round.groupId}/rounds/round/${round.id}/games`);
   }, [round, game, isLastGame, dispatch, history]);
 }
 

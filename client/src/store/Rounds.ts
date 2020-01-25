@@ -113,7 +113,7 @@ export function useAddRound() {
       players,
       type: 'rounds/add',
     });
-    history.push(`/groups/group/${groupId}/rounds/round/${roundId}/players`);
+    history.push(`/group/${groupId}/rounds/round/${roundId}/players`);
   }, [dispatch, groupId, history, members, settings]);
 }
 
@@ -167,7 +167,7 @@ export function useFinishRound() {
       endDate: Math.round(Date.now() / 1000),
       data: {results},
     });
-    history.push(`/groups/group/${round.groupId}/rounds`);
+    history.push(`/group/${round.groupId}/rounds`);
   }, [history, lastGame, patchRound, playersWithStats, round, sortedGames.length]);
 }
 
@@ -184,7 +184,7 @@ export function useRemoveRound() {
       return;
     }
     dispatch.sync<RoundsRemove>({id: round.id, groupId: round.groupId, type: 'rounds/remove'});
-    history.push(`/groups/group/${round.groupId}`);
+    history.push(`/group/${round.groupId}`);
   }, [round, currentGames.length, dispatch, history]);
 }
 

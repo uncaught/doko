@@ -15,11 +15,8 @@ export default function App(): ReactElement | null {
       <Page path="/invitation" displayName={'Einladung'}>
         <HandleInvitation/>
       </Page>
-      <Page path="/groups" displayName={'Meine Gruppen'}>
-        <Groups/>
-      </Page>
       <Page path="/" displayName={'Doppelkopf'}>
-        Home
+        <Groups/>
       </Page>
     </Switch>
   </Router>;
