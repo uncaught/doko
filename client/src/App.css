@@ -54,6 +54,10 @@
   margin-left: 0 !important;;
 }
 
+.description > .ui.label {
+  margin: .15em;
+}
+
 .u-flex-row-between {
   display: flex;
   flex-direction: row;
