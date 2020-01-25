@@ -5,7 +5,7 @@ import {useGroup} from '../../store/Groups';
 
 export default function Stats(): ReactElement {
   const {roundsCount: groupRoundsCount = 0} = useGroup() || {};
-  const {pointBalance = 0, pointDiffToTopPlayer = 0, roundsCount = 0, euroBalance = 0, isYou} = useGroupMember() || {};
+  const {pointBalance = 0, pointDiffToTopPlayer = 0, roundsCount = 0, euroBalance, isYou} = useGroupMember() || {};
 
   return <section className="">
 
@@ -27,7 +27,7 @@ export default function Stats(): ReactElement {
       </Label>
     </div>
 
-    {euroBalance !== null && <div className="memberDetail">
+    {typeof euroBalance === 'number' && <div className="memberDetail">
       <Label color={'blue'}>
         Euro-Bilanz
         <Label.Detail>

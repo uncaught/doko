@@ -46,9 +46,7 @@ export async function loadGroupMembers(deviceId: string, groupId: string): Promi
               COUNT(rgm.round_id) as roundsCount,
               COALESCE(SUM(JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointBalance'))), 0) as pointBalance,
               COALESCE(SUM(JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointDiffToTopPlayer'))), 0) as pointDiffToTopPlayer,
-              COALESCE(SUM(
-                JSON_EXTRACT(r.data, '$.eurosPerPointDiffToTopPlayer') * JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointDiffToTopPlayer'))
-              ), 0) as euroBalance
+              SUM(JSON_EXTRACT(r.data, '$.eurosPerPointDiffToTopPlayer') * JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointDiffToTopPlayer'))) as euroBalance
          FROM group_members gm
     LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
           AND gmd.device_id = ?
