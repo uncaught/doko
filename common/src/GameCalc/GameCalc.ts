@@ -138,12 +138,10 @@ function game(data: GameData): GameData {
     addPointsForAnnounces(log, data, addRe); //7.2.2 (b)
     addPointsForRejection(log, data, addRe); //7.2.2 (c/d)
     addPointsForPips(log, reMinPips, addRe, 're'); //7.2.2 (a.2-5)
-    addPointsForPips(log, contraMinPips, addRe, 'contra'); //7.2.2 (a.2-5)
   } else if (contraWon) {
     addContra(1); //7.2.2 (a.1)
     addPointsForAnnounces(log, data, addContra); //7.2.2 (b)
     addPointsForRejection(log, data, addContra); //7.2.2 (c/d)
-    addPointsForPips(log, reMinPips, addContra, 're'); //7.2.2 (a.2-5)
     addPointsForPips(log, contraMinPips, addContra, 'contra'); //7.2.2 (a.2-5)
   } else {
     //Stalemate - no winner
