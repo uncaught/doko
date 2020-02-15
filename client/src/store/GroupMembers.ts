@@ -4,6 +4,7 @@ import {
   generateUuid,
   GroupGroupMembers,
   GroupMember,
+  GroupMemberRoundStats,
   GroupMembers,
   GroupMembersAcceptInvitation,
   GroupMembersAdd,
@@ -11,6 +12,8 @@ import {
   GroupMembersLoad,
   GroupMembersLoaded,
   GroupMembersPatch,
+  GroupMembersWithRoundStats,
+  GroupMemberWithRoundStats,
   GroupsAdd,
   mergeStates,
   objectContains,
@@ -27,10 +30,12 @@ import {useFullParams} from '../Page';
 import {acceptedInvitationsSelector, rejectedInvitationsSelector} from './Ui';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
-import {useSortedRounds} from './Rounds';
+import {roundsSelector, useSortedRounds} from './Rounds';
 import {gamesSelector} from './Games';
 import {playersSelector} from './Players';
 import {useSimulatedGroupMembers, useSimulation} from './Simulation';
+import {createSelector} from 'reselect';
+import {memoize} from 'lodash';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
@@ -71,7 +76,58 @@ addReducer<GroupMembersPatch>('groupMembers/patch', (state, action) => {
 
 export const groupMembersReducer = combinedReducer;
 
-export const groupMembersSelector = (state: State) => state.groupMembers;
+const groupMembersSelector = (state: State) => state.groupMembers;
+
+const emptyStats: GroupMemberRoundStats = {
+  roundsCount: 0,
+  pointBalance: 0,
+  pointDiffToTopPlayer: 0,
+  euroBalance: null,
+};
+
+const getGroupRoundStatsSelector = createSelector(
+  roundsSelector,
+  (rounds) => memoize((groupId: string) => {
+    const groupRounds = rounds[groupId] || {};
+    const memberMap = new Map<string, GroupMemberRoundStats>();
+    Object.values(groupRounds).forEach((round) => {
+      const {eurosPerPointDiffToTopPlayer, results} = round.data;
+      const initEuros = eurosPerPointDiffToTopPlayer === null ? null : 0;
+      if (results) {
+        Object.entries(results.players).forEach(([memberId, {pointBalance, pointDiffToTopPlayer}]) => {
+          if (!memberMap.has(memberId)) {
+            memberMap.set(memberId, {...emptyStats, euroBalance: initEuros});
+          }
+          const mapEntry = memberMap.get(memberId)!;
+          mapEntry.roundsCount++;
+          mapEntry.pointBalance += pointBalance;
+          mapEntry.pointDiffToTopPlayer += pointDiffToTopPlayer;
+          if (eurosPerPointDiffToTopPlayer !== null) {
+            mapEntry.euroBalance! += eurosPerPointDiffToTopPlayer * pointDiffToTopPlayer;
+          }
+        });
+      }
+    });
+    return memberMap;
+  }),
+);
+
+export const getGroupMembersWithRoundStatsSelector = createSelector(
+  groupMembersSelector,
+  getGroupRoundStatsSelector,
+  (groupMembers, getGroupRoundStats) => memoize((groupId: string): GroupMembersWithRoundStats => {
+    const members = groupMembers[groupId] || {};
+    const groupRoundStats = getGroupRoundStats(groupId);
+    return Object.entries(members).reduce<GroupMembersWithRoundStats>((acc, [memberId, member]) => {
+      const stats = groupRoundStats.get(memberId) || emptyStats;
+      acc[memberId] = {
+        ...member,
+        ...stats,
+      };
+      return acc;
+    }, {});
+  }),
+);
 
 export function useLoadGroupMembers() {
   const {groupId} = useFullParams<{ groupId: string }>();
@@ -144,18 +200,18 @@ export function useAcceptInvitation() {
   }, [dispatch, getState, history]);
 }
 
-function useRealGroupMembers(): GroupGroupMembers {
+function useRealGroupMembers(): GroupMembersWithRoundStats {
   const {groupId} = useFullParams<{ groupId: string }>();
-  return useSelector(groupMembersSelector)[groupId] || {};
+  return useSelector(getGroupMembersWithRoundStatsSelector)(groupId) || {};
 }
 
 export function useGroupMembers(): GroupGroupMembers {
   return (useSimulation() ? useSimulatedGroupMembers : useRealGroupMembers)();
 }
 
-export function useGroupMember(): GroupMember | undefined {
+export function useGroupMember(): GroupMemberWithRoundStats | undefined {
   const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
-  const groupMembers = useSelector(groupMembersSelector)[groupId] || {};
+  const groupMembers = useSelector(getGroupMembersWithRoundStatsSelector)(groupId) || {};
   return groupMembers[groupMemberId];
 }
 
@@ -177,11 +233,10 @@ export function usePatchGroupMember() {
   }, [currentGroupMember, dispatch]);
 }
 
-export function useSortedGroupMembers(): GroupMember[] {
+export function useSortedGroupMembers(): GroupMemberWithRoundStats[] {
   const {groupId} = useFullParams<{ groupId: string }>();
-  const members = useSelector(groupMembersSelector)[groupId];
-  return useMemo(() => members ? Object.values(members).sort((a, b) => {
-    const comp = a.name.localeCompare(b.name);
-    return comp === 0 ? (+b.isRegular - +a.isRegular) : comp;
-  }) : [], [members]);
+  const members = useSelector(getGroupMembersWithRoundStatsSelector)(groupId);
+  return useMemo(() => members
+    ? Object.values(members).sort((a, b) => b.pointDiffToTopPlayer - a.pointDiffToTopPlayer)
+    : [], [members]);
 }

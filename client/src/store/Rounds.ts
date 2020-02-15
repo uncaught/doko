@@ -25,7 +25,7 @@ import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector, useGroup} from './Groups';
 import {useHistory} from 'react-router-dom';
-import {useSortedGroupMembers} from './GroupMembers';
+import {useGroupMembers} from './GroupMembers';
 import {useSortedGames} from './Games';
 import {usePlayersWithStats} from './Players';
 
@@ -87,7 +87,12 @@ export function useLoadRoundDetails() {
 export function useAddRound() {
   const {id: groupId, settings} = useGroup()!;
   const dispatch = useDispatch<LoguxDispatch>();
-  const members = useSortedGroupMembers();
+  const members = useGroupMembers();
+  const sortedMembers = useMemo(() => Object.values(members).sort((a, b) => {
+    const compareIsRegular = +b.isRegular - +a.isRegular;
+    return compareIsRegular === 0 ? a.name.localeCompare(b.name) : compareIsRegular;
+  }), [members]);
+
   const history = useHistory();
   return useCallback(() => {
     const roundId = generateUuid();
@@ -98,7 +103,7 @@ export function useAddRound() {
       endDate: null,
       id: roundId,
     };
-    const players = members.reduce<Player[]>((acc, {id, isRegular}, idx) => {
+    const players = sortedMembers.reduce<Player[]>((acc, {id, isRegular}, idx) => {
       acc.push({
         roundId,
         groupMemberId: id,
@@ -114,7 +119,7 @@ export function useAddRound() {
       type: 'rounds/add',
     });
     history.push(`/group/${groupId}/rounds/round/${roundId}/players`);
-  }, [dispatch, groupId, history, members, settings]);
+  }, [dispatch, groupId, history, sortedMembers, settings]);
 }
 
 export function useRound(): Round | undefined {

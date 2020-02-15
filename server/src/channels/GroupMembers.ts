@@ -42,17 +42,10 @@ export async function loadGroupMembers(deviceId: string, groupId: string): Promi
               gm.name, 
               gm.group_id as groupId, 
               gm.is_regular as isRegular, 
-              IF(gmd.device_id IS NULL, 0, 1) as isYou,
-              COUNT(rgm.round_id) as roundsCount,
-              COALESCE(SUM(JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointBalance'))), 0) as pointBalance,
-              COALESCE(SUM(JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointDiffToTopPlayer'))), 0) as pointDiffToTopPlayer,
-              SUM(JSON_EXTRACT(r.data, '$.eurosPerPointDiffToTopPlayer') * JSON_EXTRACT(r.data, CONCAT('$.results.players.', gm.id, '.pointDiffToTopPlayer'))) as euroBalance
+              IF(gmd.device_id IS NULL, 0, 1) as isYou
          FROM group_members gm
     LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
           AND gmd.device_id = ?
-    LEFT JOIN round_group_members rgm ON rgm.group_member_id = gm.id 
-          AND (rgm.left_after_game_number IS NULL OR rgm.left_after_game_number != 0)
-    LEFT JOIN rounds r ON r.id = rgm.round_id 
         WHERE gm.group_id = ?
      GROUP BY gm.id`, [deviceId, groupId]);
   fromDbValue(groupMembers, groupMembersDbConfig.types);

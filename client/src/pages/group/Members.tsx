@@ -24,9 +24,9 @@ export default function Members(): ReactElement {
                 <Label size={'small'} color={pointBalance >= 0 ? 'green' : 'red'}>
                   {pointBalance} <Icon name='sort'/>
                 </Label>
-                <Label size={'small'} color={'yellow'}>
+                {typeof euroBalance !== 'number' && <Label size={'small'} color={'yellow'}>
                   {pointDiffToTopPlayer} <Icon name='bullseye'/>
-                </Label>
+                </Label>}
                 {typeof euroBalance === 'number' && <Label size={'small'} color={'blue'}>
                   {euroBalance.toFixed(2)} <Icon name='euro sign'/>
                 </Label>}

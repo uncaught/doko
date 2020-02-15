@@ -8,10 +8,19 @@ export interface GroupMember {
   name: string;
   isRegular: boolean;
   isYou?: boolean;
-  roundsCount?: number;
-  pointBalance?: number;
-  pointDiffToTopPlayer?: number;
-  euroBalance?: number | null;
+}
+
+export interface GroupMemberRoundStats {
+  roundsCount: number;
+  pointBalance: number;
+  pointDiffToTopPlayer: number;
+  euroBalance: number | null;
+}
+
+export type GroupMemberWithRoundStats = GroupMember & GroupMemberRoundStats;
+
+export interface GroupMembersWithRoundStats {
+  [id: string]: GroupMemberWithRoundStats;
 }
 
 export type PatchableGroupMember = DeepPartial<Pick<GroupMember, 'name' | 'isRegular'>>;
