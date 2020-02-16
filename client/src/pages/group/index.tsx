@@ -11,6 +11,7 @@ import {useLoadGroupMembers} from '../../store/GroupMembers';
 import {useLoadRounds} from '../../store/Rounds';
 import Settings from './Settings';
 import {useGroup} from '../../store/Groups';
+import Statistics from '../statistics/Statistics';
 
 export default function GroupIndex(): ReactElement | null {
   useLoadGroupMembers();
@@ -34,8 +35,13 @@ export default function GroupIndex(): ReactElement | null {
       <Divider section/>
       <AddMember/>
     </Page>
-    <Page path={`${url}`}
-          menuItems={[{icon: 'user plus', route: `${url}/addMembers`, title: 'Mitglieder hinzufügen'}]}>
+    <Page path={`${url}/statistics`} displayName={'Mitglieder'}>
+      <Statistics/>
+    </Page>
+    <Page path={`${url}`} menuItems={[
+      {icon: 'user plus', route: `${url}/addMembers`, title: 'Mitglieder hinzufügen'},
+      {icon: 'balance scale', route: `${url}/statistics`, title: 'Statistiken'},
+    ]}>
       <Group/>
     </Page>
   </Switch>;
