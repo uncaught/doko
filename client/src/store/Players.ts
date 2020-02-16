@@ -19,6 +19,7 @@ import {useFullParams} from '../Page';
 import {useSortedGames} from './Games';
 import {useGroupMembers} from './GroupMembers';
 import {useRound} from './Rounds';
+import {addGameToStats, createStatistics, Statistics} from '@doko/common/src/Entities/Statistics';
 
 const {addReducer, combinedReducer} = createReducer<Players>({}, 'players');
 
@@ -86,14 +87,15 @@ export function useRoundParticipatingPlayers(): Player[] {
 }
 
 export interface PlayerStats {
+  dutySoloPlayed: boolean;
   member: GroupMember;
   player: Player;
   pointBalance: number;
   pointDiffToTopPlayer: number;
-  dutySoloPlayed: boolean;
+  statistics: Statistics;
 }
 
-export function usePlayersWithStats(): PlayerStats[] {
+export function usePlayersWithStats(full = false): PlayerStats[] {
   const players = useRoundParticipatingPlayers();
   const games = useSortedGames();
   const members = useGroupMembers();
@@ -104,10 +106,11 @@ export function usePlayersWithStats(): PlayerStats[] {
     players.forEach((player) => {
       statsByMember.set(player.groupMemberId, {
         player,
+        dutySoloPlayed: false,
         member: members[player.groupMemberId],
         pointBalance: 0,
         pointDiffToTopPlayer: 0,
-        dutySoloPlayed: false,
+        statistics: createStatistics(),
       });
     });
 
@@ -117,7 +120,8 @@ export function usePlayersWithStats(): PlayerStats[] {
       });
     };
 
-    games.forEach(({data: {isComplete, gameType, re, contra}}) => {
+    games.forEach((game) => {
+      const {data: {isComplete, gameType, re, contra}} = game;
       if (!isComplete) {
         //only complete games are counted for the player stats.
         return;
@@ -129,6 +133,10 @@ export function usePlayersWithStats(): PlayerStats[] {
 
       addPoints(re);
       addPoints(contra);
+
+      if (full) {
+        addGameToStats(game.data, statsByMember);
+      }
     });
 
     const sorted = [...statsByMember.values()].sort((a, b) => b.pointBalance - a.pointBalance);
@@ -137,7 +145,7 @@ export function usePlayersWithStats(): PlayerStats[] {
       stat.pointDiffToTopPlayer = topPoints - stat.pointBalance;
     });
     return sorted;
-  }, [games, members, players]);
+  }, [full, games, members, players]);
 }
 
 export function usePatchSittingOrder() {

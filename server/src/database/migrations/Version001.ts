@@ -37,6 +37,7 @@ async function migrateRounds(update: typeof query) {
       const addPoints = (p: Party) => {
         p.members.forEach((id) => {
           if (!data.results!.players[id]) {
+            // @ts-ignore
             data.results!.players[id] = {
               pointBalance: 0,
               pointDiffToTopPlayer: 0,

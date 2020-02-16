@@ -1,6 +1,7 @@
 import {Group} from './Groups';
 import {DeepPartial} from '../Generics';
 import {Player} from './Players';
+import {Statistics} from './Statistics';
 
 export interface GroupMember {
   id: string;
@@ -15,6 +16,7 @@ export interface GroupMemberRoundStats {
   pointBalance: number;
   pointDiffToTopPlayer: number;
   euroBalance: number | null;
+  statistics: Statistics;
 }
 
 export type GroupMemberWithRoundStats = GroupMember & GroupMemberRoundStats;

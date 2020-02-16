@@ -11,6 +11,18 @@
 - Stop with `docker-compse down` 
 - To delete the database, too, use `docker-compose down --volumes`
 
+### Reset database
+```bash
+docker-compose down --volumes
+# Comment-out MYSQL_PWD in docker-compose.yml 
+docker-compose up -d database
+# Comment-in MYSQL_PWD in docker-compose.yml 
+docker-compose down
+docker-compose up -d database
+cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
+docker-compose up server
+```
+
 ##### SSL
 - HTTPS is required for using the browser's camera
 - Use an SSL-proxy like nginx, routing `/` to port 3333 and `/api` to port 3030

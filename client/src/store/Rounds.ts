@@ -152,7 +152,7 @@ export function usePatchRound() {
 export function useFinishRound() {
   const round = useRound();
   const patchRound = usePatchRound();
-  const playersWithStats = usePlayersWithStats();
+  const playersWithStats = usePlayersWithStats(true);
   const sortedGames = useSortedGames();
   const history = useHistory();
   const lastGame = sortedGames[sortedGames.length - 1];
@@ -165,8 +165,8 @@ export function useFinishRound() {
       runsCount: lastGame.data.runNumber,
       players: {},
     };
-    playersWithStats.forEach(({member, pointBalance, pointDiffToTopPlayer}) => {
-      results.players[member.id] = {pointBalance, pointDiffToTopPlayer};
+    playersWithStats.forEach(({member, pointBalance, pointDiffToTopPlayer, statistics}) => {
+      results.players[member.id] = {pointBalance, pointDiffToTopPlayer, statistics};
     });
     patchRound({
       endDate: Math.round(Date.now() / 1000),

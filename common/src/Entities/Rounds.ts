@@ -1,6 +1,7 @@
 import {DeepPartial} from '../Generics';
 import {Player} from './Players';
 import {GroupSettings} from './GroupSettings';
+import {Statistics} from './Statistics';
 
 export interface RoundResults {
   gamesCount: number;
@@ -9,6 +10,7 @@ export interface RoundResults {
     [memberId: string]: {
       pointBalance: number;
       pointDiffToTopPlayer: number;
+      statistics: Statistics;
     }
   };
 }

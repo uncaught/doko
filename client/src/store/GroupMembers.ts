@@ -35,7 +35,8 @@ import {gamesSelector} from './Games';
 import {playersSelector} from './Players';
 import {useSimulatedGroupMembers, useSimulation} from './Simulation';
 import {createSelector} from 'reselect';
-import {memoize} from 'lodash';
+import {cloneDeep, memoize} from 'lodash';
+import {addStatistics, createStatistics} from '@doko/common/src/Entities/Statistics';
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
@@ -83,6 +84,7 @@ const emptyStats: GroupMemberRoundStats = {
   pointBalance: 0,
   pointDiffToTopPlayer: 0,
   euroBalance: null,
+  statistics: createStatistics(),
 };
 
 const getGroupRoundStatsSelector = createSelector(
@@ -94,9 +96,9 @@ const getGroupRoundStatsSelector = createSelector(
       const {eurosPerPointDiffToTopPlayer, results} = round.data;
       const initEuros = eurosPerPointDiffToTopPlayer === null ? null : 0;
       if (results) {
-        Object.entries(results.players).forEach(([memberId, {pointBalance, pointDiffToTopPlayer}]) => {
+        Object.entries(results.players).forEach(([memberId, {pointBalance, pointDiffToTopPlayer, statistics}]) => {
           if (!memberMap.has(memberId)) {
-            memberMap.set(memberId, {...emptyStats, euroBalance: initEuros});
+            memberMap.set(memberId, cloneDeep({...emptyStats, euroBalance: initEuros}));
           }
           const mapEntry = memberMap.get(memberId)!;
           mapEntry.roundsCount++;
@@ -105,6 +107,7 @@ const getGroupRoundStatsSelector = createSelector(
           if (eurosPerPointDiffToTopPlayer !== null) {
             mapEntry.euroBalance! += eurosPerPointDiffToTopPlayer * pointDiffToTopPlayer;
           }
+          addStatistics(mapEntry.statistics, statistics);
         });
       }
     });
