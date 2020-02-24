@@ -8,11 +8,20 @@ import {
 } from '@doko/common';
 import {createReducer} from './Reducer';
 import {State} from './Store';
+import {useDispatch} from 'react-redux';
+import {LoguxDispatch} from './Logux';
+import {useCallback} from 'react';
 
 export interface Ui {
   acceptedInvitations: { [token: string]: string }, //token => groupId for the invitee
   rejectedInvitations: string[]; //for the invitee
   usedInvitationTokens: string[]; //for the inviter
+  statistics: {
+    filter: 'gameTypes' | 'soloTypes' | 'announces' | 'missedAnnounces';
+    includeIrregularMembers: boolean;
+    sortBy: string;
+    sortDesc: boolean;
+  };
 }
 
 export interface UiSet {
@@ -24,6 +33,12 @@ const initial: Ui = {
   acceptedInvitations: {},
   rejectedInvitations: [],
   usedInvitationTokens: [],
+  statistics: {
+    filter: 'gameTypes',
+    includeIrregularMembers: false,
+    sortBy: '',
+    sortDesc: false,
+  },
 };
 
 function addUniqueToken(key: keyof SubType<Ui, string[]>) {
@@ -55,3 +70,11 @@ export const uiReducer = combinedReducer;
 export const acceptedInvitationsSelector = (state: State) => state.ui.acceptedInvitations;
 export const rejectedInvitationsSelector = (state: State) => state.ui.rejectedInvitations;
 export const usedInvitationTokensSelector = (state: State) => state.ui.usedInvitationTokens;
+export const statisticsSelector = (state: State) => state.ui.statistics;
+
+export function useSetUi() {
+  const dispatch = useDispatch<LoguxDispatch>();
+  return useCallback((ui: DeepPartial<Ui>): void => {
+    dispatch({type: 'ui/set', ui} as UiSet);
+  }, [dispatch]);
+}

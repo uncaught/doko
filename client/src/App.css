@@ -293,7 +293,7 @@
   position: relative;
 }
 
-.grid-table-td.newRunRow {
+.grid-table-td.topBorder {
   border-top: 1px solid black !important;
 }
 
@@ -309,6 +309,33 @@
   color: #9f3a38;
 }
 
+.grid-table-td.selected {
+  background: #DFF0FF;
+}
+
 .pushable > .pusher {
   overflow: visible;
+}
+
+.statisticsTable .grid-table-td {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.statisticsTable .grid-table-th.isYou,
+.statisticsTable .grid-table-td.isYou {
+  color: #1e77ba;
+  font-weight: bold;
+}
+
+.statisticsTable .grid-table-td .won {
+  color: #1aa62a;
+}
+
+@media only screen and (max-width: 767.98px) {
+  .ui.selection.dropdown .menu {
+    max-height: 15rem;
+  }
 }

@@ -12,6 +12,7 @@ import {useLoadRounds} from '../../store/Rounds';
 import Settings from './Settings';
 import {useGroup} from '../../store/Groups';
 import Statistics from '../statistics/Statistics';
+import EnableIrregularMembersMenuItem from '../statistics/EnableIrregularMembersMenuItem';
 
 export default function GroupIndex(): ReactElement | null {
   useLoadGroupMembers();
@@ -35,7 +36,9 @@ export default function GroupIndex(): ReactElement | null {
       <Divider section/>
       <AddMember/>
     </Page>
-    <Page path={`${url}/statistics`} displayName={'Mitglieder'}>
+    <Page path={`${url}/statistics`} displayName={'Mitglieder'} menuItems={[
+      EnableIrregularMembersMenuItem,
+    ]}>
       <Statistics/>
     </Page>
     <Page path={`${url}`} menuItems={[

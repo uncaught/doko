@@ -1,9 +1,19 @@
-import React, {ReactElement, ReactNode, useMemo, useState} from 'react';
+import React, {ReactElement, ReactNode, useCallback, useMemo} from 'react';
 import {useSortedGroupMembers} from '../../store/GroupMembers';
-import {Dropdown, DropdownItemProps} from 'semantic-ui-react';
-import {Announces, ExtraPoints, GameTypes, MissedAnnounces, SoloTypes} from '@doko/common/src/Entities/Statistics';
+import {Divider, Dropdown, DropdownItemProps} from 'semantic-ui-react';
+import {
+  Announces,
+  ExtraPoints,
+  GameTypes,
+  MissedAnnounces,
+  SoloTypes,
+  Statistics as Stats,
+} from '@doko/common/src/Entities/Statistics';
 import {useGroup} from '../../store/Groups';
 import {SoloType} from '@doko/common';
+import {useSelector} from 'react-redux';
+import {statisticsSelector, Ui, useSetUi} from '../../store/Ui';
+import classNames from 'classnames';
 
 const extraPoints = new Map<keyof ExtraPoints, string>();
 extraPoints.set('doppelkopf', 'Doppel\u00ADkopf');
@@ -17,7 +27,6 @@ extraPoints.set('wonAgainstQueensOfClubs', 'Gegen die Alten gewonnen');
 const gameTypes = new Map<keyof GameTypes, string>();
 gameTypes.set('total', 'Ins\u00ADgesamt');
 gameTypes.set('normal', 'Normal\u00ADspiele');
-// gameTypes.set('penalty', 'Strafen');
 gameTypes.set('poverty', 'Armut');
 gameTypes.set('povertyPartner', 'Armut Partner');
 gameTypes.set('povertyOpponent', 'Armut Gegner');
@@ -30,6 +39,7 @@ gameTypes.set('dutySolo', 'Pflicht\u00ADsolo');
 gameTypes.set('lustSolo', 'Lust\u00ADsolo');
 gameTypes.set('forcedSolo', 'Vor\u00ADgeführtes Pflicht\u00ADsolo');
 gameTypes.set('soloOpponent', 'Solo Gegner');
+gameTypes.set('penalty', 'Strafe');
 
 const soloTypes = new Map<keyof SoloTypes, string>();
 soloTypes.set('trump', 'Trumpf-Solo');
@@ -65,6 +75,8 @@ missedAnnounces.set('notNo3But211', 'Nicht `Keine 3` mit 211+');
 missedAnnounces.set('notNo3But240', 'Nicht `Keine 3` mit 240+');
 missedAnnounces.set('notNo0But240', 'Nicht `Schwarz` mit 240+');
 
+type Filter = Ui['statistics']['filter'];
+
 const filterValues = {
   gameTypes,
   soloTypes,
@@ -80,9 +92,10 @@ const filterOptions: DropdownItemProps[] = [
 ];
 
 export default function Statistics(): ReactElement {
+  const setUi = useSetUi();
+  const {filter, includeIrregularMembers, sortBy, sortDesc} = useSelector(statisticsSelector);
   const {settings} = useGroup()!;
   const groupMembers = useSortedGroupMembers();
-  const [filter, setFilter] = useState<keyof typeof filterValues>('gameTypes');
   const rows = useMemo(() => {
     const cols = [...filterValues[filter]];
     if (filter === 'soloTypes') {
@@ -91,35 +104,67 @@ export default function Statistics(): ReactElement {
     return cols;
   }, [filter, settings.allowedSoloTypes]);
 
-  const columns = groupMembers;
+  const setFilter = useCallback((filter: Filter): void => {
+    setUi({statistics: {filter, sortBy: '', sortDesc: false}});
+  }, [setUi]);
 
-  const rowCells = useMemo(() => {
+  const [columns, rowCells] = useMemo(() => {
+    const cols = groupMembers.filter((gm) => includeIrregularMembers || gm.isRegular)
+                             .map((gm) => {
+                               return {
+                                 ...gm,
+                                 // @ts-ignore
+                                 sortValue: gm.statistics[filter][sortBy] as number,
+                               };
+                             })
+                             .sort((a, b) => sortBy ? b.sortValue - a.sortValue : a.name.localeCompare(b.name));
+    if (sortDesc) {
+      cols.reverse();
+    }
+
     const cells: ReactNode[] = [];
     rows.forEach(([key, text]) => {
       const rowClasses = ['grid-table-td'];
-      const rowCss = rowClasses.join(' ');
+      const isSelected = key === sortBy;
+      if (isSelected) {
+        rowClasses.push('selected');
+      }
+      const onClick = () => {
+        setUi({statistics: {sortBy: key, sortDesc: isSelected ? !sortDesc : false}});
+      };
 
-      cells.push(<div key={`label_${key}`} className={'grid-table-td label'}>{text}</div>);
-      columns.forEach(({id, statistics}) => {
+      cells.push(<div key={`label_${key}`} className={classNames(rowClasses, 'label')} onClick={onClick}>{text}</div>);
+
+      cols.forEach(({id, isYou, statistics}) => {
         const stats = statistics[filter];
         const value = stats[key as keyof typeof stats];
-        cells.push(<div key={`value_${key}_${id}`} className={rowCss}>{value}</div>);
+        const statsWon = statistics[`${filter}Won` as keyof Stats];
+        const valueWon = statsWon ? statsWon[key as keyof typeof statsWon] : null;
+        cells.push(<div key={`value_${key}_${id}`}
+                        className={classNames(rowClasses, {isYou})}
+                        onClick={onClick}>
+          <div>{value}</div>
+          {valueWon !== null && <div className={'won'}>{valueWon}</div>}
+        </div>);
       });
     });
-    return cells;
-  }, [columns, rows, filter]);
+    return [cols, cells];
+  }, [filter, groupMembers, includeIrregularMembers, rows, setUi, sortBy, sortDesc]);
 
   return <section>
     <Dropdown label={'Filter'}
               options={filterOptions}
               value={filter}
-              onChange={(e, {value}) => setFilter(value as keyof typeof filterValues)}
+              onChange={(e, {value}) => setFilter(value as Filter)}
               selection/>
+
+    <Divider hidden/>
 
     <div className="grid-table gamesTable statisticsTable u-text-center"
          style={{gridTemplateColumns: `auto repeat(${columns.length}, 3em)`}}>
       <div className="grid-table-th"/>
-      {columns.map(({id, name}) => <div className="grid-table-th" key={`head_${id}`}>{name[0]}</div>)}
+      {columns.map(({id, name, isYou}) => <div className={classNames('grid-table-th', {isYou})}
+                                               key={`head_${id}`}>{name[0]}</div>)}
       {rowCells}
     </div>
   </section>;

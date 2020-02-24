@@ -47,7 +47,7 @@ export default function Games(): ReactElement {
     const rowOnClick = () => history.push(`${url}/game/${id}`);
 
     if (isNewRun) {
-      rowClasses.push('newRunRow');
+      rowClasses.push('topBorder');
     }
     const rowCss = rowClasses.join(' ');
 
