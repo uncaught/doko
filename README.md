@@ -31,3 +31,26 @@ docker-compose up server
 Spiele, kann aber durch Pflichtsoli länger werden. Die Dauer von Bockspielen entspricht normalerweilse einem Durchgang.
 - Ein **Spiel** (game) ist ein normaler Spieldurchgang mit 10/12 Stichen (ohne/mit Neuen). 
 - Ein **Stich** (trick) ist ein Teil eines Spiels bei dem 4 Karten gespielt wurden.
+
+### Deploy
+Proper deploy process is still missing! This is more a hacky manual install/deploy 
+because the client build is done server-side.
+
+- Create release tag on github and copy link to release archive (`tar.gz`)
+- SSH into server and:
+
+```bash
+cd /var/www/doko
+wget https://github.com/uncaught/doko/archive/v1.3.0.tar.gz
+tar xf v1.3.0.tar.gz
+cd doko-1.3.0
+./yarn.sh common install
+./yarn.sh client install
+./yarn.sh server install
+./yarn.sh client build
+cd ..
+./backup.sh
+docker-compose down
+ln -sfn doko-1.3.0 doko
+docker-compose up -d
+```
