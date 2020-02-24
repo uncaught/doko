@@ -69,6 +69,12 @@
   flex-direction: row;
 }
 
+.u-flex-center {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
 .u-flex-row-around {
   display: flex !important;
   flex-direction: row;
@@ -156,12 +162,6 @@
 
 .u-align-center.ui.form .field {
   margin: 0;
-}
-
-.modals.dimmer .ui.inverted.button:hover {
-  background: transparent none;
-  color: #fff;
-  text-shadow: none !important;
 }
 
 .groupNameHeader .header,

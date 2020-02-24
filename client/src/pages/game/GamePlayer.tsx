@@ -1,4 +1,4 @@
-import {GroupMember, PatchableGame, soloLikeGameTypes} from '@doko/common';
+import {gameTypeTexts, GroupMember, PatchableGame, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
 import {useGame, usePatchGame} from '../../store/Games';
 import {Button, Header, Icon, Label, Modal} from 'semantic-ui-react';
@@ -8,13 +8,14 @@ export default function GamePlayer({member}: { member: GroupMember }): ReactElem
   const [open, setOpen] = useState(false);
   const patchGame = usePatchGame();
   const isSoloLike = soloLikeGameTypes.includes(game.data.gameType);
+  const isGameTypePlayer = game.data.gameTypeMemberId === member.id;
 
   const chooseSide = (shallBeRe: boolean) => {
     const sideKey = shallBeRe ? 're' : 'contra';
     const otherSideKey = shallBeRe ? 'contra' : 're';
     const inParty = game.data[sideKey].members.includes(member.id);
-    if (inParty) {
-      return; //nothing to do, already in party
+    if (inParty || isGameTypePlayer) {
+      return; //nothing to do, already in party or gameType relevant player, who cannot be changed here
     }
 
     const gamePatch: PatchableGame = {
@@ -51,12 +52,18 @@ export default function GamePlayer({member}: { member: GroupMember }): ReactElem
     <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
       <Header>Partei von {member.name}</Header>
       <Modal.Content className="u-flex-row-around u-flex-wrap">
-        <Button inverted
-                color={game.data.re.members.includes(member.id) ? 'green' : undefined}
-                onClick={() => chooseSide(true)}>Re</Button>
-        <Button inverted
-                color={game.data.contra.members.includes(member.id) ? 'green' : undefined}
-                onClick={() => chooseSide(false)}>Contra</Button>
+        {isGameTypePlayer && <>
+          <Button inverted color={'green'}>Re</Button>
+          <div className={'u-flex-center'}>{member.name} spielt {gameTypeTexts.get(game.data.gameType)}</div>
+        </>}
+        {!isGameTypePlayer && <>
+          <Button inverted
+                  color={game.data.re.members.includes(member.id) ? 'green' : undefined}
+                  onClick={() => chooseSide(true)}>Re</Button>
+          <Button inverted
+                  color={game.data.contra.members.includes(member.id) ? 'green' : undefined}
+                  onClick={() => chooseSide(false)}>Contra</Button>
+        </>}
       </Modal.Content>
     </Modal>
   </div>;
