@@ -3,10 +3,10 @@ import {Header, Icon, Label, List} from 'semantic-ui-react';
 import {useSortedGroupMembers} from '../../store/GroupMembers';
 import {useGroup} from '../../store/Groups';
 import {asLink} from '../../AsLink';
-import {useFullParams} from '../../Page';
+import {usePageContext} from '../../Page';
 
 export default function Members(): ReactElement {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {groupId} = usePageContext<{ groupId: string }>();
   const {roundsCount: groupRoundsCount = 0} = useGroup() || {};
   const groupMembers = useSortedGroupMembers();
 

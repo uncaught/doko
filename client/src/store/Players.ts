@@ -15,7 +15,7 @@ import {createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
-import {useFullParams} from '../Page';
+import {usePageContext} from '../Page';
 import {useSortedGames} from './Games';
 import {useGroupMembers} from './GroupMembers';
 import {useRound} from './Rounds';
@@ -74,7 +74,7 @@ export const playersSelector = (state: State) => state.players;
 const emptyPlayers: Player[] = [];
 
 export function usePlayers(): Player[] {
-  const {roundId} = useFullParams<{ roundId: string }>();
+  const {roundId} = usePageContext<{ roundId: string }>();
   return useSelector(playersSelector)[roundId] || emptyPlayers;
 }
 

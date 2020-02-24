@@ -1,14 +1,14 @@
 import {Form, Segment} from 'semantic-ui-react';
 import React from 'react';
 import {undecided, useGame, usePatchGame} from '../../store/Games';
-import {useFullParams} from '../../Page';
+import {usePageContext} from '../../Page';
 import {useHistory} from 'react-router-dom';
 import {soloGameTypes} from '@doko/common';
 
 export default function FinishButton(): React.ReactElement | null {
   const {data} = useGame()!;
   const patchGame = usePatchGame();
-  const {parents} = useFullParams();
+  const {parents} = usePageContext();
   const history = useHistory();
   if (data.isComplete
     || (data.gameType !== 'penalty' && (undecided(data).length > 0

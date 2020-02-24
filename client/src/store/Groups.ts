@@ -18,7 +18,7 @@ import {
 import {arrayToList, createReducer} from 'src/store/Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
-import {useFullParams} from '../Page';
+import {usePageContext} from '../Page';
 import {LoguxDispatch} from './Logux';
 import {useHistory} from 'react-router-dom';
 import {useSimulatedGroup, useSimulation} from './Simulation';
@@ -117,7 +117,7 @@ export function useAddGroup() {
 }
 
 function useRealGroup(): Group | undefined {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {groupId} = usePageContext<{ groupId: string }>();
   const groups = useSelector(groupsSelector);
   return groups[groupId];
 }

@@ -13,6 +13,7 @@ import Settings from './Settings';
 import {useGroup} from '../../store/Groups';
 import Statistics from '../statistics/Statistics';
 import EnableIrregularMembersMenuItem from '../statistics/EnableIrregularMembersMenuItem';
+import {PageMenuItemConfig} from '../../PageMenu';
 
 export default function GroupIndex(): ReactElement | null {
   useLoadGroupMembers();
@@ -21,29 +22,33 @@ export default function GroupIndex(): ReactElement | null {
   if (!useGroup()) {
     return null;
   }
+  const stats: PageMenuItemConfig = {
+    icon: 'balance scale',
+    route: `${url}/statistics`,
+    title: 'Statistiken',
+    passDown: true,
+  };
   return <Switch>
-    <Page path={`${url}/settings`} displayName={'Einstellungen'}>
+    <Page path={`${url}/settings`} displayName={'Einstellungen'} menuItems={[stats]}>
       <Settings/>
     </Page>
-    <Page path={`${url}/rounds`} displayName={'Runden'}>
+    <Page path={`${url}/rounds`} displayName={'Runden'} menuItems={[stats]}>
       <Rounds/>
     </Page>
-    <Page path={`${url}/member/:groupMemberId`} displayName={'Mitglied'}>
+    <Page path={`${url}/member/:groupMemberId`} displayName={'Mitglied'} menuItems={[stats]}>
       <Member/>
     </Page>
-    <Page path={`${url}/addMembers`} displayName={'Mitglieder'}>
+    <Page path={`${url}/addMembers`} displayName={'Mitglieder'} menuItems={[stats]}>
       <Members/>
       <Divider section/>
       <AddMember/>
     </Page>
-    <Page path={`${url}/statistics`} displayName={'Mitglieder'} menuItems={[
-      EnableIrregularMembersMenuItem,
-    ]}>
+    <Page path={`${url}/statistics`} displayName={'Mitglieder'} menuItems={[EnableIrregularMembersMenuItem]}>
       <Statistics/>
     </Page>
     <Page path={`${url}`} menuItems={[
       {icon: 'user plus', route: `${url}/addMembers`, title: 'Mitglieder hinzufügen'},
-      {icon: 'balance scale', route: `${url}/statistics`, title: 'Statistiken'},
+      stats,
     ]}>
       <Group/>
     </Page>

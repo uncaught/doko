@@ -16,7 +16,7 @@ import {
   RoundDetailsLoaded,
   RoundsAdd,
 } from '@doko/common';
-import {useFullParams} from '../Page';
+import {usePageContext} from '../Page';
 import {useDispatch, useSelector} from 'react-redux';
 import {arrayToList, createReducer} from './Reducer';
 import {State} from './Store';
@@ -79,7 +79,7 @@ export const gamesReducer = combinedReducer;
 export const gamesSelector = (state: State) => state.games;
 
 export function useSortedGames(): Game[] {
-  const {roundId} = useFullParams<{ roundId: string }>();
+  const {roundId} = usePageContext<{ roundId: string }>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
@@ -159,7 +159,7 @@ export function useRemoveGame() {
 }
 
 function useRealGame(): Game | undefined {
-  const {gameId, roundId} = useFullParams<{ gameId: string; roundId: string }>();
+  const {gameId, roundId} = usePageContext<{ gameId: string; roundId: string }>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return games[gameId];
 }

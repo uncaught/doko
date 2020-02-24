@@ -5,36 +5,47 @@ import {Menu, Sidebar} from 'semantic-ui-react';
 import PageMenu, {PageMenuItems} from './PageMenu';
 import PageHeader from './PageHeader';
 
-const context = React.createContext<FullParams>({displayName: 'Doppelkopf', parents: []});
+const context = React.createContext<PageContext>({displayName: 'Doppelkopf', menuItems: [], parents: []});
 
-interface FullParams {
+interface PageContext {
   displayName: string;
+  menuItems: PageMenuItems;
   parents: Array<{ displayName: string; url: string }>;
 }
 
-export function useFullParams<T extends object>(): T & FullParams {
-  return useContext(context) as T & FullParams;
+export function usePageContext(): PageContext;
+export function usePageContext<T extends object>(): T & PageContext;
+export function usePageContext<T extends object>(): T & PageContext {
+  return useContext(context) as T & PageContext;
 }
 
 interface PageContextProps {
   children: React.ReactNode;
-  parentParams: FullParams;
+  parentPageContext: PageContext;
   parentUrl: string;
   displayName?: string;
   isIndex: boolean;
+  menuItems?: PageMenuItems;
 }
 
-function PageContext({children, parentParams, displayName, parentUrl, isIndex}: PageContextProps): ReactElement {
+function PageContextProvider(
+  {children, parentPageContext, displayName, parentUrl, isIndex, menuItems}: PageContextProps,
+): ReactElement {
   const localParams = useParams();
-  const fullParams = {...parentParams, ...localParams, displayName: displayName || parentParams.displayName};
+  const fullParams: PageContext = {
+    ...parentPageContext,
+    ...localParams,
+    displayName: displayName || parentPageContext.displayName,
+    menuItems: [...parentPageContext.menuItems, ...(menuItems || []).filter((item) => item.passDown)],
+  };
   if (!isIndex) {
     fullParams.parents = [
-      {displayName: parentParams.displayName, url: parentUrl},
-      ...parentParams.parents,
+      {displayName: parentPageContext.displayName, url: parentUrl},
+      ...parentPageContext.parents,
     ];
   }
   Object.keys(localParams).forEach((key) => {
-    if (parentParams.hasOwnProperty(key)) {
+    if (parentPageContext.hasOwnProperty(key)) {
       console.warn(`Overwriting parent parameter '${key}' with child value`);
     }
   });
@@ -50,7 +61,7 @@ export default function Page(props: FullRouteProps): ReactElement {
   const [visible, setVisible] = useState(false);
   const openMenu = useCallback(() => setVisible(true), []);
   const closeMenu = useCallback(() => setVisible(false), []);
-  const parentParams = useFullParams();
+  const parentPageContext = usePageContext();
   const parentUrl = useRouteMatch().url;
   const isIndex = parentUrl === props.path;
   const routeProps = {...props};
@@ -58,7 +69,11 @@ export default function Page(props: FullRouteProps): ReactElement {
   delete routeProps.displayName;
   delete routeProps.menuItems;
   return <Route {...routeProps}>
-    <PageContext parentParams={parentParams} parentUrl={parentUrl} displayName={props.displayName} isIndex={isIndex}>
+    <PageContextProvider parentPageContext={parentPageContext}
+                         parentUrl={parentUrl}
+                         displayName={props.displayName}
+                         menuItems={props.menuItems}
+                         isIndex={isIndex}>
       <Sidebar.Pushable as={'div'} className="appPageWrapper">
         <Sidebar
           as={Menu}
@@ -71,7 +86,7 @@ export default function Page(props: FullRouteProps): ReactElement {
           width='thin'
           direction='right'
         >
-          <PageMenu closeMenu={closeMenu} menuItems={props.menuItems}/>
+          <PageMenu closeMenu={closeMenu}/>
         </Sidebar>
         <Sidebar.Pusher dimmed={visible}>
           <div className="appPage">
@@ -82,6 +97,6 @@ export default function Page(props: FullRouteProps): ReactElement {
           </div>
         </Sidebar.Pusher>
       </Sidebar.Pushable>
-    </PageContext>
+    </PageContextProvider>
   </Route>;
 }

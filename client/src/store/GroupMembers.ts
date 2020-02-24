@@ -26,7 +26,7 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
 import {useHistory} from 'react-router-dom';
-import {useFullParams} from '../Page';
+import {usePageContext} from '../Page';
 import {acceptedInvitationsSelector, rejectedInvitationsSelector} from './Ui';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
@@ -133,14 +133,14 @@ export const getGroupMembersWithRoundStatsSelector = createSelector(
 );
 
 export function useLoadGroupMembers() {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {groupId} = usePageContext<{ groupId: string }>();
   const group = useSelector(groupsSelector)[groupId];
   //Only subscribe if the group is not new (otherwise the server will respond with `Access denied`:
   useSubscription<GroupMembersLoad>(group && !group.isNew ? [{channel: 'groupMembers/load', groupId}] : []);
 }
 
 export function useAddGroupMember() {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {groupId} = usePageContext<{ groupId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
   const rounds = useSortedRounds();
   const games = useSelector(gamesSelector);
@@ -173,7 +173,7 @@ export function useAddGroupMember() {
 }
 
 export function useCreateInvitation() {
-  const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
+  const {groupId, groupMemberId} = usePageContext<{ groupId: string; groupMemberId: string }>();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback(async (): Promise<string> => {
     const invitationToken = generateToken();
@@ -204,7 +204,7 @@ export function useAcceptInvitation() {
 }
 
 function useRealGroupMembers(): GroupMembersWithRoundStats {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {groupId} = usePageContext<{ groupId: string }>();
   return useSelector(getGroupMembersWithRoundStatsSelector)(groupId) || {};
 }
 
@@ -213,7 +213,7 @@ export function useGroupMembers(): GroupGroupMembers {
 }
 
 export function useGroupMember(): GroupMemberWithRoundStats | undefined {
-  const {groupId, groupMemberId} = useFullParams<{ groupId: string; groupMemberId: string }>();
+  const {groupId, groupMemberId} = usePageContext<{ groupId: string; groupMemberId: string }>();
   const groupMembers = useSelector(getGroupMembersWithRoundStatsSelector)(groupId) || {};
   return groupMembers[groupMemberId];
 }
@@ -237,7 +237,7 @@ export function usePatchGroupMember() {
 }
 
 export function useSortedGroupMembers(): GroupMemberWithRoundStats[] {
-  const {groupId} = useFullParams<{ groupId: string }>();
+  const {groupId} = usePageContext<{ groupId: string }>();
   const members = useSelector(getGroupMembersWithRoundStatsSelector)(groupId);
   return useMemo(() => members
     ? Object.values(members).sort((a, b) => b.pointDiffToTopPlayer - a.pointDiffToTopPlayer)
