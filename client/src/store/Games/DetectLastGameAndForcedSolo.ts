@@ -44,6 +44,7 @@ export function detectLastGameAndForcedSolo(
     const pIndex = (nextDealerIndex + i) % activePlayers.length;
     const player = activePlayers[pIndex];
     if (openIndexes.includes(pIndex) && gameData.re.members.length === 0) {
+      gameData.gameTypeMemberId = player.groupMemberId;
       gameData.re.members.push(player.groupMemberId);
     } else {
       gameData.contra.members.push(player.groupMemberId);
