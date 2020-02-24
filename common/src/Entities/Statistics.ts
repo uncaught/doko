@@ -1,5 +1,6 @@
-import {GameData, Party, soloGameTypes} from './GameData';
+import {GameData, Party, soloGameTypes, soloLikeGameTypes} from './GameData';
 import {SubType} from '../Generics';
+import {ucfirst} from '../Ucfirst';
 
 export interface ExtraPoints {
   doppelkopf: number;
@@ -15,6 +16,7 @@ export interface GameTypes {
   total: number;
   normal: number;
   penalty: number;
+  penaltyOpponent: number;
   poverty: number;
   povertyPartner: number;
   povertyOpponent: number;
@@ -41,11 +43,16 @@ export interface SoloTypes {
 }
 
 export interface Announces {
-  announced: number;
-  no9: number;
-  no6: number;
-  no3: number;
-  no0: number;
+  announcedRe: number;
+  announcedContra: number;
+  no9Re: number;
+  no9Contra: number;
+  no6Re: number;
+  no6Contra: number;
+  no3Re: number;
+  no3Contra: number;
+  no0Re: number;
+  no0Contra: number;
 }
 
 export interface MissedAnnounces {
@@ -79,11 +86,16 @@ export interface Statistics {
 
 function createAnnounces(): Announces {
   return {
-    announced: 0,
-    no9: 0,
-    no6: 0,
-    no3: 0,
-    no0: 0,
+    announcedContra: 0,
+    announcedRe: 0,
+    no9Contra: 0,
+    no9Re: 0,
+    no6Contra: 0,
+    no6Re: 0,
+    no3Contra: 0,
+    no3Re: 0,
+    no0Contra: 0,
+    no0Re: 0,
   };
 }
 
@@ -104,6 +116,7 @@ function createGameTypes(): GameTypes {
     total: 0,
     normal: 0,
     penalty: 0,
+    penaltyOpponent: 0,
     poverty: 0,
     povertyPartner: 0,
     povertyOpponent: 0,
@@ -225,7 +238,7 @@ function addGameAndSoloTypes(data: GameData, statsByMember: StatsMap) {
       }
     }
 
-    if (['poverty', 'wedding', 'silentWedding'].includes(data.gameType)) {
+    if (['penalty', 'poverty', 'wedding', 'silentWedding'].includes(data.gameType)) {
       data.contra.members.forEach((opponentId) => {
         const opponentStats = statsByMember.get(opponentId)!.statistics;
         opponentStats.gameTypes[`${data.gameType}Opponent` as keyof GameTypes]++;
@@ -247,9 +260,10 @@ function addAnnounces(data: GameData, statsByMember: StatsMap) {
       const announcerId = data[partyKey][key];
       if (announcerId) {
         const {statistics} = statsByMember.get(announcerId)!;
-        statistics.announces[key]++;
+        const field = `${key}${ucfirst(partyKey)}` as keyof Announces;
+        statistics.announces[field]++;
         if (data.winner === partyKey) {
-          statistics.announcesWon[key]++;
+          statistics.announcesWon[field]++;
         }
       }
     });
@@ -346,6 +360,14 @@ function addExtraPoints(data: GameData, statsByMember: StatsMap) {
 
   addExtraPointsForParty(data.re);
   addExtraPointsForParty(data.contra);
+
+  if (data.winner === 'contra'
+    && data.wonAgainstQueensOfClubsExtraPoint
+    && !soloLikeGameTypes.includes(data.gameType)) {
+    data.contra.members.forEach((id) => {
+      statsByMember.get(id)!.statistics.extraPoints.wonAgainstQueensOfClubs++;
+    });
+  }
 }
 
 export function addGameToStats(data: GameData, statsByMember: StatsMap) {

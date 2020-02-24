@@ -13,12 +13,8 @@
 
 ### Reset database
 ```bash
-docker-compose down --volumes
-# Comment-out MYSQL_PWD in docker-compose.yml 
-docker-compose up -d database
-# Comment-in MYSQL_PWD in docker-compose.yml 
-docker-compose down
-docker-compose up -d database
+docker-compose stop -t 0 server
+docker-compose rm -f server
 cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
 docker-compose up server
 ```

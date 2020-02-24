@@ -39,24 +39,30 @@ gameTypes.set('dutySolo', 'Pflicht\u00ADsolo');
 gameTypes.set('lustSolo', 'Lust\u00ADsolo');
 gameTypes.set('forcedSolo', 'Vor\u00ADgeführtes Pflicht\u00ADsolo');
 gameTypes.set('soloOpponent', 'Solo Gegner');
-gameTypes.set('penalty', 'Strafe');
+gameTypes.set('penalty', 'Strafe erhalten');
+gameTypes.set('penaltyOpponent', 'Strafe erteilt');
 
 const soloTypes = new Map<keyof SoloTypes, string>();
-soloTypes.set('trump', 'Trumpf-Solo');
-soloTypes.set('queens', 'Damen-Solo');
-soloTypes.set('jacks', 'Buben-Solo');
-soloTypes.set('kings', 'Königs-Solo');
-soloTypes.set('clubs', 'Kreuz-Solo');
-soloTypes.set('spades', 'Pick-Solo');
-soloTypes.set('hearts', 'Herz-Solo');
-soloTypes.set('fleshless', 'Fleisch\u00ADlos-Solo');
+soloTypes.set('queens', 'Damen');
+soloTypes.set('jacks', 'Buben');
+soloTypes.set('kings', 'Königs');
+soloTypes.set('fleshless', 'Fleisch\u00ADlos');
+soloTypes.set('trump', 'Trumpf');
+soloTypes.set('clubs', 'Kreuz');
+soloTypes.set('spades', 'Pick');
+soloTypes.set('hearts', 'Herz');
 
 const announces = new Map<keyof Announces, string>();
-announces.set('announced', 'Angesagt');
-announces.set('no9', 'Keine 9 abgesagt');
-announces.set('no6', 'Keine 6 abgesagt');
-announces.set('no3', 'Keine 3 abgesagt');
-announces.set('no0', 'Schwarz abgesagt');
+announces.set('announcedRe', `Re`);
+announces.set('announcedContra', `Contra`);
+announces.set('no9Re', 'Re: Keine 9');
+announces.set('no9Contra', 'Contra: Keine 9');
+announces.set('no6Re', 'Re: Keine 6');
+announces.set('no6Contra', 'Contra: Keine 6');
+announces.set('no3Re', 'Re: Keine 3');
+announces.set('no3Contra', 'Contra: Keine 3');
+announces.set('no0Re', 'Re: Schwarz');
+announces.set('no0Contra', 'Contra: Schwarz');
 
 const missedAnnounces = new Map<keyof MissedAnnounces, string>();
 missedAnnounces.set('notAnnouncedBut121', 'Nicht angesagt mit 121+');
@@ -80,6 +86,7 @@ type Filter = Ui['statistics']['filter'];
 const filterValues = {
   gameTypes,
   soloTypes,
+  extraPoints,
   announces,
   missedAnnounces,
 };
@@ -87,6 +94,7 @@ const filterValues = {
 const filterOptions: DropdownItemProps[] = [
   {text: 'Spieltypen', value: 'gameTypes'},
   {text: 'Soli', value: 'soloTypes'},
+  {text: 'Extrapunkte', value: 'extraPoints'},
   {text: 'Ansagen', value: 'announces'},
   {text: 'Verpasste Ansagen', value: 'missedAnnounces'},
 ];
@@ -158,7 +166,7 @@ export default function Statistics(): ReactElement {
               onChange={(e, {value}) => setFilter(value as Filter)}
               selection/>
 
-    <Divider hidden/>
+    <Divider className="tiny" hidden/>
 
     <div className="grid-table gamesTable statisticsTable u-text-center"
          style={{gridTemplateColumns: `auto repeat(${columns.length}, 3em)`}}>
