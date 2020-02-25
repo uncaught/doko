@@ -36,7 +36,7 @@ function PageContextProvider(
     ...parentPageContext,
     ...localParams,
     displayName: displayName || parentPageContext.displayName,
-    menuItems: [...parentPageContext.menuItems, ...(menuItems || []).filter((item) => item.passDown)],
+    menuItems: [...parentPageContext.menuItems.filter((item) => item.passDown), ...(menuItems || [])],
   };
   if (!isIndex) {
     fullParams.parents = [
