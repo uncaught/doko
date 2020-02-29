@@ -1,7 +1,8 @@
 import React, {ReactElement, useState} from 'react';
 import {Button, Header, Icon, Menu, Modal} from 'semantic-ui-react';
 import {useSortedGames} from '../../store/Games';
-import {useRemoveRound, useRound} from '../../store/Rounds';
+import {useRound} from '../../store/Rounds';
+import {useRemoveRound} from '../../store/Round/RemoveRound';
 
 export default function RemoveRoundMenuItem({closeMenu}: { closeMenu: () => void }): ReactElement | null {
   const round = useRound()!;

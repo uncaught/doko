@@ -101,7 +101,7 @@ const filterOptions: DropdownItemProps[] = [
 
 export default function Statistics(): ReactElement {
   const setUi = useSetUi();
-  const {filter, includeIrregularMembers, sortBy, sortDesc} = useSelector(statisticsSelector);
+  const {filter, includeIrregularMembers, selectedRow} = useSelector(statisticsSelector);
   const {settings} = useGroup()!;
   const groupMembers = useSortedGroupMembers();
   const rows = useMemo(() => {
@@ -113,32 +113,31 @@ export default function Statistics(): ReactElement {
   }, [filter, settings.allowedSoloTypes]);
 
   const setFilter = useCallback((filter: Filter): void => {
-    setUi({statistics: {filter, sortBy: '', sortDesc: false}});
+    setUi({statistics: {filter, selectedRow: null}});
   }, [setUi]);
 
   const [columns, rowCells] = useMemo(() => {
     const cols = groupMembers.filter((gm) => includeIrregularMembers || gm.isRegular)
-                             .map((gm) => {
-                               return {
-                                 ...gm,
-                                 // @ts-ignore
-                                 sortValue: gm.statistics[filter][sortBy] as number,
-                               };
-                             })
-                             .sort((a, b) => sortBy ? b.sortValue - a.sortValue : a.name.localeCompare(b.name));
-    if (sortDesc) {
-      cols.reverse();
-    }
+                             .sort((a, b) => {
+                               if (a.isYou) {
+                                 return -1;
+                               }
+                               if (b.isYou) {
+                                 return 1;
+                               }
+                               return a.name.localeCompare(b.name);
+                             });
 
     const cells: ReactNode[] = [];
     rows.forEach(([key, text]) => {
       const rowClasses = ['grid-table-td'];
-      const isSelected = key === sortBy;
+      const isSelected = key === selectedRow;
       if (isSelected) {
         rowClasses.push('selected');
       }
+
       const onClick = () => {
-        setUi({statistics: {sortBy: key, sortDesc: isSelected ? !sortDesc : false}});
+        setUi({statistics: {selectedRow: key}});
       };
 
       cells.push(<div key={`label_${key}`} className={classNames(rowClasses, 'label')} onClick={onClick}>{text}</div>);
@@ -157,7 +156,7 @@ export default function Statistics(): ReactElement {
       });
     });
     return [cols, cells];
-  }, [filter, groupMembers, includeIrregularMembers, rows, setUi, sortBy, sortDesc]);
+  }, [filter, groupMembers, includeIrregularMembers, rows, setUi, selectedRow]);
 
   return <section>
     <Dropdown label={'Filter'}

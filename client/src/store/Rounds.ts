@@ -1,14 +1,10 @@
 import {State} from './Store';
 import {
-  generateUuid,
-  getDefaultRoundData,
   mergeStates,
   objectContains,
   PatchableRound,
-  Player,
   Round,
   RoundDetailsLoad,
-  RoundResults,
   Rounds,
   RoundsAdd,
   RoundsLoad,
@@ -21,13 +17,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
 import {usePageContext} from '../Page';
-import dayjs from 'dayjs';
 import {LoguxDispatch} from './Logux';
-import {groupsSelector, useGroup} from './Groups';
-import {useHistory} from 'react-router-dom';
-import {useGroupMembers} from './GroupMembers';
-import {useSortedGames} from './Games';
-import {usePlayersWithStats} from './Players';
+import {groupsSelector} from './Groups';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -84,42 +75,10 @@ export function useLoadRoundDetails() {
   useSubscription<RoundDetailsLoad>([{channel: 'roundDetails/load', roundId}]);
 }
 
-export function useAddRound() {
-  const {id: groupId, settings} = useGroup()!;
-  const dispatch = useDispatch<LoguxDispatch>();
-  const members = useGroupMembers();
-  const sortedMembers = useMemo(() => Object.values(members).sort((a, b) => {
-    const compareIsRegular = +b.isRegular - +a.isRegular;
-    return compareIsRegular === 0 ? a.name.localeCompare(b.name) : compareIsRegular;
-  }), [members]);
-
-  const history = useHistory();
-  return useCallback(() => {
-    const roundId = generateUuid();
-    const round: Round = {
-      groupId,
-      data: getDefaultRoundData(settings),
-      startDate: dayjs().unix(),
-      endDate: null,
-      id: roundId,
-    };
-    const players = sortedMembers.reduce<Player[]>((acc, {id, isRegular}, idx) => {
-      acc.push({
-        roundId,
-        groupMemberId: id,
-        sittingOrder: idx + 1,
-        joinedAfterGameNumber: 0,
-        leftAfterGameNumber: isRegular ? null : 0,
-      });
-      return acc;
-    }, []);
-    dispatch.sync<RoundsAdd>({
-      round,
-      players,
-      type: 'rounds/add',
-    });
-    history.push(`/group/${groupId}/rounds/round/${roundId}/players`);
-  }, [dispatch, groupId, history, sortedMembers, settings]);
+export function useLatestGroupRound(): Round | undefined {
+  const {groupId} = usePageContext<{ groupId: string }>();
+  const rounds = useSelector(roundsSelector)[groupId] || {};
+  return Object.values(rounds).sort((a, b) => b.startDate - a.startDate)[0];
 }
 
 export function useRound(): Round | undefined {
@@ -147,50 +106,6 @@ export function usePatchRound() {
       });
     }
   }, [currentRound, dispatch]);
-}
-
-export function useFinishRound() {
-  const round = useRound();
-  const patchRound = usePatchRound();
-  const playersWithStats = usePlayersWithStats(true);
-  const sortedGames = useSortedGames();
-  const history = useHistory();
-  const lastGame = sortedGames[sortedGames.length - 1];
-  return useCallback(() => {
-    if (!round || !lastGame) {
-      return;
-    }
-    const results: RoundResults = {
-      gamesCount: sortedGames.length,
-      runsCount: lastGame.data.runNumber,
-      players: {},
-    };
-    playersWithStats.forEach(({member, pointBalance, pointDiffToTopPlayer, statistics}) => {
-      results.players[member.id] = {pointBalance, pointDiffToTopPlayer, statistics};
-    });
-    patchRound({
-      endDate: Math.round(Date.now() / 1000),
-      data: {results},
-    });
-    history.push(`/group/${round.groupId}/rounds`);
-  }, [history, lastGame, patchRound, playersWithStats, round, sortedGames.length]);
-}
-
-export function useRemoveRound() {
-  const round = useRound();
-  const currentGames = useSortedGames();
-  const history = useHistory();
-  const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((): void => {
-    if (!round) {
-      throw new Error(`No round`);
-    }
-    if (round.endDate || currentGames.length) {
-      return;
-    }
-    dispatch.sync<RoundsRemove>({id: round.id, groupId: round.groupId, type: 'rounds/remove'});
-    history.push(`/group/${round.groupId}`);
-  }, [round, currentGames.length, dispatch, history]);
 }
 
 export function useSortedRounds(): Round[] {

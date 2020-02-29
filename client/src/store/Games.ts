@@ -22,7 +22,7 @@ import {arrayToList, createReducer} from './Reducer';
 import {State} from './Store';
 import {useCallback, useMemo} from 'react';
 import {LoguxDispatch} from './Logux';
-import {useRound} from './Rounds';
+import {useLatestGroupRound, useRound} from './Rounds';
 import {difference} from 'lodash';
 import {usePlayersWithStats, useRoundParticipatingPlayers} from './Players';
 import {useHistory} from 'react-router-dom';
@@ -77,6 +77,13 @@ addReducer<RoundsAdd>('rounds/add', (state, {round}) => ({...state, [round.id]: 
 export const gamesReducer = combinedReducer;
 
 export const gamesSelector = (state: State) => state.games;
+
+export function useLatestGroupGame(): Game | undefined {
+  const round = useLatestGroupRound();
+  const games = useSelector(gamesSelector);
+  const roundGames = round && games[round.id] || {};
+  return Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0];
+}
 
 export function useSortedGames(): Game[] {
   const {roundId} = usePageContext<{ roundId: string }>();

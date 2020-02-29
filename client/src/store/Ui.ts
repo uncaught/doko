@@ -19,8 +19,7 @@ export interface Ui {
   statistics: {
     filter: 'gameTypes' | 'soloTypes' | 'announces' | 'missedAnnounces';
     includeIrregularMembers: boolean;
-    sortBy: string;
-    sortDesc: boolean;
+    selectedRow: string | null;
   };
 }
 
@@ -36,8 +35,7 @@ const initial: Ui = {
   statistics: {
     filter: 'gameTypes',
     includeIrregularMembers: false,
-    sortBy: '',
-    sortDesc: false,
+    selectedRow: null,
   },
 };
 
