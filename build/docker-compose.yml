@@ -1,0 +1,54 @@
+# This config assumes we are in a directory where doko is checked out, but not inside it
+
+version: "3.7"
+
+services:
+  database:
+    image: mariadb:10.4.11-bionic
+    restart: always
+    environment:
+      - MYSQL_DATABASE=doko
+      - MYSQL_PWD=XXX
+    volumes:
+      - ./mysql:/var/lib/mysql:rw
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+
+  server:
+    image: doko-api:latest
+    restart: always
+    depends_on:
+      - database
+    environment:
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PW=VRoYdR3hMIb8ztY8HM0I
+      - DB_NAME=doko
+    networks:
+      - default
+      - traefik
+    labels:
+      traefik.enable: true
+      traefik.http.routers.doko-api.rule: "Host(`doko.correnz.net`) && Path(`/api`)"
+      traefik.http.routers.doko-api.entrypoints: websecure
+      traefik.http.routers.doko-api.tls.certresolver: myresolver
+      traefik.docker.network: traefik
+
+  httpd:
+    image: doko-httpd:latest
+    restart: always
+    networks:
+      - traefik
+    labels:
+      traefik.enable: true
+      traefik.http.routers.doko-httpd.rule: Host(`doko.correnz.net`)
+      traefik.http.routers.doko-httpd.entrypoints: websecure
+      traefik.http.routers.doko-httpd.tls.certresolver: myresolver
+      traefik.docker.network: traefik
+
+networks:
+  traefik:
+    external:
+      name: traefik
