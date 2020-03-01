@@ -3,7 +3,7 @@ import {getTransactional, query} from '../../Connection';
 
 const fs = _fs.promises;
 
-const regex = /Version\d{3}.ts/;
+const regex = /Version\d{3}/;
 
 async function loadMigrations(): Promise<Set<string>> {
   try {
