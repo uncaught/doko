@@ -9,17 +9,15 @@ export default function ScanInvitation(): ReactElement {
   const acceptInvitation = useAcceptInvitation();
 
   const onScan = useCallback(async (data: string | null) => {
-    if (data && await acceptInvitation(data)) {
-      setShow(false);
+    if (data) {
+      await acceptInvitation(data); //this will already navigate away and thus close the dialog
     }
   }, [acceptInvitation]);
 
-  return <section className="u-relative u-overflow-hidden">
-    <Header as='h4'>Scanne einen Einladungs-Code</Header>
-
+  return <>
     <Button icon floated='right' labelPosition='left' color={'blue'} onClick={() => setShow(true)}>
       <Icon name='qrcode'/>
-      Scan
+      QR-Code
     </Button>
 
     {show && <Modal className="scanInvitation-modal"
@@ -42,5 +40,5 @@ export default function ScanInvitation(): ReactElement {
         <Message negative>{error.message || error}</Message>
       </Modal.Actions>}
     </Modal>}
-  </section>;
+  </>;
 }

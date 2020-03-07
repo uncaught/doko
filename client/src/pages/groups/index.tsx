@@ -1,11 +1,11 @@
 import React, {ReactElement} from 'react';
 import AddGroup from './AddGroup';
-import ScanInvitation from './ScanInvitation';
 import {Divider} from 'semantic-ui-react';
 import MyGroups from './MyGroups';
 import {Switch} from 'react-router-dom';
 import Page from '../../Page';
 import Group from '../group';
+import CashInvitation from './CashInvitation';
 
 export default function GroupsIndex(): ReactElement {
   return <Switch>
@@ -17,7 +17,7 @@ export default function GroupsIndex(): ReactElement {
       <Divider section/>
       <AddGroup/>
       <Divider section/>
-      <ScanInvitation/>
+      <CashInvitation/>
     </Page>
   </Switch>;
 }
