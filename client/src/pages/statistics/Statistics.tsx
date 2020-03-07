@@ -35,6 +35,8 @@ gameTypes.set('weddingPartner', 'Hoch\u00ADzeit Partner');
 gameTypes.set('weddingOpponent', 'Hoch\u00ADzeit Gegner');
 gameTypes.set('silentWedding', 'Stille Hoch\u00ADzeit');
 gameTypes.set('silentWeddingOpponent', 'Stille Hoch\u00ADzeit Gegner');
+gameTypes.set('soloWedding', 'Solo Hoch\u00ADzeit');
+gameTypes.set('soloWeddingOpponent', 'Solo Hoch\u00ADzeit Gegner');
 gameTypes.set('dutySolo', 'Pflicht\u00ADsolo');
 gameTypes.set('lustSolo', 'Lust\u00ADsolo');
 gameTypes.set('forcedSolo', 'Vor\u00ADgeführtes Pflicht\u00ADsolo');

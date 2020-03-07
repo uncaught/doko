@@ -10,6 +10,7 @@ type DropdownType = 'normal'
   | 'poverty'
   | 'wedding'
   | 'silentWedding'
+  | 'soloWedding'
   | 'penalty';
 
 const types = new Map<DropdownType, { text: string }>([
@@ -18,6 +19,7 @@ const types = new Map<DropdownType, { text: string }>([
   ['poverty', {text: 'Armut'}],
   ['wedding', {text: 'Hochzeit'}],
   ['silentWedding', {text: 'Stille Hochzeit'}],
+  ['soloWedding', {text: 'Solo Hochzeit'}],
   ['penalty', {text: 'Strafe'}],
 ]);
 

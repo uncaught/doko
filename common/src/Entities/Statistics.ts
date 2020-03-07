@@ -25,6 +25,8 @@ export interface GameTypes {
   weddingOpponent: number;
   silentWedding: number;
   silentWeddingOpponent: number;
+  soloWedding: number;
+  soloWeddingOpponent: number;
   dutySolo: number;
   lustSolo: number;
   forcedSolo: number;
@@ -125,6 +127,8 @@ function createGameTypes(): GameTypes {
     weddingOpponent: 0,
     silentWedding: 0,
     silentWeddingOpponent: 0,
+    soloWedding: 0,
+    soloWeddingOpponent: 0,
     dutySolo: 0,
     lustSolo: 0,
     forcedSolo: 0,
@@ -238,7 +242,7 @@ function addGameAndSoloTypes(data: GameData, statsByMember: StatsMap) {
       }
     }
 
-    if (['penalty', 'poverty', 'wedding', 'silentWedding'].includes(data.gameType)) {
+    if (['penalty', 'poverty', 'wedding', 'silentWedding', 'soloWedding'].includes(data.gameType)) {
       data.contra.members.forEach((opponentId) => {
         const opponentStats = statsByMember.get(opponentId)!.statistics;
         opponentStats.gameTypes[`${data.gameType}Opponent` as keyof GameTypes]++;

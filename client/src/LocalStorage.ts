@@ -1,4 +1,4 @@
-const prefix = 'doko:v1.3:';
+const prefix = 'doko:v1.4:';
 
 export function get<T>(key: string, defaultVal: any = null): T | null {
   let parsed = defaultVal;

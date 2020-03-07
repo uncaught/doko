@@ -68,6 +68,7 @@ export type GameType =
   | 'poverty'
   | 'wedding'
   | 'silentWedding'
+  | 'soloWedding'
   | 'dutySolo'
   | 'lustSolo'
   | 'forcedSolo'
@@ -81,6 +82,7 @@ export const gameTypes: GameType[] = [
   'lustSolo',
   'forcedSolo',
   'silentWedding',
+  'soloWedding',
   'penalty',
 ];
 export const reDealGameTypes: GameType[] = ['dutySolo', 'penalty'];
@@ -89,7 +91,7 @@ export const reDealGameTypes: GameType[] = ['dutySolo', 'penalty'];
 export const soloGameTypes: GameType[] = ['dutySolo', 'lustSolo', 'forcedSolo'];
 
 //for team building and point calculation:
-export const soloLikeGameTypes: GameType[] = [...soloGameTypes, 'silentWedding', 'penalty'];
+export const soloLikeGameTypes: GameType[] = [...soloGameTypes, 'silentWedding', 'soloWedding', 'penalty'];
 
 export const gameTypeTexts = new Map<GameType, string>([
   ['normal', 'Normalspiel'],
@@ -99,6 +101,7 @@ export const gameTypeTexts = new Map<GameType, string>([
   ['lustSolo', 'Lustsolo'],
   ['forcedSolo', 'Vorführung'],
   ['silentWedding', 'Stille Hochzeit'],
+  ['soloWedding', 'Solo Hochzeit'],
   ['penalty', 'Strafe'],
 ]);
 
