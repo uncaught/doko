@@ -9,6 +9,7 @@ export interface Group {
   isNew?: true;
   lastRoundUnix: number | null;
   roundsCount: number;
+  completedRoundsCount: number;
 }
 
 export type PatchableGroup = DeepPartial<Pick<Group, 'name' | 'settings'>>;

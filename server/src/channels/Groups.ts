@@ -11,6 +11,7 @@ export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
     const ary = `,?`.repeat(groupIds.size).substring(1);
     groups = await query<Group>(`SELECT g.id, g.name, g.settings,
                                         COUNT(r.id) as roundsCount, 
+                                        SUM(IF(r.end_date IS NULL, 0, 1)) as completedRoundsCount, 
                                         UNIX_TIMESTAMP(MAX(r.start_date)) as lastRoundUnix 
                                    FROM groups g
                               LEFT JOIN rounds r ON r.group_id = g.id 

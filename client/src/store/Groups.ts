@@ -13,6 +13,7 @@ import {
   objectContains,
   PatchableGroup,
   RoundsAdd,
+  RoundsPatch,
   RoundsRemove,
 } from '@doko/common';
 import {arrayToList, createReducer} from 'src/store/Reducer';
@@ -43,36 +44,28 @@ addReducer<GroupsAdded>('groups/added', (state, {groupId}) => {
 
 addReducer<GroupsPatch>('groups/patch', (state, action) => {
   if (state[action.id]) {
-    return {
-      ...state,
-      [action.id]: mergeStates<Group>(state[action.id], action.group),
-    };
+    return mergeStates(state, {[action.id]: action.group});
   }
   return state;
 });
 
 addReducer<RoundsAdd>('rounds/add', (state, {round: {groupId}}) => {
   if (state[groupId]) {
-    return {
-      ...state,
-      [groupId]: {
-        ...state[groupId],
-        roundsCount: state[groupId].roundsCount + 1,
-      },
-    };
+    return mergeStates(state, {[groupId]: {roundsCount: state[groupId].roundsCount + 1}});
+  }
+  return state;
+});
+
+addReducer<RoundsPatch>('rounds/patch', (state, {groupId, round: {endDate}}) => {
+  if (state[groupId] && endDate) {
+    return mergeStates(state, {[groupId]: {completedRoundsCount: state[groupId].completedRoundsCount + 1}});
   }
   return state;
 });
 
 addReducer<RoundsRemove>('rounds/remove', (state, {groupId}) => {
   if (state[groupId]) {
-    return {
-      ...state,
-      [groupId]: {
-        ...state[groupId],
-        roundsCount: state[groupId].roundsCount - 1,
-      },
-    };
+    return mergeStates(state, {[groupId]: {roundsCount: state[groupId].roundsCount - 1}});
   }
   return state;
 });
@@ -102,6 +95,7 @@ export function useAddGroup() {
         settings: defaultGroupSettings,
         lastRoundUnix: null,
         roundsCount: 0,
+        completedRoundsCount: 0,
       },
       groupMember: {
         id: generateUuid(),

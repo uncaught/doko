@@ -31,6 +31,7 @@ const group: Group = {
   settings: defaultGroupSettings,
   lastRoundUnix: null,
   roundsCount: 0,
+  completedRoundsCount: 0,
 };
 
 const gameData = getDefaultGameData(defaultGroupSettings);

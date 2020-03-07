@@ -7,7 +7,7 @@ import {usePageContext} from '../../Page';
 
 export default function Members(): ReactElement {
   const {groupId} = usePageContext<{ groupId: string }>();
-  const {roundsCount: groupRoundsCount = 0} = useGroup() || {};
+  const {completedRoundsCount} = useGroup() || {};
   const groupMembers = useSortedGroupMembers();
 
   return <section>
@@ -31,8 +31,8 @@ export default function Members(): ReactElement {
                   {euroBalance.toFixed(2)} <Icon name='euro sign'/>
                 </Label>}
                 <Label size={'small'} color={'orange'}>
-                  {roundsCount} / {groupRoundsCount
-                  ? Math.ceil(roundsCount / groupRoundsCount * 100)
+                  {roundsCount} / {completedRoundsCount
+                  ? Math.ceil(roundsCount / completedRoundsCount * 100)
                   : 0}% <Icon name='time'/>
                 </Label>
                 {!!isYou && <Label size={'small'} color={'teal'}>
