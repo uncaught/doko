@@ -2,9 +2,9 @@
   "compilerOptions": {
     "rootDir": ".",
     "baseUrl": ".",
-    "target": "es6",
+    "target": "ES2019",
     "lib": [
-      "esnext"
+      "ES2019"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -24,6 +24,7 @@
   },
   "include": [
     "src",
-    "node_modules/@doko/common"
+    "node_modules/@doko/common/@types",
+    "node_modules/@doko/common/src"
   ]
 }
