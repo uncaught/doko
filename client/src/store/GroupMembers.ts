@@ -40,12 +40,11 @@ import {addStatistics, createStatistics} from '@doko/common/src/Entities/Statist
 
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
-addReducer<GroupsAdd>('groups/add', (state, action) => ({
-  ...state,
-  [action.group.id]: {
-    [action.groupMember.id]: action.groupMember,
-  },
-}));
+addReducer<GroupsAdd>('groups/add', (state, action) => {
+  const newState = {...state, [action.group.id]: {}};
+  action.groupMembers.forEach((gm) => newState[action.group.id][gm.id] = gm);
+  return newState;
+});
 
 addReducer<GroupMembersLoaded>('groupMembers/loaded', (state, action) => {
   return {
@@ -240,6 +239,7 @@ export function useSortedGroupMembers(): GroupMemberWithRoundStats[] {
   const {groupId} = usePageContext<{ groupId: string }>();
   const members = useSelector(getGroupMembersWithRoundStatsSelector)(groupId);
   return useMemo(() => members
-    ? Object.values(members).sort((a, b) => b.pointDiffToTopPlayer - a.pointDiffToTopPlayer)
+    ? Object.values(members)
+            .sort((a, b) => (b.pointDiffToTopPlayer - a.pointDiffToTopPlayer) || a.name.localeCompare(b.name))
     : [], [members]);
 }

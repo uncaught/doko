@@ -30,7 +30,7 @@ export interface GroupsLoaded {
 export interface GroupsAdd {
   type: 'groups/add';
   group: Group;
-  groupMember: GroupMember; //self, initial member
+  groupMembers: GroupMember[];
 }
 
 export interface GroupsAdded {

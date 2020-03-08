@@ -41,15 +41,19 @@ server.channel<GroupsLoad>('groups/load', {
 
 server.type<GroupsAdd>('groups/add', {
   async access(ctx, action) {
-    return action.group.id === action.groupMember.groupId;
+    return action.groupMembers.length === 4
+      && Boolean(action.groupMembers[0].isYou)
+      && action.groupMembers.every((gm) => action.group.id === gm.groupId);
   },
   //No resend needed - no other client may see this group, yet, because no other client is a member
   async process(ctx, action) {
     await getTransactional(ctx.userId!, async (update) => {
       await insertEntity(update, groupsDbConfig, action.group);
-      await insertEntity(update, groupMembersDbConfig, action.groupMember);
+      for (const gm of action.groupMembers) {
+        await insertEntity(update, groupMembersDbConfig, gm);
+      }
       await insertEntity(update, groupMemberDevicesDbConfig, {
-        groupMemberId: action.groupMember.id,
+        groupMemberId: action.groupMembers[0].id,
         deviceId: ctx.userId,
         inviterDeviceId: ctx.userId,
         invitedOn: Math.round(Date.now() / 1000),

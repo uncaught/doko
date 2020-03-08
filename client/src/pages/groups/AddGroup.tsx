@@ -1,6 +1,6 @@
 import React, {FormEvent, ReactElement, useCallback} from 'react';
 import {Form, Header} from 'semantic-ui-react';
-import {useAddGroup} from '../../store/Groups';
+import {useAddGroup} from '../../store/Group/AddGroup';
 
 export default function AddGroup(): ReactElement {
   const addGroup = useAddGroup();

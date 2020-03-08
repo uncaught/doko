@@ -1,7 +1,5 @@
 import {State} from './Store';
 import {
-  defaultGroupSettings,
-  generateUuid,
   Group,
   GroupMembersInvitationAccepted,
   Groups,
@@ -21,7 +19,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import {usePageContext} from '../Page';
 import {LoguxDispatch} from './Logux';
-import {useHistory} from 'react-router-dom';
 import {useSimulatedGroup, useSimulation} from './Simulation';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
@@ -78,37 +75,6 @@ addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted', (s
 export const groupsReducer = combinedReducer;
 
 export const groupsSelector = (state: State) => state.groups;
-
-export function useAddGroup() {
-  const history = useHistory();
-  const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((groupName: string): void => {
-    if (!groupName) {
-      throw new Error('Invalid name');
-    }
-    const groupId = generateUuid();
-    dispatch.sync<GroupsAdd>({
-      group: {
-        id: groupId,
-        name: groupName,
-        isNew: true,
-        settings: defaultGroupSettings,
-        lastRoundUnix: null,
-        roundsCount: 0,
-        completedRoundsCount: 0,
-      },
-      groupMember: {
-        id: generateUuid(),
-        groupId: groupId,
-        name: 'Me',
-        isRegular: true,
-        isYou: true,
-      },
-      type: 'groups/add',
-    });
-    history.push(`/group/${groupId}/addMembers`);
-  }, [dispatch, history]);
-}
 
 function useRealGroup(): Group | undefined {
   const {groupId} = usePageContext<{ groupId: string }>();
