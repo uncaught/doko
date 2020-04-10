@@ -1,0 +1,102 @@
+:root {
+  color-scheme: light dark;
+  --std-background-color: white;
+  --header-background-color: #e8e8e8;
+  --header-color: rgba(0, 0, 0, .6);
+  --std-color: rgba(0, 0, 0, .87);
+  --link-color: #4183c4;
+  --border-color: black;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --header-background-color: #666666;
+    --header-color: rgba(255, 255, 255, .8);
+    --std-background-color: red;
+    --std-background-color: rgba(0, 0, 0, .87);
+    --std-color: white;
+    --link-color: #69c0ee;
+    --border-color: white;
+  }
+
+  .grid-table-td.won {
+    box-shadow: inset 0 0 0 #a3c293;
+    color: #fcfff5;
+    background: #2c662d;
+  }
+
+  .grid-table-td.lost {
+    box-shadow: inset 0 0 0 #e0b4b4;
+    color: #fff6f6;
+    background: #9f3a38;
+  }
+
+  .ui.divider:not(.vertical):not(.horizontal) {
+    border-bottom-color: rgba(255, 255, 255, .9);
+  }
+
+  .ui.divided.list > .item {
+    border-top-color: rgba(255, 255, 255, .9);
+  }
+
+  .grid-table-td.selected {
+    background-color: rgba(223, 240, 255, 0.4);
+  }
+}
+
+.grid-table-th {
+  border-bottom-color: var(--border-color);
+}
+
+i.black.icon.icon.icon.icon {
+  color: var(--std-color);
+}
+
+a {
+  color: var(--link-color);
+}
+
+body,
+.appPageWrapper,
+.grid-table-th,
+.ui.segment,
+.ui.selection.dropdown,
+.ui.form input:not([type]), .ui.form input[type=date], .ui.form input[type=datetime-local], .ui.form input[type=email], .ui.form input[type=file], .ui.form input[type=number], .ui.form input[type=password], .ui.form input[type=search], .ui.form input[type=tel], .ui.form input[type=text], .ui.form input[type=time], .ui.form input[type=url] {
+  background-color: var(--std-background-color);
+}
+
+body,
+.ui.selection.dropdown,
+.ui.header,
+.ui.list > .item .header,
+.ui.form .field > label,
+.ui.checkbox label,
+.ui.checkbox input:focus ~ label,
+.ui.checkbox label:hover, .ui.checkbox + label:hover,
+.ui.checkbox input:active ~ label,
+.ui.form .inline.field > label,
+.ui.form .inline.field > p,
+.ui.form .inline.fields .field > label,
+.ui.form .inline.fields .field > p,
+.ui.form .inline.fields > label,
+.ui.selection.visible.dropdown > .text:not(.default),
+.ui.list .list > .item > .content, .ui.list > .item > .content,
+.ui.form input:not([type]), .ui.form input[type=date], .ui.form input[type=datetime-local], .ui.form input[type=email], .ui.form input[type=file], .ui.form input[type=number], .ui.form input[type=password], .ui.form input[type=search], .ui.form input[type=tel], .ui.form input[type=text], .ui.form input[type=time], .ui.form input[type=url] {
+  color: var(--std-color);
+}
+
+.ui.button,
+.ui.dropdown .menu > .item,
+.ui.dropdown .menu .selected.item,
+.ui.dropdown.selected,
+.appPageHeader,
+.ui.label {
+  background-color: var(--header-background-color);
+  color: var(--header-color);
+}
+
+.ui.input.error > input {
+  color: #fff6f6;
+  border-color: #e0b4b4;
+  background-color: #9f3a38;
+}

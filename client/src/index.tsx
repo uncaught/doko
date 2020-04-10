@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import 'fomantic-ui-css/semantic.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -15,21 +14,14 @@ import badgeStyles from '@logux/client/badge/default';
 import badgeMessages from '@logux/client/badge/en';
 // @ts-ignore
 import log from '@logux/client/log';
-// @ts-ignore
-// import IndexedStore from '@logux/client/indexed-store';
-import {storeReducer} from 'src/store/Store';
+import {storeReducer} from './store/Store';
 import {getAuth} from './Auth';
 
 const isDev = process.env.NODE_ENV === 'development';
-
+const wsProto = window.location.protocol === 'https:' ? 'wss' : 'ws';
 const createStore = createLoguxCreator({
   subprotocol: '1.0.0',
-  server: isDev
-    ? window.location.protocol === 'https:'
-      ? `wss://${window.location.hostname}/api`
-      : `ws://${window.location.hostname}:3030`
-    : `wss://${window.location.hostname}/api`,
-  // store: new IndexedStore(),
+  server: `${wsProto}://${window.location.hostname}/api`,
   ...getAuth(),
 });
 

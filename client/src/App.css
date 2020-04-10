@@ -1,3 +1,15 @@
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .appPageWrapper {
   position: absolute;
   top: 0;
@@ -332,6 +344,15 @@
 
 .statisticsTable .grid-table-td .won {
   color: #1aa62a;
+}
+
+.ui.inverted.button, .ui.inverted.button.active, .ui.inverted.button:focus, .ui.inverted.button:hover {
+  background-color: #e8e8e8;
+  color: rgba(0, 0, 0, .6);
+}
+
+.ui.ui.ui.yellow.label, .ui.yellow.labels .label {
+  color: rgba(0, 0, 0, .87);
 }
 
 @media only screen and (max-width: 767.98px) {

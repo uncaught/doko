@@ -81,6 +81,7 @@ export const gamesSelector = (state: State) => state.games;
 export function useLatestGroupGame(): Game | undefined {
   const round = useLatestGroupRound();
   const games = useSelector(gamesSelector);
+  // eslint-disable-next-line
   const roundGames = round && games[round.id] || {};
   return Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0];
 }

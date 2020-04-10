@@ -41,8 +41,12 @@ services:
       - "yarn"
       - "run"
       - "dev"
-    ports:
-      - "3030:3030"
+    expose:
+      - 3030
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:hovm.correnz.net;Path:/api
+      - traefik.port=3030
 
   client:
     image: node:13.5.0-alpine3.10
@@ -56,8 +60,17 @@ services:
     entrypoint:
       - "yarn"
       - "start"
-    ports:
-      - "3333:3000"
+    expose:
+      - 3000
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:hovm.correnz.net
+      - traefik.port=3000
+
+networks:
+  default:
+    external:
+      name: traefik
 
 volumes:
   dblib:

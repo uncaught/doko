@@ -3,6 +3,7 @@ import {Button, Checkbox, Form, Header, Icon, Modal, Segment} from 'semantic-ui-
 import {useRoundParticipatingPlayers} from '../../store/Players';
 import {useGame, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
+import NumberStepper from '../../components/NumberStepper';
 
 export default function Penalty(): ReactElement {
   const {data} = useGame()!;
@@ -16,9 +17,8 @@ export default function Penalty(): ReactElement {
   const gameOtherPlayerIds = data.players.filter((id) => id !== penaltyMemId);
   const [open, setOpen] = useState(false);
 
-  const getPoints = useCallback(() => (data.gamePoints * contraLength).toString(),
-    [data.gamePoints, contraLength]);
-  const [points, setPoints] = useState<string>(getPoints);
+  const getPoints = useCallback(() => (data.gamePoints * contraLength), [data.gamePoints, contraLength]);
+  const [points, setPoints] = useState<number>(getPoints);
   const [error, setError] = useState(false);
   useEffect(() => {
     setPoints(getPoints());
@@ -63,26 +63,25 @@ export default function Penalty(): ReactElement {
           </Form.Field>
         </>}
 
-        <Form.Input label={'Strafpunkte'}
-                    type={'number'}
-                    error={error}
-                    step={contraLength}
-                    value={points}
-                    required
-                    onChange={(_, {value: v}) => {
-                      setPoints(v);
-                      const parsedValue = Math.floor(+v);
-                      if (parsedValue <= 0) {
-                        setError(true);
-                      } else {
-                        if (parsedValue % contraLength) {
-                          setError(true);
-                        } else {
-                          patchGame({data: {gamePoints: Math.floor(parsedValue / contraLength)}});
-                          setError(false);
-                        }
-                      }
-                    }}/>
+        <NumberStepper label={'Strafpunkte'}
+                       min={1}
+                       max={99}
+                       error={error}
+                       value={points}
+                       step={contraLength}
+                       onChange={(value) => {
+                         setPoints(value);
+                         if (value <= 0) {
+                           setError(true);
+                         } else {
+                           if (value % contraLength) {
+                             setError(true);
+                           } else {
+                             patchGame({data: {gamePoints: Math.floor(value / contraLength)}});
+                             setError(false);
+                           }
+                         }
+                       }}/>
 
         <p>Die Strafpunkte müssen unter den Gegenspielern aufteilbar sein.</p>
       </Form>

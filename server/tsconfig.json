@@ -17,7 +17,6 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
     "incremental": true,
     "jsx": "react",
     "outDir": "./build"

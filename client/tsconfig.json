@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "baseUrl": ".",
-    "target": "es6",
+    "target": "ES2016",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,10 +18,9 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "incremental": true,
     "jsx": "react",
-    "outDir": "./build"
+    "outDir": "./build",
+    "noEmit": true
   },
   "include": [
     "src",
