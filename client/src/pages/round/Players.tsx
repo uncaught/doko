@@ -26,7 +26,7 @@ export default function Players(): ReactElement {
               <Label size={'small'} color={dutySoloPlayed ? 'green' : 'red'}>
                 <span className={dutySoloPlayed ? '' : 'u-line-through'}>Solo</span> <Icon name='male'/>
               </Label>
-              {!!member.isYou && <Label size={'small'} color={'teal'}>
+              {!!member.isYou && <Label size={'small'} color={'teal'} className={'isYou'}>
                 du <Icon name='linkify'/>
               </Label>}
             </List.Description>

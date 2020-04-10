@@ -33,6 +33,11 @@ input[type=number] {
   flex-shrink: 0;
 }
 
+.appPageHeader-name {
+  text-align: center;
+  width: 75%;
+}
+
 .appPageHeader-link,
 .appPageHeader-link:hover,
 .appPageHeader-link:visited {
@@ -353,6 +358,27 @@ input[type=number] {
 
 .ui.ui.ui.yellow.label, .ui.yellow.labels .label {
   color: rgba(0, 0, 0, .87);
+}
+
+.GameExtraSidebarWrapper {
+  top: 50%;
+  position: relative;
+  transform: translateY(-50%);
+  padding: 1em 0.5em;
+  --std-color: white;
+}
+
+.GameExtraSidebarWrapper .ui.list > .item > .icon + .content {
+  display: block;
+}
+
+.GameExtraSidebarWrapper .ui.header,
+.GameExtraSidebarWrapper .ui.label.isYou {
+  display: none;
+}
+
+.GameExtraSidebarWrapper .item + .item {
+  margin-top: 0.5em;
 }
 
 @media only screen and (max-width: 767.98px) {

@@ -55,10 +55,12 @@ function PageContextProvider(
 interface FullRouteProps extends RouteProps {
   displayName?: string;
   menuItems?: PageMenuItems;
+  ExtraSidebar?: React.FunctionComponent<{ visible: boolean; close: () => void }>;
 }
 
 export default function Page(props: FullRouteProps): ReactElement {
   const [visible, setVisible] = useState(false);
+  const [extraSidebarVisible, setExtraSidebarVisible] = useState(false);
   const openMenu = useCallback(() => setVisible(true), []);
   const closeMenu = useCallback(() => setVisible(false), []);
   const parentPageContext = usePageContext();
@@ -68,6 +70,7 @@ export default function Page(props: FullRouteProps): ReactElement {
   delete routeProps.children;
   delete routeProps.displayName;
   delete routeProps.menuItems;
+  delete routeProps.ExtraSidebar;
   return <Route {...routeProps}>
     <PageContextProvider parentPageContext={parentPageContext}
                          parentUrl={parentUrl}
@@ -88,9 +91,15 @@ export default function Page(props: FullRouteProps): ReactElement {
         >
           <PageMenu closeMenu={closeMenu}/>
         </Sidebar>
-        <Sidebar.Pusher dimmed={visible}>
+        {props.ExtraSidebar && <props.ExtraSidebar visible={extraSidebarVisible}
+                                                   close={() => setExtraSidebarVisible(false)}/>}
+        <Sidebar.Pusher dimmed={visible || extraSidebarVisible}>
           <div className="appPage">
-            <PageHeader openMenu={openMenu}/>
+            <PageHeader openMenu={openMenu} onNameClick={() => {
+              if (props.ExtraSidebar) {
+                setExtraSidebarVisible(true);
+              }
+            }}/>
             <div className="appPageContent">
               {props.children}
             </div>
