@@ -19,6 +19,8 @@ import useSubscription from '@logux/redux/use-subscription';
 import {usePageContext} from '../Page';
 import {LoguxDispatch} from './Logux';
 import {groupsSelector} from './Groups';
+import {createSelector} from 'reselect';
+import {memoize} from 'lodash';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -62,6 +64,18 @@ addReducer<RoundsRemove>('rounds/remove', (state, {id, groupId}) => {
 export const roundsReducer = combinedReducer;
 
 export const roundsSelector = (state: State) => state.rounds;
+
+export const getRoundByIdSelector = createSelector(
+  roundsSelector,
+  (rounds) => memoize((id: string): Round | null => {
+    for (const round of Object.values(rounds)) {
+      if (round[id]) {
+        return round[id];
+      }
+    }
+    return null;
+  }),
+);
 
 export function useLoadRounds() {
   const {groupId} = usePageContext<{ groupId: string }>();

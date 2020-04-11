@@ -37,7 +37,7 @@ declare module '@logux/core/log' {
     lastTime: number;
     sequence: number;
 
-    on(event: 'preadd' | 'add' | 'clean', listener: () => void): () => void;
+    on(event: 'preadd' | 'add' | 'clean', listener: <A extends Action>(action: A) => void): () => void;
 
     add<A extends Action>(action: A, meta: AddMeta): () => void;
 

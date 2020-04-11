@@ -1,10 +1,12 @@
 import React, {ReactElement, useCallback} from 'react';
-import {Icon, Menu} from 'semantic-ui-react';
+import {Checkbox, Icon, Menu} from 'semantic-ui-react';
 import {asLink} from './AsLink';
 import {SemanticICONS} from 'semantic-ui-react/dist/commonjs/generic';
 import {usePageContext} from './Page';
 import {useLatestGroupGame} from './store/Games';
 import {useLatestGroupRound} from './store/Rounds';
+import {useSelector} from 'react-redux';
+import {followLastGameSelector, useSetUi} from './store/Ui';
 
 export interface PageMenuItemConfig {
   route: string;
@@ -19,6 +21,17 @@ export type PageMenuItems = Array<PageMenuItemConfig | PageMenuItemComp>;
 
 function isConfig(item: PageMenuItemConfig | PageMenuItemComp): item is PageMenuItemConfig {
   return item.hasOwnProperty('route');
+}
+
+function FollowLastGameMenuItem(): ReactElement {
+  const checked = useSelector(followLastGameSelector);
+  const setUi = useSetUi();
+  return <Menu.Item>
+    <Icon name='forward'/>
+    <Checkbox label={'Spielen folgen'}
+              checked={checked}
+              onChange={(_e, {checked}) => setUi({followLastGame: checked})}/>
+  </Menu.Item>;
 }
 
 export default function PageMenu({closeMenu}: { closeMenu: () => void }): ReactElement | null {
@@ -58,6 +71,8 @@ export default function PageMenu({closeMenu}: { closeMenu: () => void }): ReactE
         </Item>
       </>}
     </>}
+
+    <FollowLastGameMenuItem/>
 
     {menuItems.map((MenuItem, idx) => {
       if (isConfig(MenuItem)) {

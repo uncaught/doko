@@ -16,6 +16,7 @@ import badgeMessages from '@logux/client/badge/en';
 import log from '@logux/client/log';
 import {storeReducer} from './store/Store';
 import {getAuth} from './Auth';
+import {BrowserRouter as Router} from 'react-router-dom';
 
 const isDev = process.env.NODE_ENV === 'development';
 const wsProto = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -35,7 +36,11 @@ if (isDev) {
 store.client.start();
 
 ReactDOM.render(
-  <Provider store={store}><App/></Provider>,
+  <Provider store={store}>
+    <Router>
+      <App/>
+    </Router>
+  </Provider>,
   document.getElementById('root'),
 );
 

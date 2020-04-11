@@ -85,6 +85,10 @@ body,
   color: var(--std-color);
 }
 
+.ui.inverted.icon.menu .item {
+  --std-color: white;
+}
+
 .ui.button,
 .ui.dropdown .menu > .item,
 .ui.dropdown .menu .selected.item,
