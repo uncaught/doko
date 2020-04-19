@@ -129,7 +129,7 @@ export function useAddGame() {
     const players = roundParticipatingPlayers.filter((p) => p.leftAfterGameNumber === null);
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
     const data = getDefaultGameData(settings);
-    data.runNumber = detectRunNumber(currentGames, nextDealerId);
+    data.runNumber = detectRunNumber(currentGames, nextDealerId, roundParticipatingPlayers);
     detectPlayers(data, nextDealerId, players);
     detectBockGame(round.data, data, currentGames, nextDealerId);
     detectLastGameAndForcedSolo(round.data, data, currentGames, nextDealerId, players, playersWithStats);

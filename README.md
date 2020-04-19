@@ -44,10 +44,7 @@ cd /var/www/doko
 wget https://github.com/uncaught/doko/archive/v1.3.0.tar.gz
 tar xf v1.3.0.tar.gz
 cd doko-1.3.0
-./yarn.sh common install
-./yarn.sh client install
-./yarn.sh server install
-./yarn.sh client build
+./yarn.sh common install && ./yarn.sh client install && ./yarn.sh server install && ./yarn.sh client build
 cd ..
 ./backup.sh
 docker-compose down

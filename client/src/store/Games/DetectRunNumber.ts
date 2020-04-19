@@ -1,21 +1,23 @@
-import {Game} from '@doko/common';
+import {Game, Player} from '@doko/common';
 
 export function detectRunNumber(
   sortedGames: Game[],
   newGameDealerId: string,
+  roundParticipatingPlayers: Player[],
 ): number {
+  const roundParticipatingPlayerIds = roundParticipatingPlayers.map(({groupMemberId}) => groupMemberId);
+  const newGameDealerRoundIndex = roundParticipatingPlayerIds.indexOf(newGameDealerId);
   let runNumber = 1;
   if (sortedGames.length) {
-    const firstDealer = sortedGames[0].dealerGroupMemberId;
-    let lastDealer = firstDealer;
-
-    sortedGames.forEach(({gameNumber, data, dealerGroupMemberId}, idx) => {
-      if (dealerGroupMemberId === firstDealer && lastDealer !== firstDealer) {
+    let lastDealerRoundIndex = 0;
+    sortedGames.forEach(({dealerGroupMemberId}) => {
+      const dealerRoundIndex = roundParticipatingPlayerIds.indexOf(dealerGroupMemberId);
+      if (dealerRoundIndex < lastDealerRoundIndex) {
         runNumber++;
       }
-      lastDealer = dealerGroupMemberId;
+      lastDealerRoundIndex = dealerRoundIndex;
     });
-    if (newGameDealerId === firstDealer && lastDealer !== firstDealer) {
+    if (newGameDealerRoundIndex < lastDealerRoundIndex) {
       runNumber++;
     }
   }
