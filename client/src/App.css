@@ -135,6 +135,10 @@ input[type=number] {
   text-align: center !important;
 }
 
+.u-text-right {
+  text-align: right !important;
+}
+
 .u-line-through {
   text-decoration: line-through;
 }
@@ -379,6 +383,29 @@ input[type=number] {
 
 .GameExtraSidebarWrapper .item + .item {
   margin-top: 0.5em;
+}
+
+.potGrid {
+  display: grid;
+  grid-row-gap: 10px;
+  white-space: nowrap;
+}
+
+.splitPotAttendance,
+.topUpByAverage {
+  grid-template-columns: auto 5em minmax(6em, 8em) 5em;
+}
+
+.potGrid .value {
+  text-align: right;
+}
+
+.potGrid .value.pos {
+  color: #1aa62a;
+}
+
+.potGrid .value.neg {
+  color: #9f3a38;
 }
 
 @media only screen and (max-width: 767.98px) {

@@ -3,13 +3,15 @@ import Members from './Members';
 import {Divider} from 'semantic-ui-react';
 import RoundsInfo from './RoundsInfo';
 import GroupName from './GroupName';
+import Pot from './Pot';
 
 export default function Group(): ReactElement {
   return <div>
     <GroupName/>
-    <Divider />
+    <Divider/>
     <RoundsInfo/>
-    <Divider />
+    <Divider/>
+    <Pot/>
     <Members/>
   </div>;
 }

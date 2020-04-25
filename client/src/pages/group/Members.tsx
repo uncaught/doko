@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {Header, Icon, Label, List} from 'semantic-ui-react';
+import {Icon, Label, List} from 'semantic-ui-react';
 import {useSortedGroupMembers} from '../../store/GroupMembers';
 import {useGroup} from '../../store/Groups';
 import {asLink} from '../../AsLink';
@@ -11,8 +11,6 @@ export default function Members(): ReactElement {
   const groupMembers = useSortedGroupMembers();
 
   return <section>
-    <Header as='h4'>Mitglieder</Header>
-
     {groupMembers.length > 0 && <div className="">
       <List divided relaxed>
         {groupMembers.map(({id, name, pointBalance = 0, pointDiffToTopPlayer = 0, roundsCount = 0, euroBalance, isYou}) =>

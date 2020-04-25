@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {Header, Icon, Label} from 'semantic-ui-react';
+import {Icon, Label} from 'semantic-ui-react';
 import {useSortedRounds} from '../../store/Rounds';
 import dayjs from 'dayjs';
 import {asLink} from '../../AsLink';
@@ -13,8 +13,6 @@ export default function RoundsInfo(): ReactElement {
   const lastRound = rounds[0];
 
   return <section>
-    <Header as='h4'>Runden</Header>
-
     <div className="memberDetail">
       <Label as={asLink(`${url}/rounds`)} color={'orange'}>
         Alle Runden
