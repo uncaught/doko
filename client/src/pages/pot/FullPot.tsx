@@ -11,7 +11,7 @@ export default function FullPot({as}: { as?: any }): ReactElement {
       <Label as={as} color={'purple'}>
         Gesamter Pott
         <Label.Detail>
-          {fullPot} <Icon name={'euro'}/>
+          {fullPot.toFixed(2)} <Icon name={'euro'}/>
         </Label.Detail>
       </Label>
     </div>
