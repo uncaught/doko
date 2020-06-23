@@ -30,11 +30,17 @@ export function detectLastGameAndForcedSolo(
 
   //Find the players that are still present and still need their solo:
   const open = playersWithStats.filter(({player, dutySoloPlayed}) => !dutySoloPlayed && activePlayers.includes(player));
-  if (open.length < remainingRegularGames) {
+  const openIndexes = open.map(({player}) => activePlayers.indexOf(player));
+  const countIndexesAfterDealer = openIndexes.filter((idx) => idx > nextDealerIndex).length;
+
+  if (open.length < remainingRegularGames
+
+    //Make sure the player does not have to deal when he is supposed to have his forced solo:
+    && (activePlayers.length < 5 || countIndexesAfterDealer !== 1 || remainingRegularGames > 2)
+    && (activePlayers.length < 6 || countIndexesAfterDealer !== 2 || remainingRegularGames > 3)
+  ) {
     return;
   }
-
-  const openIndexes = open.map(({player}) => activePlayers.indexOf(player));
 
   gameData.gameType = 'forcedSolo';
   gameData.re.members = [];
