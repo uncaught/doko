@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/doko.iml" filepath="$PROJECT_DIR$/.idea/doko.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../sslProxy/.idea/sslProxy.iml" filepath="$PROJECT_DIR$/../sslProxy/.idea/sslProxy.iml" />
     </modules>
   </component>
 </project>

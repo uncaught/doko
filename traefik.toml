@@ -1,0 +1,20 @@
+debug = false
+
+#logLevel = "DEBUG"
+defaultEntryPoints = ["https","http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+    sniStrict = true
+
+[retry]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "docker.localhost"
+watch = true
+exposedByDefault = false
