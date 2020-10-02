@@ -14,7 +14,9 @@ import {
   recalcPoints,
   reDealGameTypes,
   RoundDetailsLoaded,
+  RoundGames,
   RoundsAdd,
+  RoundsPatch,
 } from '@doko/common';
 import {usePageContext} from '../Page';
 import {useDispatch, useSelector} from 'react-redux';
@@ -74,16 +76,38 @@ addReducer<GamesRemove>('games/remove', (state, {id, roundId}) => {
 
 addReducer<RoundsAdd>('rounds/add', (state, {round}) => ({...state, [round.id]: {}}));
 
+addReducer<RoundsPatch>('rounds/patch', (state, action) => {
+  //In case the round was ended prematurely, patch the last game:
+  if (action.round.endDate) {
+    const roundGames = state[action.id];
+    const lastGame = getLastGameOfRoundGames(roundGames);
+    if (lastGame && !lastGame.data.isLastGame) {
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          [lastGame.id]: mergeStates<Game>(lastGame, {data: {isLastGame: true}}),
+        },
+      };
+    }
+  }
+  return state;
+});
+
 export const gamesReducer = combinedReducer;
 
 export const gamesSelector = (state: State) => state.games;
+
+function getLastGameOfRoundGames(roundGames: RoundGames): Game | undefined {
+  return Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0];
+}
 
 export function useLatestGroupGame(): Game | undefined {
   const round = useLatestGroupRound();
   const games = useSelector(gamesSelector);
   // eslint-disable-next-line
   const roundGames = round && games[round.id] || {};
-  return Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0];
+  return getLastGameOfRoundGames(roundGames);
 }
 
 export function useSortedGames(): Game[] {

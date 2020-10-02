@@ -45,10 +45,15 @@ export async function getGameCountForRound(roundId: string): Promise<number> {
   return rows.length ? +rows[0].c : 0;
 }
 
-export async function isLastGameOfRound(gameId: string, roundId: string): Promise<boolean> {
+export async function getLastGameIdOfRound(roundId: string): Promise<string | null> {
   const lastGame = await query<{ id: string }>(`SELECT id FROM games WHERE round_id = ? ORDER BY game_number DESC LIMIT 1`,
     [roundId]);
-  return lastGame.length ? lastGame[0].id === gameId : false;
+  return lastGame.length ? lastGame[0].id : null;
+}
+
+export async function isLastGameOfRound(gameId: string, roundId: string): Promise<boolean> {
+  const lastGameId = await getLastGameIdOfRound(roundId);
+  return lastGameId ? lastGameId === gameId : false;
 }
 
 server.type<GamesAdd>('games/add', {

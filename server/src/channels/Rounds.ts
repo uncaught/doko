@@ -1,11 +1,11 @@
 import server from '../Server';
 import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {createFilter} from '../logux/Filter';
-import {Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch, RoundsRemove} from '@doko/common';
+import {Game, Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch, RoundsRemove} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
-import {playersDbConfig, roundsDbConfig} from '../DbTypes';
+import {gamesDbConfig, playersDbConfig, roundsDbConfig} from '../DbTypes';
 import {memberIdsBelongToGroup} from './GroupMembers';
-import {getGameCountForRound} from './Games';
+import {getGameCountForRound, getLastGameIdOfRound} from './Games';
 
 export async function getGroupForRound(roundId: string): Promise<string | null> {
   const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM rounds WHERE id = ?`, [roundId]);
@@ -82,6 +82,14 @@ server.type<RoundsPatch>('rounds/patch', {
   },
   async process(ctx, action) {
     await updateSingleEntity<Round>(ctx.userId!, roundsDbConfig, action.id, action.round);
+
+    //In case the round was ended prematurely, patch the last game:
+    if (action.round.endDate) {
+      const lastGameId = await getLastGameIdOfRound(action.id);
+      if (lastGameId) {
+        await updateSingleEntity<Game>(ctx.userId!, gamesDbConfig, lastGameId, {data: {isLastGame: true}});
+      }
+    }
   },
 });
 

@@ -1,16 +1,16 @@
 import React, {ReactElement, useState} from 'react';
-import {Button, Divider, Form, Header, Icon, Label, Modal} from 'semantic-ui-react';
-import {usePatchRound, useRound} from '../../store/Rounds';
-import NumberStepper from '../../components/NumberStepper';
-import {useSortedGames} from '../../store/Games';
+import {Icon, Label, Modal} from 'semantic-ui-react';
+import {useRound} from '../../store/Rounds';
+import RoundEndInfoPopup from './RoundEndInfoPopup';
 
-export default function RoundEndInfo(): ReactElement {
-  const {data} = useRound()!;
-  const patchRound = usePatchRound();
-  const sortedGames = useSortedGames();
+export default function RoundEndInfo(): ReactElement | null {
+  const {data, endDate} = useRound()!;
   const [open, setOpen] = useState(false);
-  const [remaining, setRemaining] = useState(1);
-  const lastGameRunNumber = sortedGames.length ? sortedGames[sortedGames.length - 1].data.runNumber : 1;
+  if (endDate) {
+    //Do not display this label if the round has ended. The `data.roundDuration` might not be accurate in case of
+    // a premature ending.
+    return null;
+  }
   const endKnown = !data.dynamicRoundDuration || data.roundDuration !== null;
   const duration = data.dynamicRoundDuration ? data.roundDuration : 6;
 
@@ -26,43 +26,7 @@ export default function RoundEndInfo(): ReactElement {
     </div>
 
     <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
-      <Header>
-        <Icon name={'sync alternate'}/>
-        Spielende
-      </Header>
-      <Modal.Content>
-        <p>
-          Wir befinden uns derzeit in Durchgang {lastGameRunNumber}.
-        </p>
-
-        {endKnown && <>
-          <p>
-            Das Spiel endet nach {duration} Durchgängen.
-          </p>
-        </>}
-
-        {data.dynamicRoundDuration && <>
-          <Divider section/>
-
-          <Form className="u-flex-row-around u-align-center">
-            <Form.Field>
-              Noch
-            </Form.Field>
-            <NumberStepper value={remaining} min={1} onChange={setRemaining} inverted/>
-            <Form.Field>
-              volle Durchgänge
-            </Form.Field>
-          </Form>
-        </>}
-      </Modal.Content>
-      {data.dynamicRoundDuration && <Modal.Actions>
-        <Button inverted onClick={() => {
-          patchRound({data: {roundDuration: lastGameRunNumber + remaining}});
-          setOpen(false);
-        }}>
-          <Icon name='checkmark'/> Ok
-        </Button>
-      </Modal.Actions>}
+      <RoundEndInfoPopup duration={duration} endKnown={endKnown} setOpen={setOpen}/>
     </Modal>
   </>;
 }
