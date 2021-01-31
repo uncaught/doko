@@ -1,4 +1,4 @@
-import {Action, AnyAction, Reducer} from 'redux';
+import { Action, AnyAction, Reducer } from 'redux';
 import * as LocalStorage from '../LocalStorage';
 
 export function isAction<A extends AnyAction>(action: AnyAction, type: A['type']): action is A {
@@ -16,9 +16,9 @@ export function createReducer<S>(defaultState: any = {}, syncKey: string | null 
     map.set(type, reducer);
   };
 
-  const combinedReducer = (state: S | undefined = undefined, action: Action = {type: ''}) => {
+  const combinedReducer = (state: S | undefined = undefined, action: Action = { type: '' }) => {
     if (typeof state === 'undefined') {
-      return syncKey ? LocalStorage.get(syncKey, defaultState) : defaultState;
+      return syncKey ? LocalStorage.getCached(syncKey, defaultState) : defaultState;
     }
 
     let newState = state;
@@ -28,13 +28,13 @@ export function createReducer<S>(defaultState: any = {}, syncKey: string | null 
     }
 
     if (syncKey && newState !== state) {
-      LocalStorage.set(syncKey, newState);
+      LocalStorage.setCached(syncKey, newState);
     }
 
     return newState;
   };
 
-  return {addReducer, combinedReducer};
+  return { addReducer, combinedReducer };
 }
 
 export function arrayToList<O extends { id: string }>(array: O[]): { [id: string]: O } {

@@ -2,9 +2,7 @@
 - Have docker and docker-compose installed 
 - Install dependencies with:
 ```bash
-./yarn.sh common install
-./yarn.sh client install
-./yarn.sh server install
+./install.sh
 ```
 - Start with `docker-compose up -d`
 - Open http://127.0.0.1:3333
@@ -44,6 +42,7 @@ cd /var/www/doko
 wget https://github.com/uncaught/doko/archive/v1.3.0.tar.gz
 tar xf v1.3.0.tar.gz
 cd doko-1.3.0
+./install.sh common install && ./yarn.sh client install && ./yarn.sh server install && ./yarn.sh client build
 ./yarn.sh common install && ./yarn.sh client install && ./yarn.sh server install && ./yarn.sh client build
 cd ..
 ./backup.sh

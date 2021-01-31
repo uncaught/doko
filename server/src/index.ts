@@ -1,7 +1,7 @@
 import server from './Server';
 import './Auth';
 import './channels';
-import {runMigrations} from './database/migrations/Migration';
+import { runMigrations } from './database/migrations/Migration';
 
 (async () => {
   await runMigrations();

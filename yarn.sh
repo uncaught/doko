@@ -19,5 +19,5 @@ docker run -it --rm \
   -w "$scriptDir/$workspace" \
   -e YARN_CACHE_FOLDER=/yarn-cache \
   --entrypoint=yarn \
-  node:13.5.0-alpine3.10 \
+  node:14.15.4-alpine3.12 \
   $@
