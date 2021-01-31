@@ -54,7 +54,7 @@ services:
       - 3030
     labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Path:/api
+      - traefik.frontend.rule=PathPrefix:/api
       - traefik.port=3030
 
   client:
@@ -72,8 +72,18 @@ services:
       - 3000
     labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Path:/
+      - traefik.frontend.rule=PathPrefix:/
       - traefik.port=3000
+
+  httpd:
+    image: httpd:2.4-alpine
+    restart: always
+    volumes:
+      - ./client/build:/usr/local/apache2/htdocs:ro
+      - ./build/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=PathPrefix:/
 
 volumes:
   dblib:
