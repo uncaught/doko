@@ -6,7 +6,7 @@
 ```
 - Start with `docker-compose up -d`
 - Open http://127.0.0.1:3333
-- Stop with `docker-compse down` 
+- Stop with `docker-compose down` 
 - To delete the database, too, use `docker-compose down --volumes`
 
 ### Reset database
