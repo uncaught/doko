@@ -1,5 +1,5 @@
 #!/bin/bash
-scriptDir=$(dirname $(readlink -f $0))
+scriptDir=$PWD/$(dirname $0)
 
 mkdir -p "$scriptDir/yarn-cache"
 

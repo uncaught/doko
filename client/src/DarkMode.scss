@@ -1,4 +1,4 @@
-:root {
+body {
   color-scheme: light dark;
   --std-background-color: white;
   --header-background-color: #e8e8e8;
@@ -8,27 +8,28 @@
   --border-color: black;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+@mixin darkMode {
+  body {
     --header-background-color: #666666;
     --header-color: rgba(255, 255, 255, .8);
-    --std-background-color: red;
     --std-background-color: rgba(0, 0, 0, .87);
     --std-color: white;
     --link-color: #69c0ee;
     --border-color: white;
   }
+  
+  .grid-table-td {
+    &.won {
+      box-shadow: inset 0 0 0 #a3c293;
+      color: #fcfff5;
+      background: #2c662d;
+    }
 
-  .grid-table-td.won {
-    box-shadow: inset 0 0 0 #a3c293;
-    color: #fcfff5;
-    background: #2c662d;
-  }
-
-  .grid-table-td.lost {
-    box-shadow: inset 0 0 0 #e0b4b4;
-    color: #fff6f6;
-    background: #9f3a38;
+    &.grid-table-td.lost {
+      box-shadow: inset 0 0 0 #e0b4b4;
+      color: #fff6f6;
+      background: #9f3a38;
+    }
   }
 
   .ui.divider:not(.vertical):not(.horizontal) {
@@ -42,6 +43,14 @@
   .grid-table-td.selected {
     background-color: rgba(223, 240, 255, 0.4);
   }
+}
+
+html.darkMode {
+  @include darkMode();
+}
+
+@media (prefers-color-scheme: dark) {
+  @include darkMode();
 }
 
 .grid-table-th {

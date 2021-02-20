@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 // @ts-ignore
 import createLoguxCreator from '@logux/redux/create-logux-creator';
 // @ts-ignore
@@ -12,10 +12,11 @@ import badgeStyles from '@logux/client/badge/default';
 import badgeMessages from '@logux/client/badge/en';
 // @ts-ignore
 import log from '@logux/client/log';
-import { storeReducer } from './store/Store';
-import { getAuth } from './Auth';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { getLoguxPrefix, setBuildTime } from './LocalStorage';
+import {storeReducer} from './store/Store';
+import {getAuth} from './Auth';
+import {BrowserRouter as Router} from 'react-router-dom';
+import {getLoguxPrefix, setBuildTime} from './LocalStorage';
+import {initDarkMode} from './DarkMode';
 
 function initLogux(buildTime: number) {
   const isDev = process.env.NODE_ENV === 'development';
@@ -28,13 +29,15 @@ function initLogux(buildTime: number) {
   });
 
   // @ts-ignore
-  const enhancer = isDev && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({ name: 'Doko' });
+  const enhancer = isDev && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({name: 'Doko'});
   const store = createStore(storeReducer, enhancer);
-  badge(store.client, { messages: badgeMessages, styles: badgeStyles });
+  badge(store.client, {messages: badgeMessages, styles: badgeStyles});
   if (isDev) {
     log(store.client);
   }
   store.client.start();
+
+  initDarkMode();
 
   ReactDOM.render(
     <Provider store={store}>
@@ -49,8 +52,8 @@ function initLogux(buildTime: number) {
 export async function initApp() {
   let buildTime: number = 4711; //dev
   if (process.env.NODE_ENV === 'production') {
-    const response = await fetch('/version.json', { cache: "no-cache" });
-    buildTime = (await response.json() as { buildTime: number }).buildTime;
+    const response = await fetch('/version.json', {cache: "no-cache"});
+    buildTime = (await response.json() as {buildTime: number}).buildTime;
   }
   localStorage.setItem('buildTime', buildTime.toString());
   setBuildTime(buildTime);

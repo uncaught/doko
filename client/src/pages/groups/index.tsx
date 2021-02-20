@@ -1,12 +1,13 @@
-import React, { ReactElement } from 'react';
+import React, {ReactElement} from 'react';
 import AddGroup from './AddGroup';
-import { Divider, Icon, Menu } from 'semantic-ui-react';
+import {Checkbox, Divider, Icon, Menu} from 'semantic-ui-react';
 import MyGroups from './MyGroups';
-import { Switch } from 'react-router-dom';
+import {Switch} from 'react-router-dom';
 import Page from '../../Page';
 import Group from '../group';
 import CashInvitation from './CashInvitation';
-import { forceReload } from '../../forceReload';
+import {forceReload} from '../../forceReload';
+import {useToggleDarkMode} from '../../DarkMode';
 
 function ForceReloadMenuItem(): ReactElement {
   return <Menu.Item onClick={forceReload}>
@@ -15,7 +16,18 @@ function ForceReloadMenuItem(): ReactElement {
   </Menu.Item>;
 }
 
-const menuItems = [ForceReloadMenuItem];
+function ToggleDarkMode(): ReactElement {
+  const {isDark, toggle} = useToggleDarkMode();
+  return <Menu.Item onClick={toggle}>
+    <Icon name={'moon'} />
+    <Checkbox label={'Dark Mode'} checked={isDark} />
+  </Menu.Item>;
+}
+
+const menuItems = [
+  ToggleDarkMode,
+  ForceReloadMenuItem,
+];
 
 export default function GroupsIndex(): ReactElement {
   return <Switch>

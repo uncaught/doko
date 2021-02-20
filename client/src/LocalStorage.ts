@@ -28,7 +28,7 @@ export function setBuildTime(buildTime: number): void {
   }
 }
 
-function get<T>(key: string, defaultVal: any = null): T | null {
+function get<T>(key: string, defaultVal: T): T {
   let parsed = defaultVal;
   const storeValue = localStorage.getItem(key);
   if (storeValue !== null) {
@@ -45,7 +45,7 @@ function set<T>(key: string, value: T): void {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function getCached<T>(key: string, defaultVal: any = null): T | null {
+export function getCached<T>(key: string, defaultVal: T): T {
   return get(cachePrefix + key, defaultVal);
 }
 
@@ -53,7 +53,7 @@ export function setCached<T>(key: string, value: T): void {
   set(cachePrefix + key, value);
 }
 
-export function getSetting<T>(key: string, defaultVal: any = null): T | null {
+export function getSetting<T>(key: string, defaultVal: T): T {
   return get(settingsPrefix + key, defaultVal);
 }
 
