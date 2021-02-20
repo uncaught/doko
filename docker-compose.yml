@@ -62,6 +62,7 @@ services:
     user: '1000:1000'
     working_dir: /doko/client
     environment:
+      - BROWSER=none # see https://github.com/facebook/create-react-app/issues/7251
       - NODE_ENV=development
     volumes:
       - ./:/doko:rw
@@ -75,14 +76,15 @@ services:
       - traefik.frontend.rule=PathPrefix:/
       - traefik.port=3000
 
-  httpd:
-    image: httpd:2.4-alpine
-    volumes:
-      - ./client/build:/usr/local/apache2/htdocs:ro
-      - ./build/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-    labels:
-      - traefik.enable=true
-      - traefik.frontend.rule=PathPrefix:/
+  # Just for testing production build after e.g. running build.sh:
+  # httpd:
+  #   image: httpd:2.4-alpine
+  #   volumes:
+  #     - ./client/build:/usr/local/apache2/htdocs:ro
+  #     - ./build/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.frontend.rule=PathPrefix:/
 
 volumes:
   dblib:

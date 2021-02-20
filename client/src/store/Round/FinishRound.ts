@@ -4,12 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { useCallback } from 'react';
 import { RoundResults } from '@doko/common';
 import { usePatchRound, useRound } from '../Rounds';
-import { useDispatch } from 'react-redux';
-import { LoguxDispatch } from '../Logux';
 
 export function useFinishRound() {
   const round = useRound();
-  const dispatch = useDispatch<LoguxDispatch>();
   const patchRound = usePatchRound();
   const playersWithStats = usePlayersWithStats(true);
   const sortedGames = useSortedGames();

@@ -5,7 +5,7 @@
 ./install.sh
 ```
 - Start with `docker-compose up -d`
-- Open http://127.0.0.1:3333
+- Open https://localhost
 - Stop with `docker-compose down` 
 - To delete the database, too, use `docker-compose down --volumes`
 

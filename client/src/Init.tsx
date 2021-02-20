@@ -47,8 +47,11 @@ function initLogux(buildTime: number) {
 }
 
 export async function initApp() {
-  const response = await fetch('/version.json', { cache: "no-cache" });
-  const { buildTime } = await response.json() as { buildTime: number };
+  let buildTime: number = 4711; //dev
+  if (process.env.NODE_ENV === 'production') {
+    const response = await fetch('/version.json', { cache: "no-cache" });
+    buildTime = (await response.json() as { buildTime: number }).buildTime;
+  }
   localStorage.setItem('buildTime', buildTime.toString());
   setBuildTime(buildTime);
   initLogux(buildTime);
