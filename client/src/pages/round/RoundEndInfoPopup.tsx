@@ -1,5 +1,5 @@
 import React, {ReactElement, useState} from 'react';
-import {Button, Divider, Form, Header, Icon, Message, Modal} from 'semantic-ui-react';
+import {Button, Divider, Form, Header, Icon, Modal} from 'semantic-ui-react';
 import {usePatchRound, useRound} from '../../store/Rounds';
 import NumberStepper from '../../components/NumberStepper';
 import {useSortedGames} from '../../store/Games';
