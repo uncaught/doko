@@ -111,7 +111,7 @@ export function useLatestGroupGame(): Game | undefined {
 }
 
 export function useSortedGames(): Game[] {
-  const {roundId} = usePageContext<{ roundId: string }>();
+  const {roundId} = usePageContext<{roundId: string}>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
@@ -150,19 +150,20 @@ export function useAddGame() {
     if ((lastGame && lastGame.data.isLastGame) || round.endDate) {
       return;
     }
+    const gameNumber = (lastGame ? lastGame.gameNumber : 0) + 1;
     const players = roundParticipatingPlayers.filter((p) => p.leftAfterGameNumber === null);
     const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
     const data = getDefaultGameData(settings);
     data.runNumber = detectRunNumber(currentGames, nextDealerId, roundParticipatingPlayers);
     detectPlayers(data, nextDealerId, players);
-    detectBockGame(round.data, data, currentGames, nextDealerId);
+    detectBockGame(round.data, data, currentGames, nextDealerId, gameNumber, roundParticipatingPlayers);
     detectLastGameAndForcedSolo(round.data, data, currentGames, nextDealerId, players, playersWithStats);
     const game: Game = {
       id,
       data,
+      gameNumber,
       dealerGroupMemberId: nextDealerId,
       roundId: round.id,
-      gameNumber: (lastGame ? lastGame.gameNumber : 0) + 1,
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
     history.push(`/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
@@ -191,7 +192,7 @@ export function useRemoveGame() {
 }
 
 function useRealGame(): Game | undefined {
-  const {gameId, roundId} = usePageContext<{ gameId: string; roundId: string }>();
+  const {gameId, roundId} = usePageContext<{gameId: string; roundId: string}>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return games[gameId];
 }
