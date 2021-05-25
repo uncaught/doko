@@ -1,9 +1,9 @@
 {
-  "name": "doko-client",
-  "version": "1.0.0",
+  "name": "@doko/doko",
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@doko/common": "link:../common",
+    "@doko/common": "0.0.0",
     "@logux/client": "^0.5.2",
     "@logux/redux": "^0.4.2",
     "@types/classnames": "^2.2.9",

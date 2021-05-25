@@ -1,6 +1,6 @@
 {
   "name": "@doko/server",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
   "scripts": {
@@ -9,7 +9,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@doko/common": "link:../common",
+    "@doko/common": "0.0.0",
     "@logux/server": "^0.5.1",
     "@types/node": "^13.1.0",
     "dayjs": "^1.8.18",

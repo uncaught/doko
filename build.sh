@@ -1,5 +1,8 @@
 #!/bin/bash
-scriptDir=$(dirname $(readlink -f $0))
-$scriptDir/install.sh
-$scriptDir/yarn.sh client build
-$scriptDir/writeVersion.sh
+scriptDir=$(cd "$(dirname $0)" && echo "$(pwd -P)")
+
+cd $scriptDir
+
+./yarn.sh install
+./yarn.sh workspace @doko/client run build
+./writeVersion.sh

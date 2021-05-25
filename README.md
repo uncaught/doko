@@ -2,7 +2,7 @@
 - Have docker and docker-compose installed 
 - Install dependencies with:
 ```bash
-./install.sh
+./yarn.sh install
 ```
 - Start with `docker-compose up -d`
 - Open https://localhost

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "baseUrl": ".",
-    "target": "ES2016",
+    "target": "ES2019",
     "lib": [
       "dom",
       "dom.iterable",
@@ -24,6 +24,6 @@
   },
   "include": [
     "src",
-    "node_modules/@doko/common"
+    "../../node_modules/@doko/common"
   ]
 }
