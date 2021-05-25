@@ -10,7 +10,7 @@ services:
       - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
       - MYSQL_PWD=sKAmqtzkQ1-QhmSdmiH2
     volumes:
-      - ./server/src/database/schema:/docker-entrypoint-initdb.d:ro
+      - ./packages/server/src/database/schema:/docker-entrypoint-initdb.d:ro
       - dblib:/var/lib/mysql:rw
     command:
       - "--character-set-server=utf8mb4"
@@ -19,20 +19,26 @@ services:
       - "33061:3306"
 
   proxy:
-    image: traefik:1.7.11
-    command: --api --configFile=/etc/traefik/traefik.toml
+    image: traefik:v2.4.8
+    restart: always
+    command:
+#      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.toml:/etc/traefik/traefik.toml:ro
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
     image: node:14.15.4-alpine3.12
     user: '1000:1000'
-    working_dir: /doko/server
+    working_dir: /doko/packages/server
     depends_on:
       - database
     volumes:
@@ -50,17 +56,26 @@ services:
       - "yarn"
       - "run"
       - "dev"
-    expose:
-      - 3030
     labels:
-      - traefik.enable=true
-      - traefik.frontend.rule=PathPrefix:/api
-      - traefik.port=3030
+      traefik.enable: true
+      # http
+      traefik.http.routers.doko-ws.rule: "Path(`/ws`)"
+      traefik.http.routers.doko-ws.entrypoints: web
+      traefik.http.routers.doko-ws.priority: 200
+      traefik.http.routers.doko-ws.service: doko-ws
+      traefik.http.services.doko-ws.loadbalancer.server.port: 3030
+      # https
+      traefik.http.routers.doko-wss.rule: "Path(`/ws`)"
+      traefik.http.routers.doko-wss.entrypoints: websecure
+      traefik.http.routers.doko-wss.priority: 200
+      traefik.http.routers.doko-wss.service: doko-wss
+      traefik.http.routers.doko-wss.tls: 'true'
+      traefik.http.services.doko-wss.loadbalancer.server.port: 3030
 
   client:
     image: node:14.15.4-alpine3.12
     user: '1000:1000'
-    working_dir: /doko/client
+    working_dir: /doko/packages/client
     environment:
       - BROWSER=none # see https://github.com/facebook/create-react-app/issues/7251
       - NODE_ENV=development
@@ -69,22 +84,31 @@ services:
     entrypoint:
       - "yarn"
       - "start"
-    expose:
-      - 3000
     labels:
-      - traefik.enable=true
-      - traefik.frontend.rule=PathPrefix:/
-      - traefik.port=3000
+      traefik.enable: true
+      # http
+      traefik.http.routers.doko-web.rule: "PathPrefix(`/`)"
+      traefik.http.routers.doko-web.entrypoints: web
+      traefik.http.routers.doko-web.priority: 100
+      traefik.http.routers.doko-web.service: doko-web
+      traefik.http.services.doko-web.loadbalancer.server.port: 3000
+      # https
+      traefik.http.routers.doko-webs.rule: "PathPrefix(`/`)"
+      traefik.http.routers.doko-webs.entrypoints: websecure
+      traefik.http.routers.doko-webs.priority: 100
+      traefik.http.routers.doko-webs.service: doko-webs
+      traefik.http.routers.doko-webs.tls: 'true'
+      traefik.http.services.doko-webs.loadbalancer.server.port: 3000
 
   # Just for testing production build after e.g. running build.sh:
   # httpd:
   #   image: httpd:2.4-alpine
   #   volumes:
-  #     - ./client/build:/usr/local/apache2/htdocs:ro
+  #     - ./packages/client/build:/usr/local/apache2/htdocs:ro
   #     - ./build/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
   #   labels:
-  #     - traefik.enable=true
-  #     - traefik.frontend.rule=PathPrefix:/
+  #     traefik.enable: true
+  #     traefik.http.routers.doko-web.rule: "PathPrefix(`/`)"
 
 volumes:
   dblib:

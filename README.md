@@ -1,13 +1,13 @@
-### Dev
-- Have docker and docker-compose installed 
-- Install dependencies with:
-```bash
-./yarn.sh install
-```
-- Start with `docker-compose up -d`
-- Open https://localhost
-- Stop with `docker-compose down` 
-- To delete the database, too, use `docker-compose down --volumes`
+### Development Stack
+- Start the proxy in background: `docker-compose up -d proxy`. This routes the websocket `/ws`-path to the server and everything else to the client.
+- Start the database in background: `docker-compose up -d database`. This will initialize the db with everything in `packages/server/src/database/schema` if the volume is newly created. To fully delete the database, use `docker-compose down --volumes`.
+- Install dependencies: `./yarn.sh install`
+- Best start server and client in separate tabs in foreground to see their output:
+  - Server: `docker-compose up server`
+  - Client: `docker-compose up client`
+- Browse to https://localhost (SSL is required for using the camera)
+  - Until create-react-app 3.3.1 is not released, hack in [this fix for wss](https://github.com/facebook/create-react-app/pull/8079/commits/9585c26593e18296fe202bfea198130f9d0dbd34)
+
 
 ### Reset database
 ```bash
@@ -16,12 +16,6 @@ docker-compose rm -f server
 cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
 docker-compose up server
 ```
-
-##### SSL
-- HTTPS is required for using the browser's camera
-- Use an SSL-proxy like nginx, routing `/` to port 3333 and `/api` to port 3030
-- Until create-react-app 3.3.1 is not released, hack in [this fix for wss](https://github.com/facebook/create-react-app/pull/8079/commits/9585c26593e18296fe202bfea198130f9d0dbd34)
-
 
 ### Nomenklatur
 - Eine **Runde** (round) ist ein abgeschlossener Satz an Spielen, z.B. regulär 24 Spiele oder alle Spiele eines Abends.
