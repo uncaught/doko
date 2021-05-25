@@ -6,17 +6,6 @@ import QrCode from 'qrcode.react';
 import {useSelector} from 'react-redux';
 import {usedInvitationTokensSelector} from '../../store/Ui';
 
-declare global {
-  type ShareData = {
-    title?: string;
-    text?: string;
-    url?: string;
-  };
-
-  interface Navigator {
-    share?: (data?: ShareData) => Promise<void>;
-  }
-}
 const canShare = typeof window.navigator.share === 'function';
 
 export default function InviteDevice(): ReactElement {
@@ -65,25 +54,25 @@ export default function InviteDevice(): ReactElement {
   return <section className="u-relative u-overflow-hidden">
     <Header as={'h4'}>Einladen/Verbinden</Header>
     {canShare && <Button icon
-                         floated='right'
-                         labelPosition='left'
-                         color={'blue'}
-                         onClick={async () => navigator.share!({url: await generateCode()})}
-                         loading={isLoading}>
-      <Icon name='share alternate'/>
+      floated='right'
+      labelPosition='left'
+      color={'blue'}
+      onClick={async () => navigator.share!({url: await generateCode()})}
+      loading={isLoading}>
+      <Icon name='share alternate' />
       Teilen
     </Button>}
 
     <Button icon
-            floated='right'
-            labelPosition='left'
-            color={'blue'}
-            onClick={async () => {
-              await generateCode();
-              setShowQr(true);
-            }}
-            loading={isLoading}>
-      <Icon name='qrcode'/>
+      floated='right'
+      labelPosition='left'
+      color={'blue'}
+      onClick={async () => {
+        await generateCode();
+        setShowQr(true);
+      }}
+      loading={isLoading}>
+      <Icon name='qrcode' />
       QR-Code
     </Button>
 
@@ -91,15 +80,15 @@ export default function InviteDevice(): ReactElement {
       kann nur mit einem Mitglied einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener Gruppen.</Segment>
 
     {showQr && <Modal className="scanInvitation-modal"
-                      open={true}
-                      dimmer={'inverted'}
-                      onClose={() => setShowQr(false)}
-                      basic
-                      size='small'>
+      open={true}
+      dimmer={'inverted'}
+      onClose={() => setShowQr(false)}
+      basic
+      size='small'>
       <Modal.Content>
         <div className="qrCodeContainer">
-          {!showQrSuccess && <QrCode value={invitationUrl} size={window.screen.width - 64}/>}
-          {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'}/>}
+          {!showQrSuccess && <QrCode value={invitationUrl} size={window.screen.width - 64} />}
+          {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'} />}
         </div>
       </Modal.Content>
     </Modal>}

@@ -73,7 +73,7 @@ export function useSimulation(): boolean {
 const updateTriggers = new Set<(o: object) => void>();
 
 export function useSimulatedGame(): Game {
-  const [, force] = useState();
+  const [, force] = useState<object>();
   useEffect(() => {
     updateTriggers.add(force);
     return () => {

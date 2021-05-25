@@ -7,14 +7,14 @@ import ExtraPoints from './ExtraPoints';
 import SidePlayers from './SidePlayers';
 import GamePips from './GamePips';
 import Points from './Points';
-import {DndProvider, useDrop} from 'react-dnd';
+import {useDrop} from 'react-dnd';
 import {useSelectGamePlayerSide} from './SelectGamePlayerSide';
-import MultiBackend from 'react-dnd-multi-backend';
+import {DndProvider} from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch';
 
-function Column({Comp, isRe}: { Comp: React.FC<{ isRe: boolean }>; isRe: boolean }): ReactElement {
+function Column({Comp, isRe}: {Comp: React.FC<{isRe: boolean}>; isRe: boolean}): ReactElement {
   const selectGamePlayerSide = useSelectGamePlayerSide();
-  const [, drop] = useDrop<{ memberId: string; type: string }, void, {}>({
+  const [, drop] = useDrop<{memberId: string; type: string}, void, {}>({
     accept: 'gamePlayer',
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
@@ -29,32 +29,32 @@ function Column({Comp, isRe}: { Comp: React.FC<{ isRe: boolean }>; isRe: boolean
     }),
   });
   return <div className={'column'} ref={drop}>
-    <Comp isRe={isRe}/>
+    <Comp isRe={isRe} />
   </div>;
 }
 
-function Row({Comp}: { Comp: React.FC<{ isRe: boolean }> }): ReactElement {
+function Row({Comp}: {Comp: React.FC<{isRe: boolean}>}): ReactElement {
   return <Grid.Row>
-    <Column Comp={Comp} isRe={true}/>
-    <Column Comp={Comp} isRe={false}/>
+    <Column Comp={Comp} isRe={true} />
+    <Column Comp={Comp} isRe={false} />
   </Grid.Row>;
 }
 
 export default function NonPenalty(): ReactElement {
   return <>
-    <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+    <DndProvider options={HTML5toTouch}>
       <Segment vertical>
         <Grid columns={2} relaxed='very' className="tinyVertical">
-          <Row Comp={Announcements}/>
-          <Row Comp={ExtraPoints}/>
-          <Row Comp={SidePlayers}/>
-          <Row Comp={GamePips}/>
-          <Row Comp={Points}/>
+          <Row Comp={Announcements} />
+          <Row Comp={ExtraPoints} />
+          <Row Comp={SidePlayers} />
+          <Row Comp={GamePips} />
+          <Row Comp={Points} />
         </Grid>
         <Divider vertical>VS</Divider>
       </Segment>
-      <UndecidedPlayers/>
+      <UndecidedPlayers />
     </DndProvider>
-    <GameCalcBlame/>
+    <GameCalcBlame />
   </>;
 }

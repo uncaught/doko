@@ -1,10 +1,9 @@
 version: "3.7"
 
 services:
-  # Import, e.g.:
-  # cat /mnt/hgfs/VMShared/doko/doko_2020-10-02_00-46-01.sql.gz | gunzip | docker-compose exec -T database mysql doko
   database:
-    image: mariadb:10.4.11-bionic
+    image: mariadb:10.6.1-focal
+    restart: always
     environment:
       - MYSQL_DATABASE=doko
       - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
@@ -16,7 +15,7 @@ services:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
     ports:
-      - "33061:3306"
+      - "3306:3306"
 
   proxy:
     image: traefik:v2.4.8
@@ -36,7 +35,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
-    image: node:14.15.4-alpine3.12
+    image: ${NODE_IMAGE}
     user: '1000:1000'
     working_dir: /doko/packages/server
     depends_on:
@@ -73,7 +72,7 @@ services:
       traefik.http.services.doko-wss.loadbalancer.server.port: 3030
 
   client:
-    image: node:14.15.4-alpine3.12
+    image: ${NODE_IMAGE}
     user: '1000:1000'
     working_dir: /doko/packages/client
     environment:

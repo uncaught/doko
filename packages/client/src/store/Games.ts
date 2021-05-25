@@ -110,9 +110,10 @@ export function useLatestGroupGame(): Game | undefined {
   return getLastGameOfRoundGames(roundGames);
 }
 
+const emptyGames: Games = {};
 export function useSortedGames(): Game[] {
   const {roundId} = usePageContext<{roundId: string}>();
-  const games = useSelector(gamesSelector)[roundId] || {};
+  const games = useSelector(gamesSelector)[roundId] || emptyGames;
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
 

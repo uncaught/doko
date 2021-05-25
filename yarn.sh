@@ -1,6 +1,8 @@
 #!/bin/bash
 scriptDir=$(cd "$(dirname $0)" && echo "$(pwd -P)")
 
+source $scriptDir/.env
+
 mkdir -p "$scriptDir/yarn-cache"
 
 docker run -it --rm \
@@ -12,5 +14,5 @@ docker run -it --rm \
   -e TZ=Europe/Berlin \
   -e NODE_ENV=development \
   --entrypoint=yarn \
-  node:14.15.4-alpine3.12 \
+  $NODE_IMAGE \
   $@
