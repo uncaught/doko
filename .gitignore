@@ -1,5 +1,6 @@
 .DS_Store
 *.sql.gz
+/mysql
 /packages/client/build
 /packages/server/build
 /.yarn-cache

@@ -6,11 +6,11 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=doko
-      - MYSQL_ROOT_PASSWORD=sKAmqtzkQ1-QhmSdmiH2
-      - MYSQL_PWD=sKAmqtzkQ1-QhmSdmiH2
+      - MYSQL_ROOT_PASSWORD=${DOKO_SQL_PASSWORD}
+      - MYSQL_PWD=${DOKO_SQL_PASSWORD}
     volumes:
       - ./packages/server/src/database/schema:/docker-entrypoint-initdb.d:ro
-      - dblib:/var/lib/mysql:rw
+      - ./mysql:/var/lib/mysql:rw
     command:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
@@ -49,7 +49,7 @@ services:
       - DB_HOST=database
       - DB_PORT=3306
       - DB_USER=root
-      - DB_PW=sKAmqtzkQ1-QhmSdmiH2
+      - DB_PW=${DOKO_SQL_PASSWORD}
       - DB_NAME=doko
     entrypoint:
       - "yarn"
@@ -98,16 +98,3 @@ services:
       traefik.http.routers.doko-webs.service: doko-webs
       traefik.http.routers.doko-webs.tls: 'true'
       traefik.http.services.doko-webs.loadbalancer.server.port: 3000
-
-  # Just for testing production build after e.g. running build.sh:
-  # httpd:
-  #   image: httpd:2.4-alpine
-  #   volumes:
-  #     - ./packages/client/build:/usr/local/apache2/htdocs:ro
-  #     - ./build/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-  #   labels:
-  #     traefik.enable: true
-  #     traefik.http.routers.doko-web.rule: "PathPrefix(`/`)"
-
-volumes:
-  dblib:

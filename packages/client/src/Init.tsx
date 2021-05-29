@@ -24,7 +24,7 @@ function initLogux(buildTime: number) {
   const createStore = createLoguxCreator({
     prefix: getLoguxPrefix(),
     subprotocol: '1.0.0',
-    server: `${wsProto}://${window.location.hostname}/api`,
+    server: `${wsProto}://${window.location.hostname}/ws`,
     ...getAuth(),
   });
 

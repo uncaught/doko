@@ -1,6 +1,9 @@
 ### Development Stack
 - Start the proxy in background: `docker-compose up -d proxy`. This routes the websocket `/ws`-path to the server and everything else to the client.
-- Start the database in background: `docker-compose up -d database`. This will initialize the db with everything in `packages/server/src/database/schema` if the volume is newly created. To fully delete the database, use `docker-compose down --volumes`.
+- Start the database in background: `docker-compose up -d database`. 
+  - If this is the database is new and not initialized, temporarily change the environment variable `MYSQL_PWD` to `MYSQL_ROOT_PASSWORD` in the docker-compose file for the first boot. This is required to use this password for the new root user.
+  - Initializing will execute everything in `packages/database/schema`.
+  - To fully reset the database, stop everything with `docker-compose down` and delete the `mysql` folder.
 - Install dependencies: `./yarn.sh install`
 - Create version.json once: `./writeVersion.sh`
 - Best start server and client in separate tabs in foreground to see their output:
