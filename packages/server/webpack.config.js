@@ -11,11 +11,12 @@ module.exports = {
       },
     ],
   },
+  output: {
+    filename: 'server.js',
+    path: path.resolve(__dirname, 'build'),
+  },
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  output: {
-    filename: 'server.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
+  target: 'node',
 };

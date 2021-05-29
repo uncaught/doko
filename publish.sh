@@ -9,6 +9,7 @@ source $scriptDir/.env
 vers=${1:-0.0.0}
 
 color() { echo -e "\033[0;$1m$2\033[0m"; }
+step() { color 95 "$1"; }
 success() { color 32 "$1"; }
 warn() { color 33 "$1"; }
 error() { color 31 "$1"; }
@@ -23,38 +24,49 @@ else
   exit 1
 fi
 
+
 echo ""
+step "Installing dependencies ..."
 ./yarn.sh install
 
 
 echo ""
-echo "Building client ..."
-./yarn.sh workspace @doko/client run build
+step "Building client ..."
+./yarn.sh workspace @doko/client build
 ./writeVersion.sh $vers
 clientDir=$scriptDir/packages/client
 clientImage=uncaught42/doko-stats-client
 docker build --pull -f $clientDir/Dockerfile -t $clientImage:$vers -t $clientImage:latest $clientDir
 
+
 echo ""
-echo "Building database ..."
+step "Building database ..."
 databaseDir=$scriptDir/packages/database
 databaseImage=uncaught42/doko-stats-db
 docker build --pull -f $databaseDir/Dockerfile -t $databaseImage:$vers -t $databaseImage:latest $databaseDir
 
+
 echo ""
-echo "Building server ..."
+step "Building server ..."
+./yarn.sh workspace @doko/server build
 serverDir=$scriptDir/packages/server
 serverImage=uncaught42/doko-stats-server
 docker build --build-arg "NODE_IMAGE=$NODE_IMAGE" --pull -f $serverDir/Dockerfile -t $serverImage:$vers -t $serverImage:latest $serverDir
+
 
 echo ""
 if [ "$vers" = "0.0.0" ]; then
   warn "Not pushing images to docker hub due to local version"
 else
-  docker push $clientImage:$vers
-  docker push $clientImage:latest
-  docker push $databaseImage:$vers
-  docker push $databaseImage:latest
-  docker push $serverImage:$vers
-  docker push $serverImage:latest
+  step "Pushing images ..."
+  docker push -q $clientImage:$vers
+  docker push -q $clientImage:latest
+  docker push -q $databaseImage:$vers
+  docker push -q $databaseImage:latest
+  docker push -q $serverImage:$vers
+  docker push -q $serverImage:latest
 fi
+
+
+echo ""
+success "Build complete!"

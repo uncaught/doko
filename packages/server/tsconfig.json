@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
     "baseUrl": ".",
     "target": "ES2020",
     "lib": [
