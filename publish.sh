@@ -1,21 +1,17 @@
 #!/bin/bash
+set -e
 scriptDir=$(cd "$(dirname $0)" && echo "$(pwd -P)")
 
 cd $scriptDir
 
+source $scriptDir/.env
+
 vers=${1:-0.0.0}
 
-success() {
-  echo -e "\033[0;32m$1\033[0m"
-}
-
-warn() {
-  echo -e "\033[0;33m$1\033[0m"
-}
-
-error() {
-  echo -e "\033[0;31m$1\033[0m"
-}
+color() { echo -e "\033[0;$1m$2\033[0m"; }
+success() { color 32 "$1"; }
+warn() { color 33 "$1"; }
+error() { color 31 "$1"; }
 
 if [ "$vers" = "0.0.0" ]; then
   warn "Version $vers used - not creating git tag"
@@ -30,7 +26,6 @@ fi
 echo ""
 ./yarn.sh install
 
-# Build client:
 echo ""
 echo "Building client ..."
 ./yarn.sh workspace @doko/client run build
@@ -40,9 +35,17 @@ clientImage=uncaught42/doko-stats-client
 docker build --pull -f $clientDir/Dockerfile -t $clientImage:$vers -t $clientImage:latest $clientDir
 
 echo ""
+echo "Building server ..."
+serverDir=$scriptDir/packages/server
+serverImage=uncaught42/doko-stats-server
+docker build --build-arg "NODE_IMAGE=$NODE_IMAGE" --pull -f $serverDir/Dockerfile -t $serverImage:$vers -t $serverImage:latest $serverDir
 
+echo ""
 if [ "$vers" = "0.0.0" ]; then
   warn "Not pushing images to docker hub due to local version"
 else
-  docker push $clientImage:$vers $clientImage:latest
+  docker push $clientImage:$vers
+  docker push $clientImage:latest
+  docker push $serverImage:$vers
+  docker push $serverImage:latest
 fi
