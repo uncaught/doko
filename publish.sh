@@ -26,6 +26,7 @@ fi
 echo ""
 ./yarn.sh install
 
+
 echo ""
 echo "Building client ..."
 ./yarn.sh workspace @doko/client run build
@@ -33,6 +34,12 @@ echo "Building client ..."
 clientDir=$scriptDir/packages/client
 clientImage=uncaught42/doko-stats-client
 docker build --pull -f $clientDir/Dockerfile -t $clientImage:$vers -t $clientImage:latest $clientDir
+
+echo ""
+echo "Building database ..."
+databaseDir=$scriptDir/packages/database
+databaseImage=uncaught42/doko-stats-db
+docker build --pull -f $databaseDir/Dockerfile -t $databaseImage:$vers -t $databaseImage:latest $databaseDir
 
 echo ""
 echo "Building server ..."
@@ -46,6 +53,8 @@ if [ "$vers" = "0.0.0" ]; then
 else
   docker push $clientImage:$vers
   docker push $clientImage:latest
+  docker push $databaseImage:$vers
+  docker push $databaseImage:latest
   docker push $serverImage:$vers
   docker push $serverImage:latest
 fi

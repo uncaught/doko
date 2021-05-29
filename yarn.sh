@@ -3,11 +3,11 @@ scriptDir=$(cd "$(dirname $0)" && echo "$(pwd -P)")
 
 source $scriptDir/.env
 
-mkdir -p "$scriptDir/yarn-cache"
+mkdir -p "$scriptDir/.yarn-cache"
 
 docker run -it --rm \
   -u $UID \
-  -v "$scriptDir/yarn-cache:/yarn-cache:rw" \
+  -v "$scriptDir/.yarn-cache:/yarn-cache:rw" \
   -v "$scriptDir:$scriptDir:rw" \
   -w "$PWD" \
   -e YARN_CACHE_FOLDER=/yarn-cache \

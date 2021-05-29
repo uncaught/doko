@@ -4,6 +4,7 @@ FROM ${NODE_IMAGE}
 ENV NODE_ENV=production
 ENV LOGUX_HOST=0.0.0.0
 ENV LOGUX_PORT=80
+ENV DB_NAME=doko
 
 EXPOSE 80
 
@@ -13,4 +14,4 @@ COPY ./build /server
 
 WORKDIR /server
 
-ENTRYPOINT [ "node", "index.js" ]
+ENTRYPOINT [ "node", "server.js" ]

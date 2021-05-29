@@ -1,8 +1,8 @@
 .DS_Store
 *.sql.gz
 /packages/client/build
-/packages/server/build
-/yarn-cache
+/packages/server/dist
+/.yarn-cache
 node_modules
 npm-debug.log*
 yarn-debug.log*
