@@ -11440,6 +11440,14 @@ string-natural-compare@^3.0.1:
   resolved "https://registry.yarnpkg.com/string-natural-compare/-/string-natural-compare-3.0.1.tgz#7a42d58474454963759e8e8b7ae63d71c1e7fdf4"
   integrity sha512-n3sPwynL1nwKi3WJ6AIsClwBMa0zTi54fn2oLU6ndfTSIO05xaznjSf15PcBZU6FNWbmN5Q6cxT4V5hGvB4taw==
 
+string-replace-loader@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/string-replace-loader/-/string-replace-loader-3.0.2.tgz#810539ef88e8eec93ccafcc6ce141213d81f27ed"
+  integrity sha512-MY2VpW7p2V4yLBybj6BcFhmJGU1GjXSDfSz4NrK9BiLK3ttyKXO/WIyOD4UP/b77QUVPG+AKZ7vvpTCNYRAgWg==
+  dependencies:
+    loader-utils "^2.0.0"
+    schema-utils "^3.0.0"
+
 string-width@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-1.0.2.tgz#118bdf5b8cdc51a2a7e70d211e07e2b0b9b107d3"

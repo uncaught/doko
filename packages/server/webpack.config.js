@@ -5,6 +5,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /node_modules\/@logux\/server\/.*.js/,
+        loader: 'string-replace-loader',
+        options: {
+          search: /require\('nanoevents'\)/,
+          replace: `require('nanoevents').default`,
+        },
+      },
+      {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
