@@ -2,15 +2,16 @@ version: "3.7"
 
 services:
   database:
-    image: uncaught42/doko-stats-db:latest
+    image: uncaught42/doko-stats-db:${DOKO_VERSION}
     restart: always
     environment:
+      - MYSQL_ROOT_PASSWORD=${DOKO_SQL_PASSWORD}
       - MYSQL_PWD=${DOKO_SQL_PASSWORD}
     volumes:
       - ./mysql:/var/lib/mysql:rw
 
   server:
-    image: uncaught42/doko-stats-server:latest
+    image: uncaught42/doko-stats-server:${DOKO_VERSION}
     restart: always
     depends_on:
       - database
@@ -33,7 +34,7 @@ services:
       traefik.http.routers.doko-wss.tls: 'true'
 
   client:
-    image: uncaught42/doko-stats-client:latest
+    image: uncaught42/doko-stats-client:${DOKO_VERSION}
     restart: always
     # networks:
     #   - traefik

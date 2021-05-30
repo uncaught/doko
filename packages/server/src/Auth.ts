@@ -10,7 +10,7 @@ server.auth(async (deviceId: string, credentials: Credentials) => {
 VALUES (:id, NOW(), :creds, NOW(), :creds)
 ON DUPLICATE KEY UPDATE last_seen_on = VALUES(last_seen_on), last_seen_creds = VALUES(last_seen_creds)`, {
     id: deviceId,
-    creds: JSON.stringify(credentials),
+    creds: credentials,
   });
   return true;
 });
@@ -20,7 +20,7 @@ const cacheUserGroupIdsSync = new Map<string, Set<string>>();
 
 export function getUserGroupIds(deviceId: string): Promise<Set<string>> {
   if (!cacheUserGroupIds.has(deviceId)) {
-    const prom = query<{ group_id: string }>(`SELECT DISTINCT gm.group_id
+    const prom = query<{group_id: string}>(`SELECT DISTINCT gm.group_id
                                                 FROM group_member_devices gmd
                                           INNER JOIN group_members gm ON gm.id = gmd.group_member_id
                                                WHERE gmd.device_id = :deviceId`, {deviceId})

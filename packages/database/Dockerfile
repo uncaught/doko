@@ -1,4 +1,4 @@
-FROM mariadb:10.6.1-focal
+FROM mariadb:10.5.10-focal
 
 ENV MYSQL_DATABASE=doko
 

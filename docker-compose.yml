@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   database:
-    image: mariadb:10.6.1-focal
+    image: mariadb:10.5.10-focal
     restart: always
     environment:
       - MYSQL_DATABASE=doko

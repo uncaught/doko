@@ -61,7 +61,7 @@ export async function deviceBoundQuery<R>(deviceId: string, sql: string, values?
 }
 
 type Parameters<O extends AnyObject> = {
-  [k in keyof O]?: string | number | null;
+  [k in keyof O]?: string | number | null | object | undefined;
 }
 
 function prepareId<O extends AnyObject>(
@@ -77,11 +77,9 @@ function prepareId<O extends AnyObject>(
 
 export function fromDbValue<O extends AnyObject>(entities: O[], types: DatabaseTypes<O>): void {
   entities.forEach((entity) => {
+    console.log('fromDbValue', {entity});
     Object.entries(entity).forEach(([key, value]) => {
       switch (types[key as keyof O]) {
-        case 'json':
-          entity[key as keyof O] = value === null ? null : JSON.parse(value);
-          break;
         case 'bool':
           entity[key as keyof O] = (value === null ? null : entity[key] == '1') as O[keyof O];
           break;
@@ -98,7 +96,7 @@ async function getToDbTransformer<O extends AnyObject>(
   oldEntity?: O | null,
   merger = mergeStates,
 ) {
-  return (key: keyof O): string | number | null => {
+  return (key: keyof O): string | number | null | object | undefined => {
     const newValue = upsertData[key] as O[keyof O];
     if (newValue === null) {
       return null;
@@ -107,10 +105,9 @@ async function getToDbTransformer<O extends AnyObject>(
       case 'json':
         const oldValue = oldEntity ? oldEntity[snakeCase(key as string)] : null;
         if (oldValue === null) {
-          return JSON.stringify(upsertData[key]);
+          return upsertData[key];
         }
-        const oldJson = JSON.parse(oldValue);
-        return JSON.stringify(merger(oldJson, newValue));
+        return merger(oldValue, newValue);
       case 'unix':
         return dayjs.unix(newValue).format('YYYY-MM-DD HH:mm:ss');
       case 'bool':

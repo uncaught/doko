@@ -1,11 +1,9 @@
 ### Development Stack
 - Start the proxy in background: `docker-compose up -d proxy`. This routes the websocket `/ws`-path to the server and everything else to the client.
 - Start the database in background: `docker-compose up -d database`. 
-  - If this is the database is new and not initialized, temporarily change the environment variable `MYSQL_PWD` to `MYSQL_ROOT_PASSWORD` in the docker-compose file for the first boot. This is required to use this password for the new root user.
-  - Initializing will execute everything in `packages/database/schema`.
-  - To fully reset the database, stop everything with `docker-compose down` and delete the `mysql` folder.
+  - If the database is not initialized, all files in `packages/database/schema` are executed.
+  - To fully delete the database, stop everything with `docker-compose down` and delete the `mysql` folder.
 - Install dependencies: `./yarn.sh install`
-- Create version.json once: `./writeVersion.sh`
 - Best start server and client in separate tabs in foreground to see their output:
   - Server: `docker-compose up server`
   - Client: `docker-compose up client`
@@ -15,10 +13,8 @@
 
 ### Reset database
 ```bash
-docker-compose stop -t 0 server
-docker-compose rm -f server
 cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
-docker-compose up server
+docker-compose restart server
 ```
 
 ### Nomenklatur
@@ -29,21 +25,12 @@ Spiele, kann aber durch Pflichtsoli länger werden. Die Dauer von Bockspielen en
 - Ein **Stich** (trick) ist ein Teil eines Spiels bei dem 4 Karten gespielt wurden.
 
 ### Deploy
-Proper deploy process is still missing! This is more a hacky manual install/deploy 
-because the client build is done server-side.
-
-- Create release tag on github and copy link to release archive (`tar.gz`)
-- SSH into server and:
+- Run `./publish.sh 0.0.0` with a proper version
+- This will push all three images (client, db, server) to docker hub
+- Push the created tag `git push --folow-tags`
+- On the server, update the version for the images and then:
 
 ```bash
-cd /var/www/doko
-wget https://github.com/uncaught/doko/archive/v1.3.0.tar.gz
-tar xf v1.3.0.tar.gz
-cd doko-1.3.0
-./build.sh
-cd ..
 ./backup.sh
-docker-compose down
-ln -sfn doko-1.3.0 doko
 docker-compose up -d
 ```
