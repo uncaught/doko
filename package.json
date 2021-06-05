@@ -1,0 +1,19 @@
+{
+  "name": "@doko/root",
+  "version": "0.0.0",
+  "description": "",
+  "main": "",
+  "repository": "",
+  "author": "",
+  "license": "",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "scripts": {},
+  "resolutions": {}
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@doko/common",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {},
+  "dependencies": {
+    "@types/lodash": "^4.14.149",
+    "@types/uuid": "^8.3.0",
+    "lodash": "^4.17.15",
+    "uuid": "^8.3.2"
+  }
+}

@@ -1,27 +1,21 @@
-### Dev
-- Have docker and docker-compose installed 
-- Install dependencies with:
-```bash
-./install.sh
-```
-- Start with `docker-compose up -d`
-- Open https://localhost
-- Stop with `docker-compose down` 
-- To delete the database, too, use `docker-compose down --volumes`
+### Development Stack
+- Start the proxy in background: `docker-compose up -d proxy`. This routes the websocket `/ws`-path to the server and everything else to the client.
+- Start the database in background: `docker-compose up -d database`. 
+  - If the database is not initialized, all files in `packages/database/schema` are executed.
+  - To fully delete the database, stop everything with `docker-compose down` and delete the `mysql` folder.
+- Install dependencies: `./yarn.sh install`
+- Best start server and client in separate tabs in foreground to see their output:
+  - Server: `docker-compose up server`
+  - Client: `docker-compose up client`
+- Browse to https://localhost (SSL is required for using the camera)
+  - Until create-react-app 3.3.1 is not released, hack in [this fix for wss](https://github.com/facebook/create-react-app/pull/8079/commits/9585c26593e18296fe202bfea198130f9d0dbd34)
+
 
 ### Reset database
 ```bash
-docker-compose stop -t 0 server
-docker-compose rm -f server
 cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
-docker-compose up server
+docker-compose restart server
 ```
-
-##### SSL
-- HTTPS is required for using the browser's camera
-- Use an SSL-proxy like nginx, routing `/` to port 3333 and `/api` to port 3030
-- Until create-react-app 3.3.1 is not released, hack in [this fix for wss](https://github.com/facebook/create-react-app/pull/8079/commits/9585c26593e18296fe202bfea198130f9d0dbd34)
-
 
 ### Nomenklatur
 - Eine **Runde** (round) ist ein abgeschlossener Satz an Spielen, z.B. regulär 24 Spiele oder alle Spiele eines Abends.
@@ -31,21 +25,12 @@ Spiele, kann aber durch Pflichtsoli länger werden. Die Dauer von Bockspielen en
 - Ein **Stich** (trick) ist ein Teil eines Spiels bei dem 4 Karten gespielt wurden.
 
 ### Deploy
-Proper deploy process is still missing! This is more a hacky manual install/deploy 
-because the client build is done server-side.
-
-- Create release tag on github and copy link to release archive (`tar.gz`)
-- SSH into server and:
+- Run `./publish.sh 0.0.0` with a proper version
+- This will push all three images (client, db, server) to docker hub
+- Push the created tag `git push --folow-tags`
+- On the server, update the version for the images and then:
 
 ```bash
-cd /var/www/doko
-wget https://github.com/uncaught/doko/archive/v1.3.0.tar.gz
-tar xf v1.3.0.tar.gz
-cd doko-1.3.0
-./build.sh
-cd ..
 ./backup.sh
-docker-compose down
-ln -sfn doko-1.3.0 doko
 docker-compose up -d
 ```

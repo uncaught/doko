@@ -1,5 +1,7 @@
 #!/bin/bash
-scriptDir=$(dirname $(readlink -f $0))
+scriptDir=$(cd "$(dirname $0)" && echo "$(pwd -P)")
 unix=$(date +%s)
-mkdir -p $scriptDir/client/build
-echo '{"buildTime":'$unix'}' > $scriptDir/client/build/version.json
+buildDir=$scriptDir/packages/client/build
+mkdir -p $buildDir
+vers=${1:-0.0.0}
+echo '{"buildTime":'$unix',"version":"'$vers'"}' > $buildDir/version.json
