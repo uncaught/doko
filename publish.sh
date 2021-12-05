@@ -51,7 +51,7 @@ step "Building server ..."
 ./yarn.sh workspace @doko/server build
 serverDir=$scriptDir/packages/server
 serverImage=uncaught42/doko-stats-server
-docker build --build-arg "NODE_IMAGE=$NODE_IMAGE" --pull -f $serverDir/Dockerfile -t $serverImage:$vers -t $serverImage:latest $serverDir
+docker build --pull -f $serverDir/Dockerfile -t $serverImage:$vers -t $serverImage:latest $serverDir
 
 
 echo ""

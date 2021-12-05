@@ -14,5 +14,5 @@ docker run -it --rm \
   -e TZ=Europe/Berlin \
   -e NODE_ENV=development \
   --entrypoint=yarn \
-  $NODE_IMAGE \
+  node:16.13.1-alpine3.14 \
   $@
