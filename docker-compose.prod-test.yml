@@ -32,7 +32,7 @@ services:
       traefik.http.routers.doko-wss.entrypoints: websecure
       traefik.http.routers.doko-wss.priority: 200
       traefik.http.routers.doko-wss.tls: 'true'
-      traefik.http.routers.doko-webs.tls.certresolver: myresolver
+      traefik.http.routers.doko-wss.tls.certresolver: myresolver
 
   client:
     image: uncaught42/doko-stats-client:${DOKO_VERSION}

@@ -18,7 +18,7 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import {getLoguxPrefix, setBuildTime} from './LocalStorage';
 import {initDarkMode} from './DarkMode';
 
-function initLogux(buildTime: number) {
+function initLogux() {
   const isDev = process.env.NODE_ENV === 'development';
   const wsProto = window.location.protocol === 'https:' ? 'wss' : 'ws';
   const createStore = createLoguxCreator({
@@ -57,5 +57,5 @@ export async function initApp() {
   }
   localStorage.setItem('buildTime', buildTime.toString());
   setBuildTime(buildTime);
-  initLogux(buildTime);
+  initLogux();
 }

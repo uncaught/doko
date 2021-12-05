@@ -1,8 +1,6 @@
-import { clearCache } from './LocalStorage';
-import { update } from './serviceWorker';
+import {clearCache} from './LocalStorage';
 
 export async function forceReload(): Promise<void> {
   clearCache();
-  await update();
   window.location.reload();
 }
