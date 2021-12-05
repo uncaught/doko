@@ -3,7 +3,7 @@ import {Header, List, Message} from 'semantic-ui-react';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {usePageContext} from '../../Page';
 import {usePatchAttendance, usePatchSittingOrder, usePlayers} from '../../store/Players';
-import arrayMove from 'array-move';
+import {arrayMoveImmutable as arrayMove} from 'array-move';
 import {SortableContainer, SortableElement, SortableHandle, SortEndHandler} from 'react-sortable-hoc';
 import {GroupGroupMembers, GroupMember, Player} from '@doko/common';
 import {Link} from 'react-router-dom';
@@ -27,21 +27,21 @@ function getDescription({joinedAfterGameNumber, leftAfterGameNumber}: Player): s
 }
 
 const DragHandle = SortableHandle(() => <List.Content floated='right'>
-  <List.Icon name={'arrows alternate vertical'} size={'large'} className="listDragHandle"/>
+  <List.Icon name={'arrows alternate vertical'} size={'large'} className="listDragHandle" />
 </List.Content>);
 
-function UserIcon({player: {groupMemberId, leftAfterGameNumber}}: { player: Player }): ReactElement {
+function UserIcon({player: {groupMemberId, leftAfterGameNumber}}: {player: Player}): ReactElement {
   const patchAttendance = usePatchAttendance();
   return <List.Icon color={leftAfterGameNumber === null ? 'green' : 'red'}
-                    name={leftAfterGameNumber === null ? 'user delete' : 'user plus'}
-                    size={'large'}
-                    onClick={() => patchAttendance(groupMemberId)}
-                    verticalAlign='middle'/>;
+    name={leftAfterGameNumber === null ? 'user delete' : 'user plus'}
+    size={'large'}
+    onClick={() => patchAttendance(groupMemberId)}
+    verticalAlign='middle' />;
 }
 
 const SortableItem = SortableElement<SortableItemProps>(({member, player}: SortableItemProps) => <List.Item>
-  <DragHandle/>
-  <UserIcon player={player}/>
+  <DragHandle />
+  <UserIcon player={player} />
   <List.Content>
     <List.Header>{member.name}</List.Header>
     <List.Description className="u-font-smaller">{getDescription(player)}</List.Description>
@@ -57,9 +57,9 @@ const SortableList = SortableContainer<SortableListProps>(({members, players}: S
   return <List divided relaxed>
     {players.map((player, index) => (
       <SortableItem key={`player-${player.groupMemberId}`}
-                    index={index}
-                    player={player}
-                    member={members[player.groupMemberId]}/>
+        index={index}
+        player={player}
+        member={members[player.groupMemberId]} />
     ))}
   </List>;
 });
@@ -82,10 +82,10 @@ export default function SittingOrder(): ReactElement | null {
   return <section>
     <Header as='h4'>Sitzreihenfolge</Header>
     <SortableList members={members}
-                  players={players}
-                  onSortEnd={onSortEnd}
-                  helperContainer={helperContainer}
-                  useDragHandle/>
+      players={players}
+      onSortEnd={onSortEnd}
+      helperContainer={helperContainer}
+      useDragHandle />
     <Message info>
       <p>Bitte so sortieren, dass der erste Geber oben steht.</p>
       <p>Mitspieler können auch noch während einer Runde durch Klick auf das Spieler-Symbol hinzugefügt oder
