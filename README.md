@@ -8,8 +8,6 @@
   - Server: `docker-compose up server`
   - Client: `docker-compose up client`
 - Browse to https://localhost (SSL is required for using the camera)
-  - Until create-react-app 3.3.1 is not released, hack in [this fix for wss](https://github.com/facebook/create-react-app/pull/8079/commits/9585c26593e18296fe202bfea198130f9d0dbd34)
-
 
 ### Reset database
 ```bash
@@ -27,7 +25,7 @@ Spiele, kann aber durch Pflichtsoli länger werden. Die Dauer von Bockspielen en
 ### Deploy
 - Run `./publish.sh 0.0.0` with a proper version
 - This will push all three images (client, db, server) to docker hub
-- Push the created tag `git push --folow-tags`
+- Push the created tag `git push --follow-tags`
 - On the server, update the version for the images and then:
 
 ```bash
