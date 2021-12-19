@@ -9,7 +9,7 @@
   <div>Removing service worker...</div>
   <script>
     if (window.navigator && navigator.serviceWorker) {
-      navigator.serviceWorker.getRegistrations().then(async (registrations) => {
+      navigator.serviceWorker.getRegistrations('/').then(async (registrations) => {
         for (const registration of registrations) {
           await registration.unregister();
         }
