@@ -338,6 +338,15 @@ input[type=number] {
   overflow: visible;
 }
 
+.pushable:not(body) {
+  overflow-y: auto !important;
+  scrollbar-width: none;
+}
+
+.pushable:not(body)::-webkit-scrollbar {
+  display: none;
+}
+
 .statisticsTable .grid-table-td {
   display: flex;
   flex-direction: column;

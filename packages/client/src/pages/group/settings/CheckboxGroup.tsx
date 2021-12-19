@@ -6,15 +6,15 @@ import Checkbox from './Checkbox';
 interface CheckboxGroupProps {
   label: string;
   options: Map<string, string>;
-  parentKey: keyof SubType<GroupSettings, { [x: string]: boolean }>;
+  parentKey: keyof SubType<GroupSettings, {[x: string]: boolean}>;
 }
 
 export default function CheckboxGroup({label, parentKey, options}: CheckboxGroupProps): ReactElement | null {
   return <Segment>
     <Label attached={'top'}>{label}</Label>
-    <Form.Group className={'attached'}>
+    <Form.Group unstackable>
       {[...options].map(([key, text]) =>
-        <Checkbox key={`${parentKey}.${key}`} path={`${parentKey}.${key}`} label={text}/>)}
+        <Checkbox key={`${parentKey}.${key}`} path={`${parentKey}.${key}`} label={text} />)}
     </Form.Group>
   </Segment>;
 }
