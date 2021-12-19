@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Doko</title>
+</head>
+
+<body>
+  <div>Removing service worker...</div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.unregister().then(() => {
+          window.location.pathname = '';
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>
