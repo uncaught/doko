@@ -8,11 +8,12 @@
 <body>
   <div>Removing service worker...</div>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.unregister().then(() => {
-          window.location.pathname = '';
-        });
+    if (window.navigator && navigator.serviceWorker) {
+      navigator.serviceWorker.getRegistrations().then(async (registrations) => {
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
+        window.location.pathname = '/';
       });
     }
   </script>
