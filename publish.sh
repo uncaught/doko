@@ -19,6 +19,7 @@ if [ "$vers" = "0.0.0" ]; then
 elif [[ $vers =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
   success "Version $vers accepted! Creating git tag ..."
   git tag -a v$vers -m "Create tag for version $vers"
+  git push --follow-tags
 else
   error "Version $vers is not of a valid format!"
   exit 1
