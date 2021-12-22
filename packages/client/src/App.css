@@ -364,6 +364,25 @@ input[type=number] {
   color: #1aa62a;
 }
 
+.statisticsTable .grid-table-td .lost {
+  color: #a61a1a;
+}
+
+.statsValue {
+  display: flex;
+  grid-gap: 3px;
+}
+
+@media only screen and (max-width: 767.98px) {
+  .statsValue {
+    flex-direction: column;
+    grid-gap: 0px;
+  }
+  .statsValueSeparator {
+    display: none;
+  }
+}
+
 .ui.inverted.button, .ui.inverted.button.active, .ui.inverted.button:focus, .ui.inverted.button:hover {
   background-color: #e8e8e8;
   color: rgba(0, 0, 0, .6);
@@ -420,5 +439,11 @@ input[type=number] {
 @media only screen and (max-width: 767.98px) {
   .ui.selection.dropdown .menu {
     max-height: 15rem;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .ui.selection.dropdown .menu {
+    max-height: unset;
   }
 }

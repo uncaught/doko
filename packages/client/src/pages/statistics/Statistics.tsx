@@ -1,6 +1,6 @@
 import React, {ReactElement, ReactNode, useCallback, useMemo} from 'react';
 import {useMemberInitials, useSortedGroupMembers} from '../../store/GroupMembers';
-import {Divider, Dropdown, DropdownItemProps} from 'semantic-ui-react';
+import {Divider, Dropdown, StrictDropdownItemProps} from 'semantic-ui-react';
 import {
   Announces,
   ExtraPoints,
@@ -14,32 +14,33 @@ import {SoloType} from '@doko/common';
 import {useSelector} from 'react-redux';
 import {statisticsSelector, Ui, useSetUi} from '../../store/Ui';
 import classNames from 'classnames';
+import Value from './Value';
+import ValueGrid from './ValueGrid';
 
 const extraPoints = new Map<keyof ExtraPoints, string>();
 extraPoints.set('doppelkopf', 'Doppel\u00ADkopf');
 extraPoints.set('foxCaught', 'Fuchs gefangen');
 extraPoints.set('foxLost', 'Fuchs verloren');
+extraPoints.set('karlGotLastTrick', 'Karl\u00ADchen');
 extraPoints.set('karlCaught', 'Karl\u00ADchen gefangen');
-extraPoints.set('karlGotLastTrick', 'Mit Karl\u00ADchen letzten Stich gemacht');
-extraPoints.set('karlLost', 'Karl\u00ADchen im letzten Stich verloren');
+extraPoints.set('karlLost', 'Karl\u00ADchen verloren');
 extraPoints.set('wonAgainstQueensOfClubs', 'Gegen die Alten gewonnen');
 
 const gameTypes = new Map<keyof GameTypes, string>();
-gameTypes.set('total', 'Ins\u00ADgesamt');
 gameTypes.set('normal', 'Normal\u00ADspiele');
 gameTypes.set('poverty', 'Armut');
 gameTypes.set('povertyPartner', 'Armut Partner');
 gameTypes.set('povertyOpponent', 'Armut Gegner');
 gameTypes.set('wedding', 'Hochzeit');
 gameTypes.set('weddingPartner', 'Hoch\u00ADzeit Partner');
-gameTypes.set('weddingOpponent', 'Hoch\u00ADzeit Gegner');
+gameTypes.set('weddingOpponent', 'vs. Hoch\u00ADzeit');
 gameTypes.set('silentWedding', 'Stille Hoch\u00ADzeit');
-gameTypes.set('silentWeddingOpponent', 'Stille Hoch\u00ADzeit Gegner');
+gameTypes.set('silentWeddingOpponent', 'vs. Stille Hoch\u00ADzeit');
 gameTypes.set('soloWedding', 'Solo Hoch\u00ADzeit');
-gameTypes.set('soloWeddingOpponent', 'Solo Hoch\u00ADzeit Gegner');
+gameTypes.set('soloWeddingOpponent', 'vs. Solo Hoch\u00ADzeit');
 gameTypes.set('dutySolo', 'Pflicht\u00ADsolo');
 gameTypes.set('lustSolo', 'Lust\u00ADsolo');
-gameTypes.set('forcedSolo', 'Vor\u00ADgeführtes Pflicht\u00ADsolo');
+gameTypes.set('forcedSolo', 'Vorführung');
 gameTypes.set('soloOpponent', 'Solo Gegner');
 gameTypes.set('penalty', 'Strafe erhalten');
 gameTypes.set('penaltyOpponent', 'Strafe erteilt');
@@ -93,7 +94,79 @@ const filterValues = {
   missedAnnounces,
 };
 
-const filterOptions: DropdownItemProps[] = [
+type ValueComponents = {
+  [k in Filter]: (props: {key: keyof Stats[k] | 'total'; statistics: Stats}) => ReactElement;
+};
+
+const sumUp = (stats: Stats[keyof Stats]) => Object.values(stats).reduce((sum, val) => sum + val, 0);
+const perGame = (statistics: Stats, value: number) => `${Math.round(value / statistics.gameTypes.total * 1000)}‰ p.g.`;
+
+const valueComponents: ValueComponents = {
+  gameTypes: ({key, statistics}) => {
+    return <>
+      <Value value={statistics.gameTypes[key]} total={statistics.gameTypes.total} />
+      <Value value={statistics.gameTypesWon[key]} total={statistics.gameTypesWon.total} won />
+    </>;
+  },
+  soloTypes: ({key, statistics}) => {
+    const total = sumUp(statistics.soloTypes);
+    const totalWon = sumUp(statistics.soloTypesWon);
+    return <>
+      <Value value={key === 'total' ? total : statistics.soloTypes[key]} total={total} />
+      <Value value={key === 'total' ? totalWon : statistics.soloTypesWon[key]} total={totalWon} won />
+    </>;
+  },
+  extraPoints: ({key, statistics}) => {
+    if (key === 'total') {
+      const s = statistics.extraPoints;
+      const won = s.doppelkopf + s.foxCaught + s.karlCaught + s.karlGotLastTrick + s.wonAgainstQueensOfClubs;
+      const lost = s.foxLost + s.karlLost;
+      return <>
+        <ValueGrid values={[
+          won,
+          perGame(statistics, won),
+        ]} won />
+        <ValueGrid values={[
+          lost,
+          perGame(statistics, lost),
+        ]} lost />
+      </>;
+    }
+
+    const isLost = key === 'foxLost' || key === 'karlLost';
+    const points = statistics.extraPoints[key];
+    return <ValueGrid values={[
+      points,
+      perGame(statistics, points),
+    ]} won={!isLost} lost={isLost} />;
+  },
+  announces: ({key, statistics}) => {
+    const total = sumUp(statistics.announces);
+    const value = key === 'total' ? total : statistics.announces[key];
+    const totalWon = sumUp(statistics.announcesWon);
+    const valueWon = key === 'total' ? totalWon : statistics.announcesWon[key];
+    return <>
+      <Value value={value} total={total} />
+      <ValueGrid values={[perGame(statistics, value)]} />
+      <Value value={valueWon} total={totalWon} won />
+      <ValueGrid values={[perGame(statistics, valueWon)]} won />
+    </>;
+  },
+  missedAnnounces: ({key, statistics}) => {
+    const total = sumUp(statistics.missedAnnounces);
+    const value = key === 'total' ? total : statistics.missedAnnounces[key];
+    return <>
+      <Value value={value} total={total} />
+      <ValueGrid values={[perGame(statistics, value)]} />
+    </>;
+  },
+};
+
+interface Option extends StrictDropdownItemProps {
+  value: Filter;
+}
+
+const filterOptions: Option[] = [
   {text: 'Spieltypen', value: 'gameTypes'},
   {text: 'Soli', value: 'soloTypes'},
   {text: 'Extrapunkte', value: 'extraPoints'},
@@ -108,10 +181,11 @@ export default function Statistics(): ReactElement {
   const groupMembers = useSortedGroupMembers();
   const initials = useMemberInitials();
   const rows = useMemo(() => {
-    const cols = [...filterValues[filter]];
+    let cols = [...filterValues[filter]];
     if (filter === 'soloTypes') {
-      return cols.filter(([key]) => settings.allowedSoloTypes.includes(key as SoloType));
+      cols = cols.filter(([key]) => settings.allowedSoloTypes.includes(key as SoloType));
     }
+    cols.unshift(['total', 'Ins\u00ADgesamt']);
     return cols;
   }, [filter, settings.allowedSoloTypes]);
 
@@ -146,13 +220,10 @@ export default function Statistics(): ReactElement {
       cells.push(<div key={`label_${key}`} className={classNames(rowClasses, 'label')} onClick={onClick}>{text}</div>);
 
       cols.forEach(({id, isYou, statistics}) => {
-        const stats = statistics[filter];
-        const value = stats[key as keyof typeof stats];
-        const statsWon = statistics[`${filter}Won` as keyof Stats];
-        const valueWon = statsWon ? statsWon[key as keyof typeof statsWon] : null;
+        //@ts-ignore
+        const value = valueComponents[filter]({key, statistics});
         cells.push(<div key={`value_${key}_${id}`} className={classNames(rowClasses, {isYou})} onClick={onClick}>
-          <div>{value}</div>
-          {valueWon !== null && <div className={'won'}>{valueWon}</div>}
+          {value}
         </div>);
       });
     });
@@ -169,7 +240,7 @@ export default function Statistics(): ReactElement {
     <Divider className="tiny" hidden />
 
     <div className="grid-table gamesTable statisticsTable u-text-center"
-      style={{gridTemplateColumns: `auto repeat(${columns.length}, 3em)`}}>
+      style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}>
       <div className="grid-table-th" />
       {columns.map(({id, isYou}) => <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
         {initials[id]}

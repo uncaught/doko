@@ -23,7 +23,7 @@ export interface Ui {
   rejectedInvitations: string[]; //for the invitee
   usedInvitationTokens: string[]; //for the inviter
   statistics: {
-    filter: 'gameTypes' | 'soloTypes' | 'announces' | 'missedAnnounces';
+    filter: 'gameTypes' | 'soloTypes' | 'announces' | 'missedAnnounces' | 'extraPoints';
     includeIrregularMembers: boolean;
     selectedRow: string | null;
   };
