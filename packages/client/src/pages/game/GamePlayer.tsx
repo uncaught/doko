@@ -6,8 +6,8 @@ import {useDrag} from 'react-dnd';
 
 export default function GamePlayer({member}: {member: GroupMember}): ReactElement {
   const [open, setOpen] = useState(false);
-  // const [, dragRef] = useDrag({item: {memberId: member.id}, type: 'gamePlayer'});
-  return <div className="memberDetail">
+  const [, dragRef] = useDrag({item: {memberId: member.id}, type: 'gamePlayer'});
+  return <div className="memberDetail" ref={dragRef}>
     <Label onClick={() => setOpen(true)}>
       {member.name} <Icon name={'user'} />
     </Label>

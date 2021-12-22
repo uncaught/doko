@@ -12,21 +12,21 @@ import {useSelectGamePlayerSide} from './SelectGamePlayerSide';
 
 function Column({Comp, isRe}: {Comp: React.FC<{isRe: boolean}>; isRe: boolean}): ReactElement {
   const selectGamePlayerSide = useSelectGamePlayerSide();
-  // const [, drop] = useDrop<{memberId: string; type: string}, void, {}>({
-  //   accept: 'gamePlayer',
-  //   drop(item, monitor) {
-  //     const didDrop = monitor.didDrop();
-  //     if (didDrop) {
-  //       return;
-  //     }
-  //     selectGamePlayerSide(item.memberId, isRe);
-  //   },
-  //   collect: (monitor) => ({
-  //     isOver: monitor.isOver(),
-  //     isOverCurrent: monitor.isOver({shallow: true}),
-  //   }),
-  // });
-  return <div className={'column'}>
+  const [, drop] = useDrop<{memberId: string; type: string}, void, {}>({
+    accept: 'gamePlayer',
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        return;
+      }
+      selectGamePlayerSide(item.memberId, isRe);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      isOverCurrent: monitor.isOver({shallow: true}),
+    }),
+  });
+  return <div className={'column'} ref={drop}>
     <Comp isRe={isRe} />
   </div>;
 }

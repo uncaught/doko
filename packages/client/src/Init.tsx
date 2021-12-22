@@ -17,8 +17,7 @@ import {getAuth} from './Auth';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {getLoguxPrefix, setBuildTime} from './LocalStorage';
 import {initDarkMode} from './DarkMode';
-import {DndProvider} from 'react-dnd-multi-backend';
-import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch';
+import DndContext from './DndContext';
 
 function initLogux() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -44,9 +43,9 @@ function initLogux() {
   ReactDOM.render(
     <Provider store={store}>
       <Router>
-        <DndProvider options={HTML5toTouch}>
+        <DndContext>
           <App />
-        </DndProvider>
+        </DndContext>
       </Router>
     </Provider>,
     document.getElementById('root'),
