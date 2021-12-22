@@ -1,5 +1,5 @@
 import React, {ReactElement, ReactNode, useCallback, useMemo} from 'react';
-import {useSortedGroupMembers} from '../../store/GroupMembers';
+import {useMemberInitials, useSortedGroupMembers} from '../../store/GroupMembers';
 import {Divider, Dropdown, DropdownItemProps} from 'semantic-ui-react';
 import {
   Announces,
@@ -106,6 +106,7 @@ export default function Statistics(): ReactElement {
   const {filter, includeIrregularMembers, selectedRow} = useSelector(statisticsSelector);
   const {settings} = useGroup()!;
   const groupMembers = useSortedGroupMembers();
+  const initials = useMemberInitials();
   const rows = useMemo(() => {
     const cols = [...filterValues[filter]];
     if (filter === 'soloTypes') {
@@ -120,15 +121,15 @@ export default function Statistics(): ReactElement {
 
   const [columns, rowCells] = useMemo(() => {
     const cols = groupMembers.filter((gm) => includeIrregularMembers || gm.isRegular)
-                             .sort((a, b) => {
-                               if (a.isYou) {
-                                 return -1;
-                               }
-                               if (b.isYou) {
-                                 return 1;
-                               }
-                               return a.name.localeCompare(b.name);
-                             });
+      .sort((a, b) => {
+        if (a.isYou) {
+          return -1;
+        }
+        if (b.isYou) {
+          return 1;
+        }
+        return a.name.localeCompare(b.name);
+      });
 
     const cells: ReactNode[] = [];
     rows.forEach(([key, text]) => {
@@ -149,9 +150,7 @@ export default function Statistics(): ReactElement {
         const value = stats[key as keyof typeof stats];
         const statsWon = statistics[`${filter}Won` as keyof Stats];
         const valueWon = statsWon ? statsWon[key as keyof typeof statsWon] : null;
-        cells.push(<div key={`value_${key}_${id}`}
-                        className={classNames(rowClasses, {isYou})}
-                        onClick={onClick}>
+        cells.push(<div key={`value_${key}_${id}`} className={classNames(rowClasses, {isYou})} onClick={onClick}>
           <div>{value}</div>
           {valueWon !== null && <div className={'won'}>{valueWon}</div>}
         </div>);
@@ -162,18 +161,19 @@ export default function Statistics(): ReactElement {
 
   return <section>
     <Dropdown label={'Filter'}
-              options={filterOptions}
-              value={filter}
-              onChange={(e, {value}) => setFilter(value as Filter)}
-              selection/>
+      options={filterOptions}
+      value={filter}
+      onChange={(e, {value}) => setFilter(value as Filter)}
+      selection />
 
-    <Divider className="tiny" hidden/>
+    <Divider className="tiny" hidden />
 
     <div className="grid-table gamesTable statisticsTable u-text-center"
-         style={{gridTemplateColumns: `auto repeat(${columns.length}, 3em)`}}>
-      <div className="grid-table-th"/>
-      {columns.map(({id, name, isYou}) => <div className={classNames('grid-table-th', {isYou})}
-                                               key={`head_${id}`}>{name[0]}</div>)}
+      style={{gridTemplateColumns: `auto repeat(${columns.length}, 3em)`}}>
+      <div className="grid-table-th" />
+      {columns.map(({id, isYou}) => <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
+        {initials[id]}
+      </div>)}
       {rowCells}
     </div>
   </section>;

@@ -132,14 +132,14 @@ export const getGroupMembersWithRoundStatsSelector = createSelector(
 );
 
 export function useLoadGroupMembers() {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const group = useSelector(groupsSelector)[groupId];
   //Only subscribe if the group is not new (otherwise the server will respond with `Access denied`:
   useSubscription<GroupMembersLoad>(group && !group.isNew ? [{channel: 'groupMembers/load', groupId}] : []);
 }
 
 export function useAddGroupMember() {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const dispatch = useDispatch<LoguxDispatch>();
   const rounds = useSortedRounds();
   const games = useSelector(gamesSelector);
@@ -172,7 +172,7 @@ export function useAddGroupMember() {
 }
 
 export function useCreateInvitation() {
-  const {groupId, groupMemberId} = usePageContext<{ groupId: string; groupMemberId: string }>();
+  const {groupId, groupMemberId} = usePageContext<{groupId: string; groupMemberId: string}>();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback(async (): Promise<string> => {
     const invitationToken = generateToken();
@@ -203,7 +203,7 @@ export function useAcceptInvitation() {
 }
 
 function useRealGroupMembers(): GroupMembersWithRoundStats {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   return useSelector(getGroupMembersWithRoundStatsSelector)(groupId) || {};
 }
 
@@ -212,7 +212,7 @@ export function useGroupMembers(): GroupGroupMembers {
 }
 
 export function useGroupMember(): GroupMemberWithRoundStats | undefined {
-  const {groupId, groupMemberId} = usePageContext<{ groupId: string; groupMemberId: string }>();
+  const {groupId, groupMemberId} = usePageContext<{groupId: string; groupMemberId: string}>();
   const groupMembers = useSelector(getGroupMembersWithRoundStatsSelector)(groupId) || {};
   return groupMembers[groupMemberId];
 }
@@ -236,10 +236,45 @@ export function usePatchGroupMember() {
 }
 
 export function useSortedGroupMembers(): GroupMemberWithRoundStats[] {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const members = useSelector(getGroupMembersWithRoundStatsSelector)(groupId);
   return useMemo(() => members
     ? Object.values(members)
-            .sort((a, b) => (b.pointDiffToTopPlayer - a.pointDiffToTopPlayer) || a.name.localeCompare(b.name))
+      .sort((a, b) => (b.pointDiffToTopPlayer - a.pointDiffToTopPlayer) || a.name.localeCompare(b.name))
     : [], [members]);
+}
+
+export function useMemberInitials(): Record<string, string> {
+  const memberList = useGroupMembers();
+  return useMemo(() => {
+    const members = Object.values(memberList);
+    const maxLength = Math.max(...members.map(({name}) => name.length));
+
+
+    const initials = members.reduce<Record<string, string>>((acc, member) => {
+      acc[member.id] = member.name[0];
+      return acc;
+    }, {});
+
+    for (let i = 1; i < maxLength; i++) {
+      const mappedByInitials = Object.entries(initials).reduce<Map<string, string[]>>((acc, [id, initial]) => {
+        acc.set(initial, acc.get(initial) || []);
+        acc.get(initial)!.push(id);
+        return acc;
+      }, new Map());
+
+      mappedByInitials.forEach((ids) => {
+        if (ids.length > 1) {
+          ids.forEach((id) => {
+            const char = memberList[id]!.name[i];
+            if (char) {
+              initials[id] = `${initials[id][0]}${char}`;
+            }
+          });
+        }
+      });
+    }
+
+    return initials;
+  }, [memberList]);
 }
