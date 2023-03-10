@@ -23,9 +23,9 @@ Spiele, kann aber durch Pflichtsoli länger werden. Die Dauer von Bockspielen en
 - Ein **Stich** (trick) ist ein Teil eines Spiels bei dem 4 Karten gespielt wurden.
 
 ### Deploy
+- Login to docker (docker hub or else)
 - Run `./publish.sh 0.0.0` with a proper version
-- This will push all three images (client, db, server) to docker hub
-- Push the created tag `git push --follow-tags`
+- This will create and push a git tag and push all three images (client, db, server) to docker hub
 - On the server, update the version for the images and then:
 
 ```bash
