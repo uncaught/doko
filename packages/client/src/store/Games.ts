@@ -111,8 +111,9 @@ export function useLatestGroupGame(): Game | undefined {
 }
 
 const emptyGames: Games = {};
+
 export function useSortedGames(): Game[] {
-  const {roundId} = usePageContext<{roundId: string}>();
+  const {roundId} = usePageContext<{ roundId: string }>();
   const games = useSelector(gamesSelector)[roundId] || emptyGames;
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
@@ -125,13 +126,25 @@ export function findPlayerIndex(players: Player[], memberId: string): number {
   return index;
 }
 
-function getNextDealer(players: Player[], lastGame: Game): string {
+function getNextDealer(roundParticipatingPlayers: Player[], activePlayers: Player[], lastGame: Game): string {
   if (reDealGameTypes.includes(lastGame.data.gameType)) {
     return lastGame.dealerGroupMemberId;
   }
-  const index = findPlayerIndex(players, lastGame.dealerGroupMemberId);
-  const nextIndex = (index + 1) % players.length;
-  return players[nextIndex].groupMemberId;
+
+  const activePlayerMemberIds = new Set(activePlayers.map(({groupMemberId}) => groupMemberId));
+
+  //Because the last dealer could have left the game, we have to use the index from all round participating players:
+  let index = findPlayerIndex(roundParticipatingPlayers, lastGame.dealerGroupMemberId);
+
+  //We find the next index after the last dealer, who is still an active player:
+  let groupMemberId;
+  do {
+    index++;
+    const nextIndex = index % roundParticipatingPlayers.length;
+    groupMemberId = roundParticipatingPlayers[nextIndex].groupMemberId;
+  } while (!activePlayerMemberIds.has(groupMemberId));
+
+  return groupMemberId;
 }
 
 export function useAddGame() {
@@ -153,7 +166,9 @@ export function useAddGame() {
     }
     const gameNumber = (lastGame ? lastGame.gameNumber : 0) + 1;
     const players = roundParticipatingPlayers.filter((p) => p.leftAfterGameNumber === null);
-    const nextDealerId = lastGame ? getNextDealer(players, lastGame) : players[0].groupMemberId;
+    const nextDealerId = lastGame
+      ? getNextDealer(roundParticipatingPlayers, players, lastGame)
+      : players[0].groupMemberId;
     const data = getDefaultGameData(settings);
     data.runNumber = detectRunNumber(currentGames, nextDealerId, roundParticipatingPlayers);
     detectPlayers(data, nextDealerId, players);
@@ -193,7 +208,7 @@ export function useRemoveGame() {
 }
 
 function useRealGame(): Game | undefined {
-  const {gameId, roundId} = usePageContext<{gameId: string; roundId: string}>();
+  const {gameId, roundId} = usePageContext<{ gameId: string; roundId: string }>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return games[gameId];
 }
