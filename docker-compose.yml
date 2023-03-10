@@ -18,7 +18,7 @@ services:
       - "3306:3306"
 
   proxy:
-    image: traefik:v2.4.8
+    image: traefik:v2.9.8
     restart: always
     command:
       #      - "--log.level=DEBUG"
