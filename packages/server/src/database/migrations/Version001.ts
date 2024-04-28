@@ -1,5 +1,5 @@
-import {query} from '../../Connection';
 import {GameData, GroupSettings, Party, RoundData} from '@doko/common';
+import {query} from '../../Connection';
 
 async function migrateGroups(update: typeof query) {
   const rows = await update<{id: string; settings: GroupSettings}>('SELECT id, settings FROM `groups`');

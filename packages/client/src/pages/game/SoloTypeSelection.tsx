@@ -1,7 +1,7 @@
+import {soloGameTypes, soloTypeTexts} from '@doko/common';
 import React, {ReactElement} from 'react';
 import {Dropdown} from 'semantic-ui-react';
 import {useGame, usePatchGame} from '../../store/Games';
-import {soloGameTypes, soloTypeTexts} from '@doko/common';
 import {useGroup} from '../../store/Groups';
 
 export default function SoloTypeSelection(): ReactElement | null {

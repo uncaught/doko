@@ -1,4 +1,3 @@
-import {State} from './Store';
 import {
   mergeStates,
   objectContains,
@@ -12,15 +11,16 @@ import {
   RoundsPatch,
   RoundsRemove,
 } from '@doko/common';
-import {arrayToList, createReducer} from './Reducer';
-import {useDispatch, useSelector} from 'react-redux';
-import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';
-import {usePageContext} from '../Page';
-import {LoguxDispatch} from './Logux';
-import {groupsSelector} from './Groups';
-import {createSelector} from 'reselect';
 import {memoize} from 'lodash';
+import {useCallback, useMemo} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {createSelector} from 'reselect';
+import {usePageContext} from '../Page';
+import {groupsSelector} from './Groups';
+import {LoguxDispatch} from './Logux';
+import {arrayToList, createReducer} from './Reducer';
+import {State} from './Store';
 
 const {addReducer, combinedReducer} = createReducer<Rounds>({}, 'rounds');
 
@@ -78,25 +78,25 @@ export const getRoundByIdSelector = createSelector(
 );
 
 export function useLoadRounds() {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const group = useSelector(groupsSelector)[groupId];
   //Only subscribe if the group is not new (otherwise the server will respond with `Access denied`:
   useSubscription<RoundsLoad>(group && !group.isNew ? [{channel: 'rounds/load', groupId}] : []);
 }
 
 export function useLoadRoundDetails() {
-  const {roundId} = usePageContext<{ roundId: string }>();
+  const {roundId} = usePageContext<{roundId: string}>();
   useSubscription<RoundDetailsLoad>([{channel: 'roundDetails/load', roundId}]);
 }
 
 export function useLatestGroupRound(): Round | undefined {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const rounds = useSelector(roundsSelector)[groupId] || {};
   return Object.values(rounds).sort((a, b) => b.startDate - a.startDate)[0];
 }
 
 export function useRound(): Round | undefined {
-  const {groupId, roundId} = usePageContext<{ groupId: string; roundId: string }>();
+  const {groupId, roundId} = usePageContext<{groupId: string; roundId: string}>();
   const rounds = useSelector(roundsSelector)[groupId] || {};
   return rounds[roundId];
 }
@@ -123,7 +123,7 @@ export function usePatchRound() {
 }
 
 export function useSortedRounds(): Round[] {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const rounds = useSelector(roundsSelector)[groupId];
   return useMemo(() => rounds ? Object.values(rounds).sort((a, b) => b.startDate - a.startDate) : [], [rounds]);
 }

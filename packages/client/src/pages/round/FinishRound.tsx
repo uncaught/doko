@@ -1,8 +1,8 @@
 import React, {ReactElement} from 'react';
 import {Form} from 'semantic-ui-react';
-import {useRound} from '../../store/Rounds';
 import {useSortedGames} from '../../store/Games';
 import {useFinishRound} from '../../store/Round/FinishRound';
+import {useRound} from '../../store/Rounds';
 import FinishRoundPrematurely from './FinishRoundPrematurely';
 
 export default function FinishRound(): ReactElement | null {

@@ -1,9 +1,9 @@
-import server from '../Server';
 import {Group, GroupsAdd, GroupsAdded, GroupsLoad, GroupsLoaded, GroupsPatch} from '@doko/common';
-import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
-import {createFilter} from '../logux/Filter';
 import {canEditGroup, getUserGroupIds, getUserGroupIdsSync, updateUserGroupIdsCache} from '../Auth';
+import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {groupMemberDevicesDbConfig, groupMembersDbConfig, groupsDbConfig} from '../DbTypes';
+import {createFilter} from '../logux/Filter';
+import server from '../Server';
 
 export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
   let groups: Group[] = [];

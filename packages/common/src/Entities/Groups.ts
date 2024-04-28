@@ -1,6 +1,6 @@
+import {DeepPartial} from '../Generics';
 import {GroupMember} from './GroupMembers';
 import {GroupSettings} from './GroupSettings';
-import {DeepPartial} from '../Generics';
 
 export interface Group {
   id: string;

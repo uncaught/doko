@@ -1,8 +1,8 @@
+import {AnyObject, DeepPartial, mergeStates} from '@doko/common';
+import dayjs from 'dayjs';
+import {difference, intersection} from 'lodash';
 import mariadb, {PoolConnection, QueryOptions} from 'mariadb';
 import {snakeCase} from 'snake-case';
-import {difference, intersection} from 'lodash';
-import dayjs from 'dayjs';
-import {AnyObject, DeepPartial, mergeStates} from '@doko/common';
 import {DatabaseTypes, DbConfig} from './DbTypes';
 
 const pool = mariadb.createPool({

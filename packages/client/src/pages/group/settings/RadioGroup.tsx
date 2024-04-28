@@ -1,7 +1,7 @@
+import {GroupSettings, SubType} from '@doko/common';
 import React, {ReactElement} from 'react';
 import {Form, Label, Segment} from 'semantic-ui-react';
 import {useGroup, usePatchGroup} from '../../../store/Groups';
-import {GroupSettings, SubType} from '@doko/common';
 
 interface RadioGroupProps {
   label: string;

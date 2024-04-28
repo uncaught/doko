@@ -2,7 +2,7 @@ import React, {ReactElement, useState} from 'react';
 import {Button, Header, Icon, Menu, Modal} from 'semantic-ui-react';
 import {useGame, useRemoveGame, useSortedGames} from '../../store/Games';
 
-export default function RemoveGameMenuItem({closeMenu}: { closeMenu: () => void }): ReactElement | null {
+export default function RemoveGameMenuItem({closeMenu}: {closeMenu: () => void}): ReactElement | null {
   const game = useGame()!;
   const sortedGames = useSortedGames();
   const removeGame = useRemoveGame();

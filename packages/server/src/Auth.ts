@@ -1,6 +1,6 @@
-import server from './Server';
 import {Credentials, isUuid} from '@doko/common';
 import {query} from './Connection';
+import server from './Server';
 
 server.auth(async (deviceId: string, credentials: Credentials) => {
   if (!isUuid(deviceId)) {

@@ -1,6 +1,6 @@
-import {useGame, usePatchGame} from '../../store/Games';
-import {useCallback} from 'react';
 import {PatchableGame, soloLikeGameTypes} from '@doko/common';
+import {useCallback} from 'react';
+import {useGame, usePatchGame} from '../../store/Games';
 
 export function useSelectGamePlayerSide(): (memberId: string, shallBeRe: boolean) => boolean {
   const game = useGame()!;

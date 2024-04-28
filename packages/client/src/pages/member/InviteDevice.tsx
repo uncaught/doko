@@ -1,9 +1,9 @@
-import React, {ReactElement, useEffect, useState} from 'react';
-import {Button, Header, Icon, Modal, Segment} from 'semantic-ui-react';
-import {useCreateInvitation} from '../../store/GroupMembers';
 import {generateInvitationUrl} from '@doko/common';
 import QrCode from 'qrcode.react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
+import {Button, Header, Icon, Modal, Segment} from 'semantic-ui-react';
+import {useCreateInvitation} from '../../store/GroupMembers';
 import {usedInvitationTokensSelector} from '../../store/Ui';
 
 const canShare = typeof window.navigator.share === 'function';
@@ -51,44 +51,46 @@ export default function InviteDevice(): ReactElement {
     };
   }, [invitationToken, showQr, usedInvitationTokens]);
 
-  return <section className="u-relative u-overflow-hidden">
+  return <section className='u-relative u-overflow-hidden'>
     <Header as={'h4'}>Einladen/Verbinden</Header>
     {canShare && <Button icon
-      floated='right'
-      labelPosition='left'
-      color={'blue'}
-      onClick={async () => navigator.share!({url: await generateCode()})}
-      loading={isLoading}>
-      <Icon name='share alternate' />
+                         floated='right'
+                         labelPosition='left'
+                         color={'blue'}
+                         onClick={async () => navigator.share!({url: await generateCode()})}
+                         loading={isLoading}>
+      <Icon name='share alternate'/>
       Teilen
     </Button>}
 
     <Button icon
-      floated='right'
-      labelPosition='left'
-      color={'blue'}
-      onClick={async () => {
-        await generateCode();
-        setShowQr(true);
-      }}
-      loading={isLoading}>
-      <Icon name='qrcode' />
+            floated='right'
+            labelPosition='left'
+            color={'blue'}
+            onClick={async () => {
+              await generateCode();
+              setShowQr(true);
+            }}
+            loading={isLoading}>
+      <Icon name='qrcode'/>
       QR-Code
     </Button>
 
-    <Segment vertical className="u-clear-both">Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein Gerät
-      kann nur mit einem Mitglied einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener Gruppen.</Segment>
+    <Segment vertical className='u-clear-both'>Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein
+      Gerät
+      kann nur mit einem Mitglied einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener
+      Gruppen.</Segment>
 
-    {showQr && <Modal className="scanInvitation-modal"
-      open={true}
-      dimmer={'inverted'}
-      onClose={() => setShowQr(false)}
-      basic
-      size='small'>
+    {showQr && <Modal className='scanInvitation-modal'
+                      open={true}
+                      dimmer={'inverted'}
+                      onClose={() => setShowQr(false)}
+                      basic
+                      size='small'>
       <Modal.Content>
-        <div className="qrCodeContainer">
-          {!showQrSuccess && <QrCode value={invitationUrl} size={window.screen.width - 64} />}
-          {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'} />}
+        <div className='qrCodeContainer'>
+          {!showQrSuccess && <QrCode value={invitationUrl} size={window.screen.width - 64}/>}
+          {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'}/>}
         </div>
       </Modal.Content>
     </Modal>}

@@ -10,8 +10,8 @@ import {
   PatchableGame,
   recalcPoints,
 } from '@doko/common';
-import {useRouteMatch} from 'react-router-dom';
 import {useCallback, useEffect, useState} from 'react';
+import {useRouteMatch} from 'react-router-dom';
 
 const player1 = '00000000-0000-0000-0000-000000000001';
 const player2 = '00000000-0000-0000-0000-000000000002';

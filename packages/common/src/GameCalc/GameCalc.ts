@@ -1,8 +1,8 @@
 import {GameData, Party, soloLikeGameTypes} from '../Entities';
 import {mergeStates} from '../MergeStates';
-import {reHasWon} from './ReHasWon';
-import {GameCalcLog, GameCalcLogKey} from './GameCalcLog';
 import {contraHasWon} from './ContraHasWon';
+import {GameCalcLog, GameCalcLogKey} from './GameCalcLog';
+import {reHasWon} from './ReHasWon';
 
 function penalty(data: GameData): GameData {
   return mergeStates<GameData>(data, {

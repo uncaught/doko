@@ -1,19 +1,27 @@
 import React, {ReactElement} from 'react';
 import {Icon, Label, List} from 'semantic-ui-react';
-import {useSortedGroupMembers} from '../../store/GroupMembers';
-import {useGroup} from '../../store/Groups';
 import {asLink} from '../../AsLink';
 import {usePageContext} from '../../Page';
+import {useSortedGroupMembers} from '../../store/GroupMembers';
+import {useGroup} from '../../store/Groups';
 
 export default function Members(): ReactElement {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const {completedRoundsCount} = useGroup() || {};
   const groupMembers = useSortedGroupMembers();
 
   return <section>
-    {groupMembers.length > 0 && <div className="">
+    {groupMembers.length > 0 && <div className=''>
       <List divided relaxed>
-        {groupMembers.map(({id, name, pointBalance = 0, pointDiffToTopPlayer = 0, roundsCount = 0, euroBalance, isYou}) =>
+        {groupMembers.map(({
+          id,
+          name,
+          pointBalance = 0,
+          pointDiffToTopPlayer = 0,
+          roundsCount = 0,
+          euroBalance,
+          isYou,
+        }) =>
           <List.Item as={asLink(`/group/${groupId}/member/${id}`)} key={id}>
             <List.Icon color={'black'} size={'large'} name='user' verticalAlign='middle'/>
             <List.Content>

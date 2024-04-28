@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {useAcceptInvitation} from '../store/GroupMembers';
 import {Message} from 'semantic-ui-react';
+import {useAcceptInvitation} from '../store/GroupMembers';
 
 export default function HandleInvitation(): React.ReactElement {
   const [failed, setFailed] = useState(false);
@@ -16,9 +16,9 @@ export default function HandleInvitation(): React.ReactElement {
       disposed = true;
     };
   }, [acceptInvitation]);
-  return <div className="u-relative">
-    {!failed && <div className="ui active inverted dimmer">
-      <div className="ui text loader"/>
+  return <div className='u-relative'>
+    {!failed && <div className='ui active inverted dimmer'>
+      <div className='ui text loader'/>
     </div>}
     {failed && <Message negative>Der Einladungs-Code ist nicht mehr gültig</Message>}
   </div>;

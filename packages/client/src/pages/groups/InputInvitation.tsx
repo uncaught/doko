@@ -13,7 +13,7 @@ export default function InputInvitation(): ReactElement {
       Eingabe
     </Button>
 
-    {show && <Modal className="scanInvitation-modal"
+    {show && <Modal className='scanInvitation-modal'
                     open={show}
                     dimmer={'inverted'}
                     onClose={() => setShow(false)}

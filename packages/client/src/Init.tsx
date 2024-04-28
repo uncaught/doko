@@ -1,9 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import {Provider} from 'react-redux';
-// @ts-ignore
-import createLoguxCreator from '@logux/redux/create-logux-creator';
 // @ts-ignore
 import badge from '@logux/client/badge';
 // @ts-ignore
@@ -12,12 +6,18 @@ import badgeStyles from '@logux/client/badge/default';
 import badgeMessages from '@logux/client/badge/en';
 // @ts-ignore
 import log from '@logux/client/log';
-import {storeReducer} from './store/Store';
-import {getAuth} from './Auth';
+// @ts-ignore
+import createLoguxCreator from '@logux/redux/create-logux-creator';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
-import {getLoguxPrefix, setBuildTime} from './LocalStorage';
+import App from './App';
+import {getAuth} from './Auth';
 import {initDarkMode} from './DarkMode';
 import DndContext from './DndContext';
+import {getLoguxPrefix, setBuildTime} from './LocalStorage';
+import {storeReducer} from './store/Store';
 
 function initLogux() {
   const isDev = process.env.NODE_ENV === 'development';
@@ -44,7 +44,7 @@ function initLogux() {
     <Provider store={store}>
       <Router>
         <DndContext>
-          <App />
+          <App/>
         </DndContext>
       </Router>
     </Provider>,

@@ -1,8 +1,8 @@
+import dayjs from 'dayjs';
 import React, {ReactElement} from 'react';
-import {useSortedGroups} from '../../store/Groups';
 import {Header, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
-import dayjs from 'dayjs';
+import {useSortedGroups} from '../../store/Groups';
 
 export default function MyGroups(): ReactElement {
   const groups = useSortedGroups();
@@ -14,7 +14,7 @@ export default function MyGroups(): ReactElement {
         <List.Icon color={'black'} size={'large'} name='group' verticalAlign='middle'/>
         <List.Content>
           <List.Header>{name}</List.Header>
-          <List.Description className="u-font-smaller">
+          <List.Description className='u-font-smaller'>
             {!lastRoundUnix && `Noch keine Runde aufgezeichnet`}
             {!!lastRoundUnix && `Letzte Runde am ${dayjs.unix(lastRoundUnix).format('DD.MM.YYYY')}`}
           </List.Description>

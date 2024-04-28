@@ -1,6 +1,6 @@
 import {Game, GameData, Player, RoundData} from '@doko/common';
-import {PlayerStats} from '../Players';
 import {findPlayerIndex} from '../Games';
+import {PlayerStats} from '../Players';
 
 export function detectLastGameAndForcedSolo(
   roundData: RoundData,

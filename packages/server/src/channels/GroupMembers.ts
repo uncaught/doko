@@ -1,13 +1,3 @@
-import server from '../Server';
-import {
-  fromDbValue,
-  getTransactional,
-  insertEntity,
-  insertSingleEntity,
-  query,
-  updateSingleEntity,
-} from '../Connection';
-import {createFilter} from '../logux/Filter';
 import {
   GroupMember,
   GroupMembersAcceptInvitation,
@@ -22,23 +12,33 @@ import {
   Player,
 } from '@doko/common';
 import {canEditGroup, canReadGroup, updateUserGroupIdsCache} from '../Auth';
+import {
+  fromDbValue,
+  getTransactional,
+  insertEntity,
+  insertSingleEntity,
+  query,
+  updateSingleEntity,
+} from '../Connection';
 import {groupMemberDevicesDbConfig, groupMembersDbConfig, playersDbConfig} from '../DbTypes';
+import {createFilter} from '../logux/Filter';
+import server from '../Server';
 import {loadGroups} from './Groups';
 
 export async function memberIdsBelongToGroup(groupId: string, memberIds: string[]): Promise<boolean> {
-  const rows = await query<{ id: string }>(`SELECT id FROM group_members WHERE group_id = ?`, [groupId]);
+  const rows = await query<{id: string}>(`SELECT id FROM group_members WHERE group_id = ?`, [groupId]);
   const gmIds = rows.reduce((set, {id}) => set.add(id), new Set());
   return memberIds.every((id) => gmIds.has(id));
 }
 
 async function getGroupForMember(id: string): Promise<string | null> {
-  const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
+  const result = await query<{groupId: string}>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
   return result.length ? result[0].groupId : null;
 }
 
 export async function loadGroupMembers(deviceId: string, groupId: string): Promise<GroupMember[]> {
   const groupMembers = await query<GroupMember>(
-      `SELECT gm.id, 
+    `SELECT gm.id, 
               gm.name, 
               gm.group_id as groupId, 
               gm.is_regular as isRegular, 

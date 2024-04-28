@@ -1,6 +1,5 @@
+import {addGameToStats, createStatistics, GameData, RoundData, StatsMap} from '@doko/common';
 import {query} from '../../Connection';
-import {GameData, RoundData} from '@doko/common';
-import {addGameToStats, createStatistics, StatsMap} from '@doko/common/src/Entities/Statistics';
 
 export async function recalcRoundPlayerStatistics(update: typeof query) {
   const roundRows = await update<{id: string; data: RoundData}>('SELECT id, data FROM rounds');

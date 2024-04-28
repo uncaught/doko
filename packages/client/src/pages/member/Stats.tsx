@@ -1,15 +1,15 @@
 import React, {ReactElement} from 'react';
-import {useGroupMember} from '../../store/GroupMembers';
 import {Icon, Label} from 'semantic-ui-react';
+import {useGroupMember} from '../../store/GroupMembers';
 import {useGroup} from '../../store/Groups';
 
 export default function Stats(): ReactElement {
   const {roundsCount: groupRoundsCount = 0} = useGroup() || {};
   const {pointBalance = 0, pointDiffToTopPlayer = 0, roundsCount = 0, euroBalance, isYou} = useGroupMember() || {};
 
-  return <section className="">
+  return <section className=''>
 
-    <div className="memberDetail">
+    <div className='memberDetail'>
       <Label color={pointBalance >= 0 ? 'green' : 'red'}>
         Punktebilanz
         <Label.Detail>
@@ -18,7 +18,7 @@ export default function Stats(): ReactElement {
       </Label>
     </div>
 
-    <div className="memberDetail">
+    <div className='memberDetail'>
       <Label color={'yellow'}>
         Gesamtpunkte
         <Label.Detail>
@@ -27,7 +27,7 @@ export default function Stats(): ReactElement {
       </Label>
     </div>
 
-    {typeof euroBalance === 'number' && <div className="memberDetail">
+    {typeof euroBalance === 'number' && <div className='memberDetail'>
       <Label color={'blue'}>
         Euro-Bilanz
         <Label.Detail>
@@ -36,7 +36,7 @@ export default function Stats(): ReactElement {
       </Label>
     </div>}
 
-    <div className="memberDetail">
+    <div className='memberDetail'>
       <Label color={'orange'}>
         Teilnahmen
         <Label.Detail>
@@ -47,7 +47,7 @@ export default function Stats(): ReactElement {
       </Label>
     </div>
 
-    {!!isYou && <div className="memberDetail">
+    {!!isYou && <div className='memberDetail'>
       <Label color={'teal'}>
         Verknüpft mit diesem Gerät <Icon name='linkify'/>
       </Label>

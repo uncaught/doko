@@ -10,6 +10,7 @@
     <option name="SOFT_MARGINS" value="120" />
     <HTMLCodeStyleSettings>
       <option name="HTML_ATTRIBUTE_WRAP" value="4" />
+      <option name="HTML_QUOTE_STYLE" value="Single" />
     </HTMLCodeStyleSettings>
     <JSCodeStyleSettings version="1">
       <option name="FORCE_SEMICOLON_STYLE" value="true" />
@@ -97,6 +98,8 @@
       <option name="PREFER_AS_TYPE_CAST" value="true" />
       <option name="USE_DOUBLE_QUOTES" value="false" />
       <option name="ENFORCE_TRAILING_COMMA" value="WhenMultiline" />
+      <option name="SPACES_WITHIN_OBJECT_TYPE_BRACES" value="false" />
+      <option name="IMPORT_SORT_MODULE_NAME" value="true" />
     </TypeScriptCodeStyleSettings>
     <codeStyleSettings language="CSS">
       <indentOptions>

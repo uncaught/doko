@@ -1,19 +1,19 @@
-import React, {ReactElement, ReactNode, useCallback, useMemo} from 'react';
-import {useMemberInitials, useSortedGroupMembers} from '../../store/GroupMembers';
-import {Divider, Dropdown, StrictDropdownItemProps} from 'semantic-ui-react';
 import {
   Announces,
   ExtraPoints,
   GameTypes,
   MissedAnnounces,
+  SoloType,
   SoloTypes,
   Statistics as Stats,
-} from '@doko/common/src/Entities/Statistics';
-import {useGroup} from '../../store/Groups';
-import {SoloType} from '@doko/common';
-import {useSelector} from 'react-redux';
-import {statisticsSelector, Ui, useSetUi} from '../../store/Ui';
+} from '@doko/common';
 import classNames from 'classnames';
+import React, {ReactElement, ReactNode, useCallback, useMemo} from 'react';
+import {useSelector} from 'react-redux';
+import {Divider, Dropdown, StrictDropdownItemProps} from 'semantic-ui-react';
+import {useMemberInitials, useSortedGroupMembers} from '../../store/GroupMembers';
+import {useGroup} from '../../store/Groups';
+import {statisticsSelector, Ui, useSetUi} from '../../store/Ui';
 import Value from './Value';
 import ValueGrid from './ValueGrid';
 
@@ -104,16 +104,16 @@ const perGame = (statistics: Stats, value: number) => `${Math.round(value / stat
 const valueComponents: ValueComponents = {
   gameTypes: ({key, statistics}) => {
     return <>
-      <Value value={statistics.gameTypes[key]} total={statistics.gameTypes.total} />
-      <Value value={statistics.gameTypesWon[key]} total={statistics.gameTypesWon.total} won />
+      <Value value={statistics.gameTypes[key]} total={statistics.gameTypes.total}/>
+      <Value value={statistics.gameTypesWon[key]} total={statistics.gameTypesWon.total} won/>
     </>;
   },
   soloTypes: ({key, statistics}) => {
     const total = sumUp(statistics.soloTypes);
     const totalWon = sumUp(statistics.soloTypesWon);
     return <>
-      <Value value={key === 'total' ? total : statistics.soloTypes[key]} total={total} />
-      <Value value={key === 'total' ? totalWon : statistics.soloTypesWon[key]} total={totalWon} won />
+      <Value value={key === 'total' ? total : statistics.soloTypes[key]} total={total}/>
+      <Value value={key === 'total' ? totalWon : statistics.soloTypesWon[key]} total={totalWon} won/>
     </>;
   },
   extraPoints: ({key, statistics}) => {
@@ -125,11 +125,11 @@ const valueComponents: ValueComponents = {
         <ValueGrid values={[
           won,
           perGame(statistics, won),
-        ]} won />
+        ]} won/>
         <ValueGrid values={[
           lost,
           perGame(statistics, lost),
-        ]} lost />
+        ]} lost/>
       </>;
     }
 
@@ -138,7 +138,7 @@ const valueComponents: ValueComponents = {
     return <ValueGrid values={[
       points,
       perGame(statistics, points),
-    ]} won={!isLost} lost={isLost} />;
+    ]} won={!isLost} lost={isLost}/>;
   },
   announces: ({key, statistics}) => {
     const total = sumUp(statistics.announces);
@@ -146,18 +146,18 @@ const valueComponents: ValueComponents = {
     const totalWon = sumUp(statistics.announcesWon);
     const valueWon = key === 'total' ? totalWon : statistics.announcesWon[key];
     return <>
-      <Value value={value} total={total} />
-      <ValueGrid values={[perGame(statistics, value)]} />
-      <Value value={valueWon} total={totalWon} won />
-      <ValueGrid values={[perGame(statistics, valueWon)]} won />
+      <Value value={value} total={total}/>
+      <ValueGrid values={[perGame(statistics, value)]}/>
+      <Value value={valueWon} total={totalWon} won/>
+      <ValueGrid values={[perGame(statistics, valueWon)]} won/>
     </>;
   },
   missedAnnounces: ({key, statistics}) => {
     const total = sumUp(statistics.missedAnnounces);
     const value = key === 'total' ? total : statistics.missedAnnounces[key];
     return <>
-      <Value value={value} total={total} />
-      <ValueGrid values={[perGame(statistics, value)]} />
+      <Value value={value} total={total}/>
+      <ValueGrid values={[perGame(statistics, value)]}/>
     </>;
   },
 };
@@ -195,15 +195,15 @@ export default function Statistics(): ReactElement {
 
   const [columns, rowCells] = useMemo(() => {
     const cols = groupMembers.filter((gm) => includeIrregularMembers || gm.isRegular)
-      .sort((a, b) => {
-        if (a.isYou) {
-          return -1;
-        }
-        if (b.isYou) {
-          return 1;
-        }
-        return a.name.localeCompare(b.name);
-      });
+                             .sort((a, b) => {
+                               if (a.isYou) {
+                                 return -1;
+                               }
+                               if (b.isYou) {
+                                 return 1;
+                               }
+                               return a.name.localeCompare(b.name);
+                             });
 
     const cells: ReactNode[] = [];
     rows.forEach(([key, text]) => {
@@ -232,16 +232,16 @@ export default function Statistics(): ReactElement {
 
   return <section>
     <Dropdown label={'Filter'}
-      options={filterOptions}
-      value={filter}
-      onChange={(e, {value}) => setFilter(value as Filter)}
-      selection />
+              options={filterOptions}
+              value={filter}
+              onChange={(e, {value}) => setFilter(value as Filter)}
+              selection/>
 
-    <Divider className="tiny" hidden />
+    <Divider className='tiny' hidden/>
 
-    <div className="grid-table gamesTable statisticsTable u-text-center"
-      style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}>
-      <div className="grid-table-th" />
+    <div className='grid-table gamesTable statisticsTable u-text-center'
+         style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}>
+      <div className='grid-table-th'/>
       {columns.map(({id, isYou}) => <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
         {initials[id]}
       </div>)}

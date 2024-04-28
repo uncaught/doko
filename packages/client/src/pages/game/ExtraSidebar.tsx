@@ -2,7 +2,7 @@ import React, {ReactElement} from 'react';
 import {Menu, Sidebar} from 'semantic-ui-react';
 import Players from '../round/Players';
 
-export default function ExtraSidebar({visible, close}: { visible: boolean; close: () => void }): ReactElement {
+export default function ExtraSidebar({visible, close}: {visible: boolean; close: () => void}): ReactElement {
   return <Sidebar
     as={Menu}
     animation='overlay'

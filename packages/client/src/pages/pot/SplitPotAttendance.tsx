@@ -1,20 +1,20 @@
-import React, { Fragment, ReactElement } from 'react';
-import { useSortedGroupMembers } from '../../store/GroupMembers';
-import { Header, Icon, Message } from 'semantic-ui-react';
 import classNames from 'classnames';
-import { useGroup } from '../../store/Groups';
+import React, {Fragment, ReactElement} from 'react';
+import {Header, Icon, Message} from 'semantic-ui-react';
+import {useSortedGroupMembers} from '../../store/GroupMembers';
+import {useGroup} from '../../store/Groups';
 
 export default function SplitPotAttendance(): ReactElement {
-  const { completedRoundsCount } = useGroup()!;
+  const {completedRoundsCount} = useGroup()!;
   const groupMembers = useSortedGroupMembers();
   let fullPot = 0;
   let attendances = 0;
-  groupMembers.forEach(({ euroBalance, roundsCount }) => {
+  groupMembers.forEach(({euroBalance, roundsCount}) => {
     fullPot += euroBalance || 0;
     attendances += roundsCount || 0;
   });
 
-  const mapped = groupMembers.map(({ id, name, euroBalance, roundsCount }) => {
+  const mapped = groupMembers.map(({id, name, euroBalance, roundsCount}) => {
     const euros = euroBalance || 0;
     const attendance = roundsCount / attendances;
     const partial = fullPot * attendance;
@@ -23,9 +23,9 @@ export default function SplitPotAttendance(): ReactElement {
       <div className={'name'}>{name}</div>
       <div className={'value'}>{euros.toFixed(2)} €</div>
       <div className={'value'}>{roundsCount} / {partial.toFixed(2)} €</div>
-      <div className={classNames('value', { pos: balance >= 0, neg: balance < 0 })}>{balance.toFixed(2)} €</div>
+      <div className={classNames('value', {pos: balance >= 0, neg: balance < 0})}>{balance.toFixed(2)} €</div>
     </Fragment>;
-    return { id, row, balance };
+    return {id, row, balance};
   });
   mapped.sort((a, b) => b.balance - a.balance);
 
@@ -40,11 +40,11 @@ export default function SplitPotAttendance(): ReactElement {
     </Message>
 
     <div className={'potGrid splitPotAttendance'}>
-      <div className={'name'} />
+      <div className={'name'}/>
       <div className={'value'}>Beitrag</div>
       <div className={'value'}>Anteil</div>
-      <div className={'value'}><Icon name={'balance scale'} /></div>
-      {mapped.map(({ row }) => row)}
+      <div className={'value'}><Icon name={'balance scale'}/></div>
+      {mapped.map(({row}) => row)}
     </div>
   </section>;
 }

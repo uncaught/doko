@@ -1,6 +1,6 @@
 import React, {ReactElement, useCallback, useState} from 'react';
-import {Button, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import QrReader from 'react-qr-reader';
+import {Button, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import {useAcceptInvitation} from '../../store/GroupMembers';
 
 export default function ScanInvitation(): ReactElement {
@@ -20,7 +20,7 @@ export default function ScanInvitation(): ReactElement {
       QR-Code
     </Button>
 
-    {show && <Modal className="scanInvitation-modal"
+    {show && <Modal className='scanInvitation-modal'
                     open={show}
                     dimmer={'inverted'}
                     onClose={() => setShow(false)}

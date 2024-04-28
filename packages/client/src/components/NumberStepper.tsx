@@ -12,7 +12,16 @@ interface NumberStepperProps {
   onChange: (n: number) => void;
 }
 
-export default function NumberStepper({error, label, min, max, step = 1, onChange, value, inverted}: NumberStepperProps): ReactElement | null {
+export default function NumberStepper({
+  error,
+  label,
+  min,
+  max,
+  step = 1,
+  onChange,
+  value,
+  inverted,
+}: NumberStepperProps): ReactElement | null {
   const w = typeof max === 'number' && max > 9 ? 3 : 2;
   return <Form.Field inline>
     {!!label && <label>{label}</label>}

@@ -5,14 +5,14 @@ function isActiveInGame(player: Player, gameNumber: number): boolean {
     && (player.joinedAfterGameNumber === null || player.joinedAfterGameNumber <= gameNumber);
 }
 
-
 function findActivePlayerAtPosition(
   roundParticipatingPlayers: Player[],
   startingDealerId: string,
   gameNumber: number,
 ): string {
   const playersCount = roundParticipatingPlayers.length;
-  const startingDealerIdx = roundParticipatingPlayers.findIndex(({groupMemberId}) => groupMemberId === startingDealerId);
+  const startingDealerIdx = roundParticipatingPlayers.findIndex(({groupMemberId}) => groupMemberId
+    === startingDealerId);
   let curIndex = startingDealerIdx;
   let i = 0;
   while (!isActiveInGame(roundParticipatingPlayers[curIndex], gameNumber)) {
@@ -39,7 +39,9 @@ export function detectBockGame(
   const cleanForDealer = (dealerId: string, gameNumber: number): void => {
     //Clean bock stack of bocks that are over:
     bockStack = bockStack.filter(({startingDealerId, hasDealerChangedOnce}) => {
-      const bockActiveStartingDealerId = findActivePlayerAtPosition(roundParticipatingPlayers, startingDealerId, gameNumber);
+      const bockActiveStartingDealerId = findActivePlayerAtPosition(roundParticipatingPlayers,
+        startingDealerId,
+        gameNumber);
       return !hasDealerChangedOnce || bockActiveStartingDealerId !== dealerId;
     });
     if (bockStack.length === 0 && bockExtends > 0) {

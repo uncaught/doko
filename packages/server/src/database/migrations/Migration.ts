@@ -7,7 +7,7 @@ const regex = /Version\d{3}/;
 
 async function loadMigrations(): Promise<Set<string>> {
   try {
-    const rows = await query<{ version: string }>('SELECT version FROM versions');
+    const rows = await query<{version: string}>('SELECT version FROM versions');
     return new Set(rows.map(({version}) => version));
   } catch (e) {
     await query(`CREATE TABLE versions (version CHAR(10) NOT NULL, PRIMARY KEY(version)

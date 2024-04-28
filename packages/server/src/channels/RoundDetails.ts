@@ -1,4 +1,3 @@
-import server from '../Server';
 import {
   GamesAdd,
   GamesPatch,
@@ -9,10 +8,11 @@ import {
   RoundDetailsLoaded,
 } from '@doko/common';
 import {canReadGroup} from '../Auth';
-import {getGroupForRound} from './Rounds';
-import {loadGames} from './Games';
 import {createFilter} from '../logux/Filter';
+import server from '../Server';
+import {loadGames} from './Games';
 import {loadPlayers} from './Players';
+import {getGroupForRound} from './Rounds';
 
 server.channel<RoundDetailsLoad>('roundDetails/load', {
   async access(ctx, {roundId}) {

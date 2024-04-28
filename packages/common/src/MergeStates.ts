@@ -62,7 +62,7 @@ function merge(targetState: any, partialState: any, options: MergeStatesOptions)
 export function mergeStates<S>(
   targetState: S,
   partialState: DeepPartial<S>,
-  {replaceArrays = true, explicitUndefines = false}: { replaceArrays?: boolean; explicitUndefines?: boolean } = {},
+  {replaceArrays = true, explicitUndefines = false}: {replaceArrays?: boolean; explicitUndefines?: boolean} = {},
 ): S {
   return merge(targetState, partialState, {replaceArrays, explicitUndefines});
 }

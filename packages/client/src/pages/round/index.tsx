@@ -1,11 +1,11 @@
 import React, {ReactElement} from 'react';
 import {Switch, useRouteMatch} from 'react-router-dom';
 import Page from '../../Page';
-import SittingOrder from './SittingOrder';
 import {useLoadRoundDetails, useRound} from '../../store/Rounds';
-import Round from './Round';
 import Games from '../games';
 import RemoveRoundMenuItem from './RemoveRoundMenuItem';
+import Round from './Round';
+import SittingOrder from './SittingOrder';
 
 export default function RoundIndex(): ReactElement | null {
   useLoadRoundDetails();

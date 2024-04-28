@@ -1,5 +1,5 @@
-import {GroupSettings, SoloType} from './GroupSettings';
 import {GameCalcLog} from '../GameCalc';
+import {GroupSettings, SoloType} from './GroupSettings';
 
 export type PipRange =
   '0'

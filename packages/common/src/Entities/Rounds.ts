@@ -1,6 +1,6 @@
 import {DeepPartial} from '../Generics';
-import {Player} from './Players';
 import {GroupSettings} from './GroupSettings';
+import {Player} from './Players';
 import {Statistics} from './Statistics';
 
 export interface RoundResults {

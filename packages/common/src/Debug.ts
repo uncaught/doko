@@ -20,7 +20,7 @@ export function debugHooks(name = 'debugHooks'): (obj: AnyObject) => void {
   let lastObj: AnyObject;
   return ((obj) => {
     if (lastObj) {
-      const changedValues: Array<{ key: string; old: any; new: any }> = [];
+      const changedValues: Array<{key: string; old: any; new: any}> = [];
       Object.entries(lastObj).forEach(([key, val]) => {
         if (val !== obj[key]) {
           changedValues.push({key, old: val, new: obj[key]});

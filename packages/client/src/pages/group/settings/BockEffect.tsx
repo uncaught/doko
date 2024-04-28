@@ -1,8 +1,8 @@
+import {bockEffectOptions, GroupSettings} from '@doko/common';
 import React, {ReactElement} from 'react';
 import {Form} from 'semantic-ui-react';
-import {useGroup, usePatchGroup} from '../../../store/Groups';
-import {bockEffectOptions, GroupSettings} from '@doko/common';
 import NumberStepper from '../../../components/NumberStepper';
+import {useGroup, usePatchGroup} from '../../../store/Groups';
 
 export default function BockEffect(): ReactElement | null {
   const group = useGroup()!;

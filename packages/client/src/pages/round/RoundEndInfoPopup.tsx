@@ -1,9 +1,9 @@
 import React, {ReactElement, useState} from 'react';
 import {Button, Divider, Form, Header, Icon, Modal} from 'semantic-ui-react';
-import {usePatchRound, useRound} from '../../store/Rounds';
 import NumberStepper from '../../components/NumberStepper';
 import {useSortedGames} from '../../store/Games';
 import {usePlayersWithStats} from '../../store/Players';
+import {usePatchRound, useRound} from '../../store/Rounds';
 
 export default function RoundEndInfoPopup({duration, endKnown, setOpen}: {
   duration: number | null;
@@ -21,7 +21,7 @@ export default function RoundEndInfoPopup({duration, endKnown, setOpen}: {
 
   return <>
     <Header>
-      <Icon name={'sync alternate'} />
+      <Icon name={'sync alternate'}/>
       Spielende
     </Header>
     <Modal.Content>
@@ -35,13 +35,13 @@ export default function RoundEndInfoPopup({duration, endKnown, setOpen}: {
       </p>}
 
       {data.dynamicRoundDuration && <>
-        <Divider section />
+        <Divider section/>
 
-        <Form className="u-flex-row-around u-align-center">
+        <Form className='u-flex-row-around u-align-center'>
           <Form.Field>
             Noch
           </Form.Field>
-          <NumberStepper value={remaining} min={0} onChange={setRemaining} inverted />
+          <NumberStepper value={remaining} min={0} onChange={setRemaining} inverted/>
           <Form.Field>
             volle Durchgänge
           </Form.Field>
@@ -53,7 +53,7 @@ export default function RoundEndInfoPopup({duration, endKnown, setOpen}: {
         patchRound({data: {roundDuration: lastGameRunNumber + remaining}});
         setOpen(false);
       }}>
-        <Icon name='checkmark' /> Ok
+        <Icon name='checkmark'/> Ok
       </Button>
     </Modal.Actions>}
   </>;

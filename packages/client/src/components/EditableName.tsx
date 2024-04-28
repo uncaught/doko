@@ -1,13 +1,17 @@
 import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import {Header, Icon, Input, InputOnChangeData, SemanticICONS} from 'semantic-ui-react';
 
-interface EditableNameProps<T extends { name: string }> {
+interface EditableNameProps<T extends {name: string}> {
   icon: SemanticICONS;
   useGet: () => T | undefined;
-  usePatch: () => (patch: { name: string }) => void;
+  usePatch: () => (patch: {name: string}) => void;
 }
 
-export default function EditableName<T extends { name: string }>({icon, useGet, usePatch}: EditableNameProps<T>): ReactElement {
+export default function EditableName<T extends {name: string}>({
+  icon,
+  useGet,
+  usePatch,
+}: EditableNameProps<T>): ReactElement {
   const entity = useGet();
   const patchEntity = usePatch();
   const inputRef = useRef<Input>(null);
@@ -33,7 +37,7 @@ export default function EditableName<T extends { name: string }>({icon, useGet, 
     }
   };
 
-  return <div className="u-flex-row-between editableNameHeader">
+  return <div className='u-flex-row-between editableNameHeader'>
     {!editing && <>
       <Header as={'h2'}><Icon name={icon} size={'small'}/> {name}</Header>
       <Icon name={'edit'} onClick={() => {

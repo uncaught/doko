@@ -1,13 +1,13 @@
 import React, {ReactElement} from 'react';
 import {Segment} from 'semantic-ui-react';
 import {useGame} from '../../store/Games';
-import GameTypeSelection from './GameTypeSelection';
-import SoloTypeSelection from './SoloTypeSelection';
-import Penalty from './Penalty';
-import NonPenalty from './NonPenalty';
-import GameLabels from './GameLabels';
 import FinishButton from './FinishButton';
+import GameLabels from './GameLabels';
+import GameTypeSelection from './GameTypeSelection';
 import HeartsTrickToggle from './HeartsTrickToggle';
+import NonPenalty from './NonPenalty';
+import Penalty from './Penalty';
+import SoloTypeSelection from './SoloTypeSelection';
 
 export default function GameIndex(): ReactElement | null {
   const game = useGame();
@@ -19,7 +19,7 @@ export default function GameIndex(): ReactElement | null {
 
   return <section>
     <GameLabels/>
-    <Segment vertical className="u-flex-row u-flex-wrap">
+    <Segment vertical className='u-flex-row u-flex-wrap'>
       <GameTypeSelection/>
       <SoloTypeSelection/>
       <HeartsTrickToggle/>

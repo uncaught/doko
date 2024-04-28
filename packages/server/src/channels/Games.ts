@@ -1,5 +1,3 @@
-import server from '../Server';
-import {fromDbValue, getTransactional, insertSingleEntity, query, updateSingleEntity} from '../Connection';
 import {
   DeepPartial,
   Game,
@@ -12,17 +10,19 @@ import {
   recalcPoints,
 } from '@doko/common';
 import {canEditGroup} from '../Auth';
+import {fromDbValue, getTransactional, insertSingleEntity, query, updateSingleEntity} from '../Connection';
 import {gamesDbConfig} from '../DbTypes';
+import server from '../Server';
 import {getGroupForRound, isRoundOpen} from './Rounds';
 
 export async function getRoundForGame(gameId: string): Promise<string | null> {
-  const result = await query<{ roundId: string }>(`SELECT round_id as roundId FROM games WHERE id = ?`, [gameId]);
+  const result = await query<{roundId: string}>(`SELECT round_id as roundId FROM games WHERE id = ?`, [gameId]);
   return result.length ? result[0].roundId : null;
 }
 
 export async function isGameOpen(gameId: string): Promise<boolean> {
-  const result = await query<{ isComplete: number }>(
-      `SELECT IF(json_extract(data, '$.isComplete'), 1, 0) as isComplete FROM games WHERE id = ?`,
+  const result = await query<{isComplete: number}>(
+    `SELECT IF(json_extract(data, '$.isComplete'), 1, 0) as isComplete FROM games WHERE id = ?`,
     [gameId]);
   return result.length ? +result[0].isComplete === 0 : false;
 }
@@ -41,12 +41,14 @@ export async function loadGames(roundId: string): Promise<Game[]> {
 }
 
 export async function getGameCountForRound(roundId: string): Promise<number> {
-  const rows = await query<{ c: number }>(`SELECT COUNT(id) as c FROM games WHERE round_id = ?`, [roundId]);
+  const rows = await query<{c: number}>(`SELECT COUNT(id) as c FROM games WHERE round_id = ?`, [roundId]);
   return rows.length ? +rows[0].c : 0;
 }
 
 export async function getLastGameIdOfRound(roundId: string): Promise<string | null> {
-  const lastGame = await query<{ id: string }>(`SELECT id FROM games WHERE round_id = ? ORDER BY game_number DESC LIMIT 1`,
+  const lastGame = await query<{
+    id: string
+  }>(`SELECT id FROM games WHERE round_id = ? ORDER BY game_number DESC LIMIT 1`,
     [roundId]);
   return lastGame.length ? lastGame[0].id : null;
 }

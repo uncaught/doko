@@ -1,11 +1,11 @@
 import React, {ReactElement, useCallback} from 'react';
+import {useSelector} from 'react-redux';
 import {Checkbox, Icon, Menu} from 'semantic-ui-react';
-import {asLink} from './AsLink';
 import {SemanticICONS} from 'semantic-ui-react/dist/commonjs/generic';
+import {asLink} from './AsLink';
 import {usePageContext} from './Page';
 import {useLatestGroupGame} from './store/Games';
 import {useLatestGroupRound} from './store/Rounds';
-import {useSelector} from 'react-redux';
 import {followLastGameSelector, useSetUi} from './store/Ui';
 
 export interface PageMenuItemConfig {
@@ -15,7 +15,7 @@ export interface PageMenuItemConfig {
   passDown?: boolean;
 }
 
-export type PageMenuItemComp = React.FC<{ closeMenu: () => void }> & { passDown?: boolean };
+export type PageMenuItemComp = React.FC<{closeMenu: () => void}> & {passDown?: boolean};
 
 export type PageMenuItems = Array<PageMenuItemConfig | PageMenuItemComp>;
 
@@ -34,11 +34,11 @@ function FollowLastGameMenuItem(): ReactElement {
   </Menu.Item>;
 }
 
-export default function PageMenu({closeMenu}: { closeMenu: () => void }): ReactElement | null {
-  const {groupId, menuItems} = usePageContext<{ groupId?: string }>();
+export default function PageMenu({closeMenu}: {closeMenu: () => void}): ReactElement | null {
+  const {groupId, menuItems} = usePageContext<{groupId?: string}>();
   const lastRound = useLatestGroupRound();
   const lastGame = useLatestGroupGame();
-  const Item = useCallback(({children, route}: { children: React.ReactNode; route: string }) => {
+  const Item = useCallback(({children, route}: {children: React.ReactNode; route: string}) => {
     return <Menu.Item as={asLink(route, {onClick: closeMenu})}>{children}</Menu.Item>;
   }, [closeMenu]);
   return <>

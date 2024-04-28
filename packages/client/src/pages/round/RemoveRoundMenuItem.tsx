@@ -1,10 +1,10 @@
 import React, {ReactElement, useState} from 'react';
 import {Button, Header, Icon, Menu, Modal} from 'semantic-ui-react';
 import {useSortedGames} from '../../store/Games';
-import {useRound} from '../../store/Rounds';
 import {useRemoveRound} from '../../store/Round/RemoveRound';
+import {useRound} from '../../store/Rounds';
 
-export default function RemoveRoundMenuItem({closeMenu}: { closeMenu: () => void }): ReactElement | null {
+export default function RemoveRoundMenuItem({closeMenu}: {closeMenu: () => void}): ReactElement | null {
   const round = useRound()!;
   const sortedGames = useSortedGames();
   const removeRound = useRemoveRound();

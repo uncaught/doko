@@ -1,10 +1,10 @@
 import React, {ReactElement} from 'react';
+import {Divider} from 'semantic-ui-react';
 import EditableName from '../../components/EditableName';
 import {useGroupMember, usePatchGroupMember} from '../../store/GroupMembers';
-import {Divider} from 'semantic-ui-react';
 import InviteDevice from './InviteDevice';
-import Stats from './Stats';
 import Settings from './Settings';
+import Stats from './Stats';
 
 export default function Member(): ReactElement {
   return <div>

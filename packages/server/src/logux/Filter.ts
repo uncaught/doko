@@ -1,5 +1,5 @@
-import {Filter} from "@logux/server/base-server";
 import {Action, Meta} from "@logux/core";
+import {Filter} from "@logux/server/base-server";
 import {Context} from "@logux/server/context";
 
 export function createFilter() {

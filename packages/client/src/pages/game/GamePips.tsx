@@ -1,17 +1,17 @@
+import {pipRanges, reversedPipRanges} from '@doko/common';
 import React, {ReactElement} from 'react';
 import {Divider, Label} from 'semantic-ui-react';
 import {useGame, usePatchGame} from '../../store/Games';
-import {pipRanges, reversedPipRanges} from '@doko/common';
 
-export default function GamePips({isRe}: { isRe: boolean }): ReactElement {
+export default function GamePips({isRe}: {isRe: boolean}): ReactElement {
   const {data} = useGame()!;
   const patchGame = usePatchGame();
   const sideKey = isRe ? 're' : 'contra';
   const otherSideKey = isRe ? 'contra' : 're';
   const selected = data[sideKey].pips;
   return <>
-    <Divider className="tiny"/>
-    <Label.Group circular className="pointsGroup u-flex-row-around u-flex-wrap">
+    <Divider className='tiny'/>
+    <Label.Group circular className='pointsGroup u-flex-row-around u-flex-wrap'>
       {reversedPipRanges.map((range, idx) => {
         let display: string = range;
         let className = '';

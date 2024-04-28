@@ -1,16 +1,16 @@
-import {RouteProps} from 'react-router';
 import React, {ReactElement, useCallback, useContext, useState} from 'react';
+import {RouteProps} from 'react-router';
 import {Route, useParams, useRouteMatch} from 'react-router-dom';
 import {Menu, Sidebar} from 'semantic-ui-react';
-import PageMenu, {PageMenuItems} from './PageMenu';
 import PageHeader from './PageHeader';
+import PageMenu, {PageMenuItems} from './PageMenu';
 
 const context = React.createContext<PageContext>({displayName: 'Doppelkopf', menuItems: [], parents: []});
 
 interface PageContext {
   displayName: string;
   menuItems: PageMenuItems;
-  parents: Array<{ displayName: string; url: string }>;
+  parents: Array<{displayName: string; url: string}>;
 }
 
 export function usePageContext(): PageContext;
@@ -55,7 +55,7 @@ function PageContextProvider(
 interface FullRouteProps extends RouteProps {
   displayName?: string;
   menuItems?: PageMenuItems;
-  ExtraSidebar?: React.FunctionComponent<{ visible: boolean; close: () => void }>;
+  ExtraSidebar?: React.FunctionComponent<{visible: boolean; close: () => void}>;
 }
 
 export default function Page(props: FullRouteProps): ReactElement {
@@ -77,7 +77,7 @@ export default function Page(props: FullRouteProps): ReactElement {
                          displayName={props.displayName}
                          menuItems={props.menuItems}
                          isIndex={isIndex}>
-      <Sidebar.Pushable as={'div'} className="appPageWrapper">
+      <Sidebar.Pushable as={'div'} className='appPageWrapper'>
         <Sidebar
           as={Menu}
           animation='overlay'
@@ -94,13 +94,13 @@ export default function Page(props: FullRouteProps): ReactElement {
         {props.ExtraSidebar && <props.ExtraSidebar visible={extraSidebarVisible}
                                                    close={() => setExtraSidebarVisible(false)}/>}
         <Sidebar.Pusher dimmed={visible || extraSidebarVisible}>
-          <div className="appPage">
+          <div className='appPage'>
             <PageHeader openMenu={openMenu} onNameClick={() => {
               if (props.ExtraSidebar) {
                 setExtraSidebarVisible(true);
               }
             }}/>
-            <div className="appPageContent">
+            <div className='appPageContent'>
               {props.children}
             </div>
           </div>

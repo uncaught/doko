@@ -1,9 +1,9 @@
 import React, {ReactElement} from 'react';
-import {asLink} from '../../AsLink';
 import {useRouteMatch} from 'react-router-dom';
-import FullPot from '../pot/FullPot';
 import {Divider} from 'semantic-ui-react';
+import {asLink} from '../../AsLink';
 import {useGroup} from '../../store/Groups';
+import FullPot from '../pot/FullPot';
 
 export default function Pot(): ReactElement | null {
   const group = useGroup();

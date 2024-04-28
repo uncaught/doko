@@ -15,7 +15,7 @@ export default function RoundEndInfo(): ReactElement | null {
   const duration = data.dynamicRoundDuration ? data.roundDuration : 6;
 
   return <>
-    <div className="memberDetail">
+    <div className='memberDetail'>
       {endKnown && <Label color={'yellow'} onClick={() => setOpen(true)}>
         Ende nach {duration} Durchgängen <Icon name={'sync alternate'}/>
       </Label>}

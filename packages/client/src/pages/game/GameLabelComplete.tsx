@@ -16,7 +16,7 @@ export default function GameLabelComplete(): ReactElement | null {
   }
 
   return <>
-    <div className="memberDetail">
+    <div className='memberDetail'>
       {game.data.isComplete && <Label className={'iconOnly'} color={'red'} onClick={() => {
         if (!round.endDate) {
           setOpen(true);

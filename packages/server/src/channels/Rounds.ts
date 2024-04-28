@@ -1,19 +1,20 @@
-import server from '../Server';
-import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
-import {createFilter} from '../logux/Filter';
 import {Game, Round, RoundsAdd, RoundsLoad, RoundsLoaded, RoundsPatch, RoundsRemove} from '@doko/common';
 import {canEditGroup, canReadGroup} from '../Auth';
+import {fromDbValue, getTransactional, insertEntity, query, updateSingleEntity} from '../Connection';
 import {gamesDbConfig, playersDbConfig, roundsDbConfig} from '../DbTypes';
-import {memberIdsBelongToGroup} from './GroupMembers';
+import {createFilter} from '../logux/Filter';
+import server from '../Server';
 import {getGameCountForRound, getLastGameIdOfRound} from './Games';
+import {memberIdsBelongToGroup} from './GroupMembers';
 
 export async function getGroupForRound(roundId: string): Promise<string | null> {
-  const result = await query<{ groupId: string }>(`SELECT group_id as groupId FROM rounds WHERE id = ?`, [roundId]);
+  const result = await query<{groupId: string}>(`SELECT group_id as groupId FROM rounds WHERE id = ?`, [roundId]);
   return result.length ? result[0].groupId : null;
 }
 
 export async function isRoundOpen(roundId: string): Promise<boolean> {
-  const result = await query<{ endDate: number | null }>(`SELECT end_date as endDate FROM rounds WHERE id = ?`, [roundId]);
+  const result = await query<{endDate: number | null}>(`SELECT end_date as endDate FROM rounds WHERE id = ?`,
+    [roundId]);
   return result.length ? result[0].endDate === null : false;
 }
 

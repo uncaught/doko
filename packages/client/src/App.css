@@ -378,6 +378,7 @@ input[type=number] {
     flex-direction: column;
     grid-gap: 0;
   }
+
   .statsValueSeparator {
     display: none;
   }

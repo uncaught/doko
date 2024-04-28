@@ -1,9 +1,9 @@
 import React, {ReactElement} from 'react';
 import {Divider} from 'semantic-ui-react';
-import {useGame} from '../../store/Games';
 import PointsLabel from '../../components/PointsLabel';
+import {useGame} from '../../store/Games';
 
-export default function Points({isRe}: { isRe: boolean }): ReactElement | null {
+export default function Points({isRe}: {isRe: boolean}): ReactElement | null {
   const {data} = useGame()!;
   if (!data.isComplete) {
     return null;
@@ -16,7 +16,7 @@ export default function Points({isRe}: { isRe: boolean }): ReactElement | null {
   const points = data[sideKey].totalPoints;
 
   return <>
-    <Divider className="tiny"/>
+    <Divider className='tiny'/>
     <PointsLabel green={hasWon} points={points} red={hasLost}/>
   </>;
 }

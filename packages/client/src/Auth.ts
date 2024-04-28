@@ -1,6 +1,6 @@
 import {Credentials, generateUuid, isUuid} from '@doko/common';
 
-export function getAuth(): { userId: string; credentials: Credentials } {
+export function getAuth(): {userId: string; credentials: Credentials} {
   let deviceId = localStorage.getItem('deviceId');
   if (!isUuid(deviceId)) {
     deviceId = generateUuid();

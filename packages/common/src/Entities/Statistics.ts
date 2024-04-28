@@ -1,6 +1,6 @@
-import {GameData, Party, soloGameTypes, soloLikeGameTypes} from './GameData';
 import {SubType} from '../Generics';
 import {ucfirst} from '../Ucfirst';
+import {GameData, Party, soloGameTypes, soloLikeGameTypes} from './GameData';
 
 export interface ExtraPoints {
   doppelkopf: number;
@@ -192,7 +192,7 @@ export function addStatistics(target: Statistics, source: Statistics): void {
   });
 }
 
-export type StatsMap = Map<string, { statistics: Statistics }>;
+export type StatsMap = Map<string, {statistics: Statistics}>;
 
 function addGameAndSoloTypes(data: GameData, statsByMember: StatsMap) {
   function addTotalAndNormalGames(key: keyof SubType<Statistics, GameTypes>) {

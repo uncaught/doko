@@ -1,9 +1,9 @@
+import {get, set} from 'lodash';
 import React, {ReactElement} from 'react';
 import {CheckboxProps, Form} from 'semantic-ui-react';
-import {get, set} from 'lodash';
 import {useGroup, usePatchGroup} from '../../../store/Groups';
 
-export default function Checkbox({label, path}: { label: string; path: string }): ReactElement | null {
+export default function Checkbox({label, path}: {label: string; path: string}): ReactElement | null {
   const group = useGroup()!;
   const patch = usePatchGroup();
   const checked = get(group.settings, path) as boolean;

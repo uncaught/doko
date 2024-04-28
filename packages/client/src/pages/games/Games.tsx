@@ -1,31 +1,31 @@
+import {GameData, soloGameTypes} from '@doko/common';
+import classnames from 'classnames';
 import React, {ReactElement} from 'react';
+import {useHistory, useRouteMatch} from 'react-router-dom';
 import {Divider, Icon} from 'semantic-ui-react';
-import {useRoundParticipatingPlayers} from '../../store/Players';
 import {useSortedGames} from '../../store/Games';
 import {useMemberInitials} from '../../store/GroupMembers';
-import {useHistory, useRouteMatch} from 'react-router-dom';
+import {useRoundParticipatingPlayers} from '../../store/Players';
 import AddGame from '../round/AddGame';
-import {GameData, soloGameTypes} from '@doko/common';
 import RoundEndInfo from '../round/RoundEndInfo';
-import classnames from 'classnames';
 
 function RoundIndicators({data}: {data: GameData}): ReactElement {
   const indicators: ReactElement[] = [];
   for (let i = 0; i < data.bockGameWeight; i++) {
-    indicators.push(<Icon key={`bock_${i}`} size={'small'} color={'purple'} name={'btc'} />);
+    indicators.push(<Icon key={`bock_${i}`} size={'small'} color={'purple'} name={'btc'}/>);
   }
-  return <div className="gamesTable-cell-gameIndicators">{indicators}</div>;
+  return <div className='gamesTable-cell-gameIndicators'>{indicators}</div>;
 }
 
 function RoundPlayerIndicators({data, memberId}: {data: GameData; memberId: string}): ReactElement {
   const indicators: ReactElement[] = [];
   if (soloGameTypes.includes(data.gameType) && data.re.members.includes(memberId)) {
     indicators.push(<Icon key={'solo'}
-      size={'small'}
-      color={data.gameType === 'lustSolo' ? 'blue' : 'red'}
-      name={'dollar'} />);
+                          size={'small'}
+                          color={data.gameType === 'lustSolo' ? 'blue' : 'red'}
+                          name={'dollar'}/>);
   }
-  return <div className="gamesTable-cell-gameIndicators">{indicators}</div>;
+  return <div className='gamesTable-cell-gameIndicators'>{indicators}</div>;
 }
 
 export default function Games(): ReactElement {
@@ -53,7 +53,7 @@ export default function Games(): ReactElement {
 
     rowCells.push(<div key={`num_${gameNumber}`} className={rowCss} onClick={rowOnClick}>
       {gameNumber}
-      <RoundIndicators data={data} />
+      <RoundIndicators data={data}/>
     </div>);
 
     rowCells.push(<div key={`dealer_${gameNumber}`} className={rowCss} onClick={rowOnClick}>
@@ -83,26 +83,26 @@ export default function Games(): ReactElement {
       const hasLost = !hasWon && winner !== 'stalemate';
 
       rowCells.push(<div key={`cell_${gameNumber}_${p.groupMemberId}`}
-        className={classnames(rowCss, {'won': hasWon, 'lost': hasLost})}
-        onClick={rowOnClick}>
+                         className={classnames(rowCss, {'won': hasWon, 'lost': hasLost})}
+                         onClick={rowOnClick}>
         {newPoints}
-        <RoundPlayerIndicators data={data} memberId={p.groupMemberId} />
+        <RoundPlayerIndicators data={data} memberId={p.groupMemberId}/>
       </div>);
     });
   });
 
   return <section>
-    <div className="grid-table gamesTable u-text-center"
-      style={{gridTemplateColumns: `repeat(3, 2.3em) repeat(${players.length}, auto)`}}>
-      <div className="grid-table-th">#</div>
-      <div className="grid-table-th"><Icon name={'hand paper outline'} /></div>
-      <div className="grid-table-th"><Icon name={'bullseye'} /></div>
+    <div className='grid-table gamesTable u-text-center'
+         style={{gridTemplateColumns: `repeat(3, 2.3em) repeat(${players.length}, auto)`}}>
+      <div className='grid-table-th'>#</div>
+      <div className='grid-table-th'><Icon name={'hand paper outline'}/></div>
+      <div className='grid-table-th'><Icon name={'bullseye'}/></div>
       {players.map((p) =>
-        <div className="grid-table-th" key={p.groupMemberId}>{initials[p.groupMemberId]}</div>)}
+        <div className='grid-table-th' key={p.groupMemberId}>{initials[p.groupMemberId]}</div>)}
       {rowCells}
     </div>
-    <Divider hidden />
-    <RoundEndInfo />
-    <AddGame />
+    <Divider hidden/>
+    <RoundEndInfo/>
+    <AddGame/>
   </section>;
 }

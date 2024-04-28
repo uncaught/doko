@@ -8,8 +8,8 @@ export type SoloType =
   | 'hearts'
   | 'fleshless';
 
-function mapToOptions(map: Map<string, string>): { text: string; value: string }[] {
-  return [...map].reduce<{ text: string; value: string }[]>((acc, [value, text]) => {
+function mapToOptions(map: Map<string, string>): {text: string; value: string}[] {
+  return [...map].reduce<{text: string; value: string}[]>((acc, [value, text]) => {
     acc.push({text, value});
     return acc;
   }, []);

@@ -6,10 +6,10 @@ import {ReactComponent as SuitSpades} from './SuitSpades.svg';
 import './SuitsLogo.css';
 
 export default function SuitsLogo(): React.ReactElement {
-  return <div className="SuitsLogo">
-    <SuitClubs />
-    <SuitHearts />
-    <SuitSpades />
-    <SuitDiamonds />
+  return <div className='SuitsLogo'>
+    <SuitClubs/>
+    <SuitHearts/>
+    <SuitSpades/>
+    <SuitDiamonds/>
   </div>;
 }

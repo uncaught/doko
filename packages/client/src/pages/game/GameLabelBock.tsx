@@ -1,8 +1,8 @@
 import React, {ReactElement} from 'react';
 import {Icon, Label, Popup} from 'semantic-ui-react';
 import {useGame, useSortedGames} from '../../store/Games';
-import {useRound} from '../../store/Rounds';
 import {useRoundParticipatingPlayers} from '../../store/Players';
+import {useRound} from '../../store/Rounds';
 
 function Remaining(): ReactElement {
   const sortedGames = useSortedGames();
@@ -41,7 +41,7 @@ export default function GameLabelBock(): ReactElement | null {
     return null;
   }
   return <Popup content={<Remaining/>} pinned on={'click'} position={'bottom center'} disabled={popupDisabled} trigger={
-    <div className="memberDetail">
+    <div className='memberDetail'>
       <Label className={data.bockGameWeight > 1 ? '' : 'iconOnly'} color={'purple'}>
         {data.bockGameWeight > 1 ? data.bockGameWeight : ''} <Icon name={'btc'}/>
       </Label>

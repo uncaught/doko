@@ -1,6 +1,6 @@
 import React, {Fragment, ReactElement} from 'react';
-import {useSortedGroupMembers} from '../../store/GroupMembers';
 import {Header, Message} from 'semantic-ui-react';
+import {useSortedGroupMembers} from '../../store/GroupMembers';
 import {useGroup} from '../../store/Groups';
 
 export default function TopUpByAverage(): ReactElement {

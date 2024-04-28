@@ -18,7 +18,7 @@ export default function AddGroup(): ReactElement {
     <Form onSubmit={onSubmit}>
       <Header as='h4'>Lege eine neue Gruppe an</Header>
       <Form.Group unstackable>
-        <Form.Input width={10} fluid name={'name'} maxLength={191} required placeholder={'Gruppenname'} />
+        <Form.Input width={10} fluid name={'name'} maxLength={191} required placeholder={'Gruppenname'}/>
         <Form.Button color={'green'} type={'submit'}>Anlegen</Form.Button>
       </Form.Group>
     </Form>

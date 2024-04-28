@@ -1,9 +1,9 @@
-import server from '../Server';
-import {deviceBoundQuery, query, updateSingleEntity} from '../Connection';
 import {Player, PlayerSittingOrderPatch, PlayersPatch} from '@doko/common';
 import {canEditGroup} from '../Auth';
-import {getGroupForRound} from './Rounds';
+import {deviceBoundQuery, query, updateSingleEntity} from '../Connection';
 import {playersDbConfig} from '../DbTypes';
+import server from '../Server';
+import {getGroupForRound} from './Rounds';
 
 export function loadPlayers(roundId: string): Promise<Player[]> {
   return query<Player>(`SELECT round_id as roundId, 
@@ -17,7 +17,7 @@ export function loadPlayers(roundId: string): Promise<Player[]> {
 }
 
 async function memberIdsBelongToRound(roundId: string, memberIds: string[]): Promise<boolean> {
-  const rows = await query<{ gmId: string }>(`SELECT group_member_id as gmId 
+  const rows = await query<{gmId: string}>(`SELECT group_member_id as gmId 
                                                 FROM round_group_members WHERE round_id = ?`, [roundId]);
   const gmIds = rows.reduce((set, {gmId}) => set.add(gmId), new Set());
   return memberIds.every((id) => gmIds.has(id));

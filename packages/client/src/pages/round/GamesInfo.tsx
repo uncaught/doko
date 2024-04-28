@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
+import {useRouteMatch} from 'react-router-dom';
 import {Header, Icon, Label} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
-import {useRouteMatch} from 'react-router-dom';
 import {useSortedGames} from '../../store/Games';
 import AddGame from './AddGame';
 import RoundEndInfo from './RoundEndInfo';
@@ -15,7 +15,7 @@ export default function GamesInfo(): ReactElement {
   return <section>
     <Header as='h4'>Spiele</Header>
 
-    <div className="memberDetail">
+    <div className='memberDetail'>
       <Label as={asLink(`${url}/games`)} color={'orange'}>
         Alle Spiele
         <Label.Detail>
@@ -26,7 +26,7 @@ export default function GamesInfo(): ReactElement {
 
     <RoundEndInfo/>
 
-    {hasOpenGame && <div className="memberDetail">
+    {hasOpenGame && <div className='memberDetail'>
       <Label as={asLink(`${url}/games/game/${lastGame.id}`)} color={'blue'}>
         Laufendes Spiel
       </Label>

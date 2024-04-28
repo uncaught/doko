@@ -1,7 +1,7 @@
-import {Form, Segment} from 'semantic-ui-react';
-import React from 'react';
-import {undecided, useGame, usePatchGame} from '../../store/Games';
 import {soloGameTypes} from '@doko/common';
+import React from 'react';
+import {Form, Segment} from 'semantic-ui-react';
+import {undecided, useGame, usePatchGame} from '../../store/Games';
 
 export default function FinishButton(): React.ReactElement | null {
   const {data} = useGame()!;

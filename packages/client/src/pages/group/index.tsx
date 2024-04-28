@@ -1,19 +1,19 @@
 import React, {ReactElement} from 'react';
 import {Switch, useRouteMatch} from 'react-router-dom';
-import Member from '../member/Member';
-import Group from './Group';
-import Page from '../../Page';
-import Rounds from '../rounds';
-import Members from './Members';
 import {Divider} from 'semantic-ui-react';
-import AddMember from './AddMember';
+import Page from '../../Page';
 import {useLoadGroupMembers} from '../../store/GroupMembers';
-import {useLoadRounds} from '../../store/Rounds';
-import Settings from './Settings';
 import {useGroup} from '../../store/Groups';
-import Statistics from '../statistics/Statistics';
-import EnableIrregularMembersMenuItem from '../statistics/EnableIrregularMembersMenuItem';
+import {useLoadRounds} from '../../store/Rounds';
+import Member from '../member/Member';
 import PotIndex from '../pot';
+import Rounds from '../rounds';
+import EnableIrregularMembersMenuItem from '../statistics/EnableIrregularMembersMenuItem';
+import Statistics from '../statistics/Statistics';
+import AddMember from './AddMember';
+import Group from './Group';
+import Members from './Members';
+import Settings from './Settings';
 
 export default function GroupIndex(): ReactElement | null {
   useLoadGroupMembers();

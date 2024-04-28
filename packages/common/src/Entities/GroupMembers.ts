@@ -1,5 +1,5 @@
-import {Group} from './Groups';
 import {DeepPartial} from '../Generics';
+import {Group} from './Groups';
 import {Player} from './Players';
 import {Statistics} from './Statistics';
 

@@ -1,9 +1,9 @@
 import React, {ReactElement} from 'react';
-import Members from './Members';
 import {Divider} from 'semantic-ui-react';
-import RoundsInfo from './RoundsInfo';
 import GroupName from './GroupName';
+import Members from './Members';
 import Pot from './Pot';
+import RoundsInfo from './RoundsInfo';
 
 export default function Group(): ReactElement {
   return <div>

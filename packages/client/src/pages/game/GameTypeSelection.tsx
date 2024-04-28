@@ -1,9 +1,9 @@
+import {GameType, gameTypeTexts, getDefaultParty, soloGameTypes, soloLikeGameTypes} from '@doko/common';
 import React, {ReactElement, useState} from 'react';
 import {Button, Dropdown, Header, Icon, Modal} from 'semantic-ui-react';
 import {useGame, usePatchGame} from '../../store/Games';
-import {GameType, gameTypeTexts, getDefaultParty, soloGameTypes, soloLikeGameTypes} from '@doko/common';
-import {usePlayersWithStats} from '../../store/Players';
 import {useGroupMembers} from '../../store/GroupMembers';
+import {usePlayersWithStats} from '../../store/Players';
 
 type DropdownType = 'normal'
   | 'solo'
@@ -13,7 +13,7 @@ type DropdownType = 'normal'
   | 'soloWedding'
   | 'penalty';
 
-const types = new Map<DropdownType, { text: string }>([
+const types = new Map<DropdownType, {text: string}>([
   ['normal', {text: 'Normalspiel'}],
   ['solo', {text: 'Solo'}],
   ['poverty', {text: 'Armut'}],
@@ -103,7 +103,7 @@ export default function GameTypeSelection(): ReactElement {
         <Icon name={'male'}/>
         {(types.get(selectedType) || {}).text} von
       </Header>
-      <Modal.Content className="u-flex-row-around u-flex-wrap">
+      <Modal.Content className='u-flex-row-around u-flex-wrap'>
         {game.data.players.map((id) => <p key={id}>
           <Button onClick={() => commitType(id)}
                   color={game.data.gameTypeMemberId === id ? 'green' : undefined}

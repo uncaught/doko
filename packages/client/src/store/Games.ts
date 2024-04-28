@@ -18,22 +18,22 @@ import {
   RoundsAdd,
   RoundsPatch,
 } from '@doko/common';
-import {usePageContext} from '../Page';
-import {useDispatch, useSelector} from 'react-redux';
-import {arrayToList, createReducer} from './Reducer';
-import {State} from './Store';
-import {useCallback, useMemo} from 'react';
-import {LoguxDispatch} from './Logux';
-import {useLatestGroupRound, useRound} from './Rounds';
 import {difference} from 'lodash';
-import {usePlayersWithStats, useRoundParticipatingPlayers} from './Players';
+import {useCallback, useMemo} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
-import {useGroup} from './Groups';
-import {detectRunNumber} from './Games/DetectRunNumber';
+import {usePageContext} from '../Page';
 import {detectBockGame} from './Games/DetectBockGame';
 import {detectLastGameAndForcedSolo} from './Games/DetectLastGameAndForcedSolo';
 import {detectPlayers} from './Games/DetectPlayers';
+import {detectRunNumber} from './Games/DetectRunNumber';
+import {useGroup} from './Groups';
+import {LoguxDispatch} from './Logux';
+import {usePlayersWithStats, useRoundParticipatingPlayers} from './Players';
+import {arrayToList, createReducer} from './Reducer';
+import {useLatestGroupRound, useRound} from './Rounds';
 import {useSimulatedGame, useSimulatedPatchGame, useSimulation} from './Simulation';
+import {State} from './Store';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
@@ -113,7 +113,7 @@ export function useLatestGroupGame(): Game | undefined {
 const emptyGames: Games = {};
 
 export function useSortedGames(): Game[] {
-  const {roundId} = usePageContext<{ roundId: string }>();
+  const {roundId} = usePageContext<{roundId: string}>();
   const games = useSelector(gamesSelector)[roundId] || emptyGames;
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
@@ -208,7 +208,7 @@ export function useRemoveGame() {
 }
 
 function useRealGame(): Game | undefined {
-  const {gameId, roundId} = usePageContext<{ gameId: string; roundId: string }>();
+  const {gameId, roundId} = usePageContext<{gameId: string; roundId: string}>();
   const games = useSelector(gamesSelector)[roundId] || {};
   return games[gameId];
 }

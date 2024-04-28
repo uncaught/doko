@@ -1,7 +1,7 @@
-import {List, Segment} from 'semantic-ui-react';
-import React from 'react';
-import {useGame} from '../../store/Games';
 import {logTexts} from '@doko/common';
+import React from 'react';
+import {List, Segment} from 'semantic-ui-react';
+import {useGame} from '../../store/Games';
 
 export default function GameCalcBlame(): React.ReactElement | null {
   const {data} = useGame()!;

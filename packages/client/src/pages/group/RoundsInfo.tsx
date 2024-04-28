@@ -1,10 +1,10 @@
-import React, {ReactElement} from 'react';
-import {Icon, Label} from 'semantic-ui-react';
-import {useSortedRounds} from '../../store/Rounds';
 import dayjs from 'dayjs';
-import {asLink} from '../../AsLink';
+import React, {ReactElement} from 'react';
 import {useRouteMatch} from 'react-router-dom';
+import {Icon, Label} from 'semantic-ui-react';
+import {asLink} from '../../AsLink';
 import {useAddRound} from '../../store/Round/AddRound';
+import {useSortedRounds} from '../../store/Rounds';
 
 export default function RoundsInfo(): ReactElement {
   const {url} = useRouteMatch();
@@ -13,7 +13,7 @@ export default function RoundsInfo(): ReactElement {
   const lastRound = rounds[0];
 
   return <section>
-    <div className="memberDetail">
+    <div className='memberDetail'>
       <Label as={asLink(`${url}/rounds`)} color={'orange'}>
         Alle Runden
         <Label.Detail>
@@ -22,7 +22,7 @@ export default function RoundsInfo(): ReactElement {
       </Label>
     </div>
 
-    {!!lastRound && <div className="memberDetail">
+    {!!lastRound && <div className='memberDetail'>
       <Label as={asLink(`${url}/rounds/round/${lastRound.id}`)} color={'blue'}>
         {lastRound.endDate ? 'Letzte' : 'Aktuelle'} Runde
         <Label.Detail>
@@ -31,7 +31,7 @@ export default function RoundsInfo(): ReactElement {
       </Label>
     </div>}
 
-    {(!lastRound || lastRound.endDate !== null) && <div className="memberDetail">
+    {(!lastRound || lastRound.endDate !== null) && <div className='memberDetail'>
       <Label color={'green'} onClick={addRound}>
         Neue Runde
         <Label.Detail>

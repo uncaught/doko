@@ -1,8 +1,8 @@
 import React, {ReactElement, useState} from 'react';
 import {Button, Form, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import {useSortedGames} from '../../store/Games';
-import {useFinishRound} from '../../store/Round/FinishRound';
 import {usePlayersWithStats} from '../../store/Players';
+import {useFinishRound} from '../../store/Round/FinishRound';
 
 export default function FinishRoundPrematurely(): ReactElement | null {
   const sortedGames = useSortedGames();

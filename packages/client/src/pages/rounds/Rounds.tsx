@@ -1,10 +1,10 @@
+import dayjs from 'dayjs';
 import React, {ReactElement} from 'react';
+import {useRouteMatch} from 'react-router-dom';
 import {Icon, Label, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
-import {useSortedRounds} from '../../store/Rounds';
-import dayjs from 'dayjs';
-import {useRouteMatch} from 'react-router-dom';
 import {useGroupMembers} from '../../store/GroupMembers';
+import {useSortedRounds} from '../../store/Rounds';
 
 export default function Rounds(): ReactElement {
   const rounds = useSortedRounds();

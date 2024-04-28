@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function PointsLabel({green, points, red}: Props): ReactElement {
-  return <div className="memberDetail">
+  return <div className='memberDetail'>
     <Label color={green ? 'green' : (red ? 'red' : undefined)}>
       Punkte
       <Label.Detail>{points}</Label.Detail>

@@ -6,5 +6,5 @@ export default function Value({value, total, won}: {value: number; total?: numbe
   if (typeof total === 'number') {
     values.push(`${Math.round(value / total * 100)}%`);
   }
-  return <ValueGrid values={values} won={won} />;
+  return <ValueGrid values={values} won={won}/>;
 }

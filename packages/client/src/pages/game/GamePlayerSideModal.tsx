@@ -1,10 +1,10 @@
 import {gameTypeTexts, GroupMember} from '@doko/common';
 import React, {ReactElement} from 'react';
-import {useGame} from '../../store/Games';
 import {Button, Modal} from 'semantic-ui-react';
+import {useGame} from '../../store/Games';
 import {useSelectGamePlayerSide} from './SelectGamePlayerSide';
 
-export default function GamePlayerSideModal({member, close}: { member: GroupMember; close: () => void }): ReactElement {
+export default function GamePlayerSideModal({member, close}: {member: GroupMember; close: () => void}): ReactElement {
   const game = useGame()!;
   const isGameTypePlayer = game.data.gameTypeMemberId === member.id;
   const selectGamePlayerSide = useSelectGamePlayerSide();
@@ -15,7 +15,7 @@ export default function GamePlayerSideModal({member, close}: { member: GroupMemb
     }
   };
 
-  return <Modal.Content className="u-flex-row-around u-flex-wrap">
+  return <Modal.Content className='u-flex-row-around u-flex-wrap'>
     {isGameTypePlayer && <>
       <Button inverted color={'green'}>Re</Button>
       <div className={'u-flex-center'}>{member.name} spielt {gameTypeTexts.get(game.data.gameType)}</div>

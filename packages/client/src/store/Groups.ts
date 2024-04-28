@@ -1,4 +1,3 @@
-import {State} from './Store';
 import {
   Group,
   GroupMembersInvitationAccepted,
@@ -14,12 +13,13 @@ import {
   RoundsPatch,
   RoundsRemove,
 } from '@doko/common';
-import {arrayToList, createReducer} from './Reducer';
-import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {usePageContext} from '../Page';
 import {LoguxDispatch} from './Logux';
+import {arrayToList, createReducer} from './Reducer';
 import {useSimulatedGroup, useSimulation} from './Simulation';
+import {State} from './Store';
 
 const {addReducer, combinedReducer} = createReducer<Groups>({}, 'groups');
 
@@ -77,7 +77,7 @@ export const groupsReducer = combinedReducer;
 export const groupsSelector = (state: State) => state.groups;
 
 function useRealGroup(): Group | undefined {
-  const {groupId} = usePageContext<{ groupId: string }>();
+  const {groupId} = usePageContext<{groupId: string}>();
   const groups = useSelector(groupsSelector);
   return groups[groupId];
 }

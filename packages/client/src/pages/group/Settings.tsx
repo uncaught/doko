@@ -1,13 +1,13 @@
+import {bockGamesTranslations, bockInBockBehaviorOptions, extraPointsTranslations} from '@doko/common';
 import React, {ReactElement} from 'react';
 import {Divider, Form, Header} from 'semantic-ui-react';
-import Name from './settings/Name';
-import AllowedSoloTypes from './settings/AllowedSoloTypes';
-import CheckboxGroup from './settings/CheckboxGroup';
-import {bockGamesTranslations, bockInBockBehaviorOptions, extraPointsTranslations} from '@doko/common';
-import RadioGroup from './settings/RadioGroup';
-import BockEffect from './settings/BockEffect';
 import {useGroup} from '../../store/Groups';
+import AllowedSoloTypes from './settings/AllowedSoloTypes';
+import BockEffect from './settings/BockEffect';
 import Checkbox from './settings/Checkbox';
+import CheckboxGroup from './settings/CheckboxGroup';
+import Name from './settings/Name';
+import RadioGroup from './settings/RadioGroup';
 
 export default function Settings(): ReactElement | null {
   const {settings} = useGroup()!;

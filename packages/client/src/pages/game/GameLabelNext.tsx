@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {Icon, Label} from 'semantic-ui-react';
-import {useAddGame, useGame, useSortedGames} from '../../store/Games';
 import {asLink} from '../../AsLink';
+import {useAddGame, useGame, useSortedGames} from '../../store/Games';
 import {useRound} from '../../store/Rounds';
 
 export default function GameLabelNext(): ReactElement {
@@ -12,17 +12,17 @@ export default function GameLabelNext(): ReactElement {
   const nextGame = sortedGames[index + 1];
   const addGame = useAddGame();
   return <>
-    <div className="memberDetail">
+    <div className='memberDetail'>
       {!!nextGame &&
-      <Label as={asLink(`/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${nextGame.id}`)}
-             color={'blue'}>
-        <Icon className="u-margin-none" name={'hashtag'}/> <Icon name={'arrow right'}/>
-      </Label>}
+        <Label as={asLink(`/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${nextGame.id}`)}
+               color={'blue'}>
+          <Icon className='u-margin-none' name={'hashtag'}/> <Icon name={'arrow right'}/>
+        </Label>}
       {!nextGame && (!game.data.isComplete || game.data.isLastGame) && <Label>
-        <Icon className="u-margin-none" name={'hashtag'}/> <Icon name={'arrow right'}/>
+        <Icon className='u-margin-none' name={'hashtag'}/> <Icon name={'arrow right'}/>
       </Label>}
       {!nextGame && game.data.isComplete && !game.data.isLastGame && <Label color={'green'} onClick={addGame}>
-        <Icon className="u-margin-none" name={'plus'}/> <Icon name={'arrow right'}/>
+        <Icon className='u-margin-none' name={'plus'}/> <Icon name={'arrow right'}/>
       </Label>}
     </div>
   </>;

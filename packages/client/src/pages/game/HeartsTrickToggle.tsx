@@ -1,7 +1,7 @@
+import {soloGameTypes, SoloType} from '@doko/common';
 import React, {ReactElement} from 'react';
 import {Button} from 'semantic-ui-react';
 import {useGame, usePatchGame} from '../../store/Games';
-import {soloGameTypes, SoloType} from '@doko/common';
 import {useGroup} from '../../store/Groups';
 
 const heartsTrickSoloTypes: SoloType[] = ['trump', 'clubs', 'spades'];
