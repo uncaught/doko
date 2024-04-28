@@ -1,18 +1,18 @@
 ### Development Stack
-- Start the proxy in background: `docker-compose up -d proxy`. This routes the websocket `/ws`-path to the server and everything else to the client.
-- Start the database in background: `docker-compose up -d database`. 
+- Start the proxy in background: `docker compose up -d proxy`. This routes the websocket `/ws`-path to the server and everything else to the client.
+- Start the database in background: `docker compose up -d database`. 
   - If the database is not initialized, all files in `packages/database/schema` are executed.
-  - To fully delete the database, stop everything with `docker-compose down` and delete the `mysql` folder.
+  - To fully delete the database, stop everything with `docker compose down` and delete the `mysql` folder.
 - Install dependencies: `./yarn.sh install`
 - Best start server and client in separate tabs in foreground to see their output:
-  - Server: `docker-compose up server`
-  - Client: `docker-compose up client`
+  - Server: `docker compose up server`
+  - Client: `docker compose up client`
 - Browse to https://localhost (SSL is required for using the camera)
 
 ### Reset database
 ```bash
 cat xxx.sql.gz | gunzip | docker-compose exec -T database mysql doko
-docker-compose restart server
+docker compose restart server
 ```
 
 ### Nomenklatur
