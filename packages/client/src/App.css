@@ -447,3 +447,9 @@ input[type=number] {
     max-height: unset;
   }
 }
+
+.penalty-points-grid {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  grid-column-gap: 1em;
+}

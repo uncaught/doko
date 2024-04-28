@@ -12,7 +12,7 @@ import {
   RoundsPatch,
   RoundsRemove,
 } from '@doko/common';
-import {arrayToList, createReducer} from 'src/store/Reducer';
+import {arrayToList, createReducer} from './Reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useMemo} from 'react';
 import useSubscription from '@logux/redux/use-subscription';

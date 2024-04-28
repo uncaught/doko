@@ -1,6 +1,7 @@
 import React, {ReactElement} from 'react';
-import {Divider, Label} from 'semantic-ui-react';
+import {Divider} from 'semantic-ui-react';
 import {useGame} from '../../store/Games';
+import PointsLabel from '../../components/PointsLabel';
 
 export default function Points({isRe}: { isRe: boolean }): ReactElement | null {
   const {data} = useGame()!;
@@ -16,11 +17,6 @@ export default function Points({isRe}: { isRe: boolean }): ReactElement | null {
 
   return <>
     <Divider className="tiny"/>
-    <div className="memberDetail">
-      <Label color={hasWon ? 'green' : (hasLost ? 'red' : undefined)}>
-        Punkte
-        <Label.Detail>{points}</Label.Detail>
-      </Label>
-    </div>
+    <PointsLabel green={hasWon} points={points} red={hasLost}/>
   </>;
 }

@@ -1,9 +1,10 @@
-import React, {ReactElement, useCallback, useEffect, useState} from 'react';
-import {Button, Checkbox, Form, Header, Icon, Modal, Segment} from 'semantic-ui-react';
+import React, {Fragment, ReactElement, useCallback, useEffect, useState} from 'react';
+import {Button, Checkbox, Form, Header, Icon, Label, Modal, Segment} from 'semantic-ui-react';
 import {useRoundParticipatingPlayers} from '../../store/Players';
 import {useGame, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 import NumberStepper from '../../components/NumberStepper';
+import PointsLabel from '../../components/PointsLabel';
 
 export default function Penalty(): ReactElement {
   const {data} = useGame()!;
@@ -34,8 +35,8 @@ export default function Penalty(): ReactElement {
             label={<label>Nur {contraLength === 1
               ? <b>{members[data.contra.members[0]].name}</b>
               : `ein Solospieler`} erhält positive Punkte</label>}
-            name='penaltyDivision'
-            value='solo'
+            name="penaltyDivision"
+            value="solo"
             checked={contraLength === 1}
             onChange={() => setOpen(true)}
           />
@@ -43,9 +44,9 @@ export default function Penalty(): ReactElement {
         <Form.Field>
           <Checkbox
             radio
-            label='Nur die 3 Gegenspieler dieses Spiels erhalten positive Punkte'
-            name='penaltyDivision'
-            value='game'
+            label="Nur die 3 Gegenspieler dieses Spiels erhalten positive Punkte"
+            name="penaltyDivision"
+            value="game"
             checked={contraLength === 3}
             onChange={() => patchGame({data: {contra: {members: gameOtherPlayerIds}}})}
           />
@@ -55,8 +56,8 @@ export default function Penalty(): ReactElement {
             <Checkbox
               radio
               label={`Alle ${allOtherPlayerIds.length} Gegenspieler dieser Runde erhalten positive Punkte`}
-              name='penaltyDivision'
-              value='all'
+              name="penaltyDivision"
+              value="all"
               checked={contraLength === allOtherPlayerIds.length}
               onChange={() => patchGame({data: {contra: {members: allOtherPlayerIds}}})}
             />
@@ -86,7 +87,7 @@ export default function Penalty(): ReactElement {
         <p>Die Strafpunkte müssen unter den Gegenspielern aufteilbar sein.</p>
       </Form>
 
-      <Modal open={open} onClose={() => setOpen(false)} basic size='small'>
+      <Modal open={open} onClose={() => setOpen(false)} basic size="small">
         <Header>
           <Icon name={'male'}/>
           Solo-Spieler gegen den der Regelverstoß begangen wurde
@@ -96,10 +97,31 @@ export default function Penalty(): ReactElement {
             <Button inverted onClick={() => {
               patchGame({data: {contra: {members: [id]}}});
               setOpen(false);
-            }}><Icon name='user'/> {members[id].name}</Button>
+            }}><Icon name="user"/> {members[id].name}</Button>
           </p>)}
         </Modal.Content>
       </Modal>
+    </Segment>
+
+    <Segment vertical>
+      <div className={'penalty-points-grid'}>
+        {roundParticipatingPlayers.map(({groupMemberId}) => {
+          const isRe = data.re.members.includes(groupMemberId);
+          const isContra = data.contra.members.includes(groupMemberId);
+          return <Fragment key={groupMemberId}>
+            <div className="memberDetail">
+              <Label onClick={() => setOpen(true)}>
+                {members[groupMemberId].name} <Icon name={'user'}/>
+              </Label>
+            </div>
+            <PointsLabel
+              green={isContra}
+              points={isRe ? -data.gamePoints * contraLength : (isContra ? data.gamePoints : 0)}
+              red={isRe}
+            />
+          </Fragment>;
+        })}
+      </div>
     </Segment>
   </>;
 }
