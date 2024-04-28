@@ -1,4 +1,5 @@
 .DS_Store
+.env.local
 *.sql.gz
 /mysql
 /packages/client/build

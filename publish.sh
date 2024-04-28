@@ -2,9 +2,17 @@
 set -e
 scriptDir=$(cd "$(dirname $0)" && echo "$(pwd -P)")
 
+clientImage=uncaught42/doko-stats-client
+databaseImage=uncaught42/doko-stats-db
+serverImage=uncaught42/doko-stats-server
+
 cd $scriptDir
 
 source $scriptDir/.env
+
+if [ -f .env.local ]; then
+  source $scriptDir/.env.local
+fi
 
 vers=${1:-0.0.0}
 
@@ -36,14 +44,12 @@ step "Building client ..."
 ./yarn.sh workspace @doko/client build
 ./writeVersion.sh $vers
 clientDir=$scriptDir/packages/client
-clientImage=uncaught42/doko-stats-client
 docker build --pull -f $clientDir/Dockerfile -t $clientImage:$vers -t $clientImage:latest $clientDir
 
 
 echo ""
 step "Building database ..."
 databaseDir=$scriptDir/packages/database
-databaseImage=uncaught42/doko-stats-db
 docker build --pull -f $databaseDir/Dockerfile -t $databaseImage:$vers -t $databaseImage:latest $databaseDir
 
 
@@ -51,7 +57,6 @@ echo ""
 step "Building server ..."
 ./yarn.sh workspace @doko/server build
 serverDir=$scriptDir/packages/server
-serverImage=uncaught42/doko-stats-server
 docker build --pull -f $serverDir/Dockerfile -t $serverImage:$vers -t $serverImage:latest $serverDir
 
 
@@ -60,12 +65,18 @@ if [ "$vers" = "0.0.0" ]; then
   warn "Not pushing images to docker hub due to local version"
 else
   step "Pushing images ..."
+  if [ "$DOCKER_LOGIN_USER" != "" ] && [ "$DOCKER_LOGIN_TOKEN" != "" ]; then
+    echo "$DOCKER_LOGIN_TOKEN" | docker login -u $DOCKER_LOGIN_USER --password-stdin
+  fi
   docker push -q $clientImage:$vers
   docker push -q $clientImage:latest
   docker push -q $databaseImage:$vers
   docker push -q $databaseImage:latest
   docker push -q $serverImage:$vers
   docker push -q $serverImage:latest
+  if [ "$DOCKER_LOGIN_USER" != "" ] && [ "$DOCKER_LOGIN_TOKEN" != "" ]; then
+    docker logout
+  fi
 fi
 
 
