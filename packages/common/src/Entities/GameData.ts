@@ -106,25 +106,26 @@ export const gameTypeTexts = new Map<GameType, string>([
 ]);
 
 export interface GameData {
-  gameCalcLog: GameCalcLog;
-  gameType: GameType;
-  gameTypeMemberId: string | null; //soloist, poor guy of poverty, wedding announcer or penalty receiver
-  soloType: null | SoloType; //only for regular soli, not weddings or penalties
-  runNumber: number;
-  isLastGame: boolean;
-  players: string[];
-  re: Party;
-  contra: Party;
-  wonAgainstQueensOfClubsExtraPoint: boolean;
-  bockGameWeight: number;
-  qualifiesNewBockGames: boolean;
   bockEffect: GroupSettings['bockEffect'];
   bockEffectExtraPoints: number;
   bockGameConditions: GroupSettings['bockGames'];
+  bockGameWeight: number;
+  contra: Party;
+  gameCalcLog: GameCalcLog;
+  gamePoints: number;
+  gameType: GameType;
+  gameTypeMemberId: string | null; //soloist, poor guy of poverty, wedding announcer or penalty receiver
   heartsTrickWentThrough: boolean;
   isComplete: boolean;
-  gamePoints: number;
+  isLastGame: boolean;
+  penaltyCountsAsDutySolo?: boolean;
+  players: string[];
+  qualifiesNewBockGames: boolean;
+  re: Party;
+  runNumber: number;
+  soloType: null | SoloType; //only for regular soli, not weddings or penalties
   winner: 'stalemate' | 're' | 'contra';
+  wonAgainstQueensOfClubsExtraPoint: boolean;
 }
 
 export function getDefaultParty(): Party {

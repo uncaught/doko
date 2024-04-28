@@ -32,13 +32,14 @@ export default function Penalty(): ReactElement {
         <Form.Field>
           <Checkbox
             radio
-            label={<label>Nur {contraLength === 1
-              ? <b>{members[data.contra.members[0]].name}</b>
-              : `ein Solospieler`} erhält positive Punkte</label>}
+            label={<label>
+              Nur ein Solospieler erhält positive Punkte{contraLength === 1 &&
+              <span>: <b>{members[data.contra.members[0]].name}</b></span>}
+            </label>}
             name='penaltyDivision'
             value='solo'
             checked={contraLength === 1}
-            onChange={() => setOpen(true)}
+            onClick={() => setOpen(true)}
           />
         </Form.Field>
         <Form.Field>
@@ -48,7 +49,7 @@ export default function Penalty(): ReactElement {
             name='penaltyDivision'
             value='game'
             checked={contraLength === 3}
-            onChange={() => patchGame({data: {contra: {members: gameOtherPlayerIds}}})}
+            onChange={() => patchGame({data: {contra: {members: gameOtherPlayerIds}, penaltyCountsAsDutySolo: false}})}
           />
         </Form.Field>
         {roundParticipatingPlayers.length > 4 && <>
@@ -59,7 +60,7 @@ export default function Penalty(): ReactElement {
               name='penaltyDivision'
               value='all'
               checked={contraLength === allOtherPlayerIds.length}
-              onChange={() => patchGame({data: {contra: {members: allOtherPlayerIds}}})}
+              onChange={() => patchGame({data: {contra: {members: allOtherPlayerIds}, penaltyCountsAsDutySolo: false}})}
             />
           </Form.Field>
         </>}
@@ -95,13 +96,38 @@ export default function Penalty(): ReactElement {
         <Modal.Content className='u-flex-row-around u-flex-wrap'>
           {gameOtherPlayerIds.map((id) => <p key={id}>
             <Button inverted onClick={() => {
-              patchGame({data: {contra: {members: [id]}}});
+              patchGame({data: {contra: {members: [id]}, penaltyCountsAsDutySolo: false}});
               setOpen(false);
             }}><Icon name='user'/> {members[id].name}</Button>
           </p>)}
         </Modal.Content>
       </Modal>
     </Segment>
+
+    {contraLength === 1 && <Segment vertical>
+      <Form>
+        <Form.Field>
+          <Checkbox
+            radio
+            label={'Zählt nicht als Pflichtsolo'}
+            name='penaltyCountsAsDutySolo'
+            value='no'
+            checked={!data.penaltyCountsAsDutySolo}
+            onClick={() => patchGame({data: {penaltyCountsAsDutySolo: false}})}
+          />
+        </Form.Field>
+        <Form.Field>
+          <Checkbox
+            radio
+            label={'Zählt als Pflichtsolo'}
+            name='penaltyCountsAsDutySolo'
+            value='yes'
+            checked={Boolean(data.penaltyCountsAsDutySolo)}
+            onClick={() => patchGame({data: {penaltyCountsAsDutySolo: true}})}
+          />
+        </Form.Field>
+      </Form>
+    </Segment>}
 
     <Segment vertical>
       <div className={'penalty-points-grid'}>

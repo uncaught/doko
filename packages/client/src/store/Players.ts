@@ -123,7 +123,7 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
     };
 
     games.forEach((game) => {
-      const {data: {isComplete, gameType, re, contra}} = game;
+      const {data: {isComplete, gameType, re, contra, penaltyCountsAsDutySolo}} = game;
       if (!isComplete) {
         //only complete games are counted for the player stats.
         return;
@@ -131,6 +131,10 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
 
       if (gameType === 'dutySolo' || gameType === 'forcedSolo') {
         statsByMember.get(re.members[0])!.dutySoloPlayed = true;
+      }
+
+      if (gameType === 'penalty' && penaltyCountsAsDutySolo && contra.members.length === 1) {
+        statsByMember.get(contra.members[0])!.dutySoloPlayed = true;
       }
 
       addPoints(re);

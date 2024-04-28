@@ -19,7 +19,11 @@ function RoundIndicators({data}: {data: GameData}): ReactElement {
 
 function RoundPlayerIndicators({data, memberId}: {data: GameData; memberId: string}): ReactElement {
   const indicators: ReactElement[] = [];
-  if (soloGameTypes.includes(data.gameType) && data.re.members.includes(memberId)) {
+  if ((soloGameTypes.includes(data.gameType) && data.re.members.includes(memberId)) ||
+    (data.gameType === 'penalty'
+      && data.contra.members.length === 1
+      && data.contra.members[0] === memberId
+      && data.penaltyCountsAsDutySolo)) {
     indicators.push(<Icon key={'solo'}
                           size={'small'}
                           color={data.gameType === 'lustSolo' ? 'blue' : 'red'}
