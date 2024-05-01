@@ -44,7 +44,7 @@
     "typescript": "^5"
   },
   "scripts": {
-    "dev": "rsbuild dev",
+    "dev": "DEBUG=rsbuild rsbuild dev",
     "build": "rsbuild build",
     "tsc": "tsc"
   },
