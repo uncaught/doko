@@ -7,7 +7,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DOKO_SQL_PASSWORD}
       - MYSQL_PWD=${DOKO_SQL_PASSWORD}
     volumes:
-      - ./packages/server/src/database/schema:/docker-entrypoint-initdb.d:ro
+      - ./packages/database/schema:/docker-entrypoint-initdb.d:ro
       - ./mysql:/var/lib/mysql:rw
     command:
       - "--character-set-server=utf8mb4"

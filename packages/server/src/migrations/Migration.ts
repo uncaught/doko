@@ -1,5 +1,5 @@
 import _fs from 'fs';
-import {getTransactional, query} from '../../Connection';
+import {getTransactional, query} from '../Connection';
 
 const fs = _fs.promises;
 
