@@ -49,9 +49,9 @@ addReducer<GamesAdd>('games/add', (state, {game}) => ({
 }));
 
 addReducer<GamesPatch>('games/patch', (state, {id, roundId, game}) => {
-  if (state[roundId][id]) {
-    const newGame = mergeStates<Game>(state[roundId][id], game);
-    if (newGame !== state[roundId][id]) {
+  if (state[roundId]?.[id]) {
+    const newGame = mergeStates<Game>(state[roundId]![id]!, game);
+    if (newGame !== state[roundId]![id]) {
       newGame.data = recalcPoints(newGame.data);
       return {
         ...state,
@@ -66,9 +66,9 @@ addReducer<GamesPatch>('games/patch', (state, {id, roundId, game}) => {
 });
 
 addReducer<GamesRemove>('games/remove', (state, {id, roundId}) => {
-  if (state[roundId][id]) {
+  if (state[roundId]?.[id]) {
     const newState = {...state, [roundId]: {...state[roundId]}};
-    delete newState[roundId][id];
+    delete newState[roundId]![id];
     return newState;
   }
   return state;
@@ -80,7 +80,7 @@ addReducer<RoundsPatch>('rounds/patch', (state, action) => {
   //In case the round was ended prematurely, patch the last game:
   if (action.round.endDate) {
     const roundGames = state[action.id];
-    const lastGame = getLastGameOfRoundGames(roundGames);
+    const lastGame = roundGames && getLastGameOfRoundGames(roundGames);
     if (lastGame && !lastGame.data.isLastGame) {
       return {
         ...state,
@@ -141,7 +141,7 @@ function getNextDealer(roundParticipatingPlayers: Player[], activePlayers: Playe
   do {
     index++;
     const nextIndex = index % roundParticipatingPlayers.length;
-    groupMemberId = roundParticipatingPlayers[nextIndex].groupMemberId;
+    groupMemberId = roundParticipatingPlayers[nextIndex]!.groupMemberId;
   } while (!activePlayerMemberIds.has(groupMemberId));
 
   return groupMemberId;
@@ -168,7 +168,7 @@ export function useAddGame() {
     const players = roundParticipatingPlayers.filter((p) => p.leftAfterGameNumber === null);
     const nextDealerId = lastGame
       ? getNextDealer(roundParticipatingPlayers, players, lastGame)
-      : players[0].groupMemberId;
+      : players[0]!.groupMemberId;
     const data = getDefaultGameData(settings);
     data.runNumber = detectRunNumber(currentGames, nextDealerId, roundParticipatingPlayers);
     detectPlayers(data, nextDealerId, players);

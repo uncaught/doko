@@ -10,7 +10,7 @@ export function detectPlayers(
   gameData.players = [];
   for (let i = 1; i < 5; i++) {
     const pIndex = (nextDealerIndex + i) % activePlayers.length;
-    const player = activePlayers[pIndex];
+    const player = activePlayers[pIndex]!;
     gameData.players.push(player.groupMemberId);
   }
 }

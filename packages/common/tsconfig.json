@@ -2,9 +2,9 @@
   "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
     "noFallthroughCasesInSwitch": false,
     "noImplicitAny": true,
-    "noUncheckedIndexedAccess": true,
-    "outDir": "build"
+    "noUncheckedIndexedAccess": true
   }
 }

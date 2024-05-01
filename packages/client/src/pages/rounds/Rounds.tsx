@@ -31,7 +31,7 @@ export default function Rounds(): ReactElement {
                 <Label size={'small'} color={'green'}>
                   {Object.entries(data.results.players)
                          .filter(([, {pointDiffToTopPlayer}]) => pointDiffToTopPlayer === 0)
-                         .map(([id]) => members[id].name)
+                         .map(([id]) => members[id]!.name)
                          .join(', ')} <Icon name='trophy'/>
                 </Label>
                 {data.eurosPerPointDiffToTopPlayer !== null && <Label size={'small'} color={'blue'}>

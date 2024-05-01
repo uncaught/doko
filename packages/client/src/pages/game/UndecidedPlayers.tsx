@@ -11,7 +11,7 @@ export default function UndecidedPlayers(): ReactElement {
   return <>
     {undecidedPlayers.length > 0 && <>
       <Segment vertical className='u-flex-row-around u-flex-wrap'>
-        {undecidedPlayers.map((id) => <GamePlayer key={id} member={members[id]}/>)}
+        {undecidedPlayers.map((id) => <GamePlayer key={id} member={members[id]!}/>)}
       </Segment>
     </>}
   </>;

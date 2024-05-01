@@ -11,7 +11,7 @@ export default function PageHeader({onNameClick, openMenu}: {
   const {displayName, parents} = usePageContext();
   return <header className='appPageHeader'>
     {parents.length === 0 && <SuitsLogo/>}
-    {parents.length > 0 && <Link className='appPageHeader-link' to={parents[0].url}><Icon name={'arrow left'}/></Link>}
+    {parents.length > 0 && <Link className='appPageHeader-link' to={parents[0]!.url}><Icon name={'arrow left'}/></Link>}
     <div className='appPageHeader-name' onClick={onNameClick}>{displayName}</div>
     <Icon name={'bars'} onClick={openMenu}/>
   </header>;

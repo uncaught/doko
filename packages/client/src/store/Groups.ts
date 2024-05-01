@@ -32,8 +32,8 @@ addReducer<GroupsAdd>('groups/add', (state, action) => ({
 
 addReducer<GroupsAdded>('groups/added', (state, {groupId}) => {
   if (state[groupId]) {
-    const newState = {...state, [groupId]: {...state[groupId]}};
-    delete newState[groupId].isNew;
+    const newState: Groups = {...state, [groupId]: {...state[groupId]!}};
+    delete newState[groupId]!.isNew;
     return newState;
   }
   return state;
@@ -48,21 +48,21 @@ addReducer<GroupsPatch>('groups/patch', (state, action) => {
 
 addReducer<RoundsAdd>('rounds/add', (state, {round: {groupId}}) => {
   if (state[groupId]) {
-    return mergeStates(state, {[groupId]: {roundsCount: state[groupId].roundsCount + 1}});
+    return mergeStates(state, {[groupId]: {roundsCount: state[groupId]!.roundsCount + 1}});
   }
   return state;
 });
 
 addReducer<RoundsPatch>('rounds/patch', (state, {groupId, round: {endDate}}) => {
   if (state[groupId] && endDate) {
-    return mergeStates(state, {[groupId]: {completedRoundsCount: state[groupId].completedRoundsCount + 1}});
+    return mergeStates(state, {[groupId]: {completedRoundsCount: state[groupId]!.completedRoundsCount + 1}});
   }
   return state;
 });
 
 addReducer<RoundsRemove>('rounds/remove', (state, {groupId}) => {
   if (state[groupId]) {
-    return mergeStates(state, {[groupId]: {roundsCount: state[groupId].roundsCount - 1}});
+    return mergeStates(state, {[groupId]: {roundsCount: state[groupId]!.roundsCount - 1}});
   }
   return state;
 });

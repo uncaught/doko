@@ -2,6 +2,7 @@
 .env.local
 *.sql.gz
 /mysql
+/packages/client/.swc
 /packages/client/build
 /packages/server/build
 /.yarn-cache

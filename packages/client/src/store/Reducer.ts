@@ -21,7 +21,7 @@ export function createReducer<S>(defaultState: any = {}, syncKey: string | null 
       return syncKey ? LocalStorage.getCached(syncKey, defaultState) : defaultState;
     }
 
-    let newState = state;
+    let newState = state as S;
     const reducer = map.get(action.type);
     if (reducer) {
       newState = reducer(newState, action);

@@ -27,14 +27,14 @@ export default function Penalty(): ReactElement {
 
   return <>
     <Segment vertical>
-      <Header>Regelverstoß von {members[data.gameTypeMemberId!].name}</Header>
+      <Header>Regelverstoß von {members[data.gameTypeMemberId!]!.name}</Header>
       <Form>
         <Form.Field>
           <Checkbox
             radio
             label={<label>
               Nur ein Solospieler erhält positive Punkte{contraLength === 1 &&
-              <span>: <b>{members[data.contra.members[0]].name}</b></span>}
+              <span>: <b>{members[data.contra.members[0]!]!.name}</b></span>}
             </label>}
             name='penaltyDivision'
             value='solo'
@@ -98,7 +98,7 @@ export default function Penalty(): ReactElement {
             <Button inverted onClick={() => {
               patchGame({data: {contra: {members: [id]}, penaltyCountsAsDutySolo: false}});
               setOpen(false);
-            }}><Icon name='user'/> {members[id].name}</Button>
+            }}><Icon name='user'/> {members[id]!.name}</Button>
           </p>)}
         </Modal.Content>
       </Modal>
@@ -137,7 +137,7 @@ export default function Penalty(): ReactElement {
           return <Fragment key={groupMemberId}>
             <div className='memberDetail'>
               <Label onClick={() => setOpen(true)}>
-                {members[groupMemberId].name} <Icon name={'user'}/>
+                {members[groupMemberId]!.name} <Icon name={'user'}/>
               </Label>
             </div>
             <PointsLabel

@@ -1,5 +1,5 @@
 import React, {ReactElement, useCallback, useState} from 'react';
-import QrReader from 'react-qr-reader';
+// import QrReader from 'react-qr-reader';
 import {Button, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import {useAcceptInvitation} from '../../store/GroupMembers';
 
@@ -29,12 +29,14 @@ export default function ScanInvitation(): ReactElement {
                     size='small'>
       <Header icon='camera' content='Scanning ...'/>
       <Modal.Content>
-        <QrReader
-          delay={300}
-          onError={setError}
-          onScan={onScan}
-          style={{width: '100%'}}
-        />
+        <div>xxx currently not supported xxx</div>
+        {/* FIXME */}
+        {/*<QrReader*/}
+        {/*  delay={300}*/}
+        {/*  onError={setError}*/}
+        {/*  onScan={onScan}*/}
+        {/*  style={{width: '100%'}}*/}
+        {/*/>*/}
       </Modal.Content>
       {!!error && <Modal.Actions>
         <Message negative>{error.message || error}</Message>
