@@ -33,7 +33,7 @@ export async function memberIdsBelongToGroup(groupId: string, memberIds: string[
 
 async function getGroupForMember(id: string): Promise<string | null> {
   const result = await query<{groupId: string}>(`SELECT group_id as groupId FROM group_members WHERE id = ?`, [id]);
-  return result.length ? result[0].groupId : null;
+  return result.length ? result[0]!.groupId : null;
 }
 
 export async function loadGroupMembers(deviceId: string, groupId: string): Promise<GroupMember[]> {
@@ -181,12 +181,14 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
       {users: [inviterDeviceId]});
 
     //Inform the invitee:
-    const groups = await loadGroups(new Set([groupId]));
-    await ctx.sendBack<GroupMembersInvitationAccepted>({
-      token,
-      groupId,
-      group: groups[0],
-      type: 'groupMembers/invitationAccepted',
-    });
+    const group = (await loadGroups(new Set([groupId])))[0];
+    if (group) {
+      await ctx.sendBack<GroupMembersInvitationAccepted>({
+        token,
+        group,
+        groupId,
+        type: 'groupMembers/invitationAccepted',
+      });
+    }
   },
 });

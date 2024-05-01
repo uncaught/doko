@@ -1,4 +1,4 @@
-FROM node:16.13.1-alpine3.14
+FROM node:18.20.2-bookworm
 
 ENV NODE_ENV=production
 ENV LOGUX_HOST=0.0.0.0
@@ -12,8 +12,11 @@ EXPOSE 80
 
 RUN mkdir /server
 
-COPY ./build /server
+COPY ./common /common
+COPY ./server /server
 
 WORKDIR /server
 
-ENTRYPOINT [ "node", "server.js" ]
+RUN npm install --frozen-lockfile
+
+ENTRYPOINT [ "npm", "run", "prod" ]

@@ -110,8 +110,8 @@ function game(data: GameData): GameData {
   const isSoloLike = soloLikeGameTypes.includes(data.gameType);
 
   //Get the relevant minimal pips:
-  const reMinPips = +data.re.pips.split('-')[0];
-  const contraMinPips = +data.contra.pips.split('-')[0];
+  const reMinPips = +data.re.pips.split('-')[0]!;
+  const contraMinPips = +data.contra.pips.split('-')[0]!;
 
   //Determine the winner:
   const reWon = reHasWon(data, log, reMinPips);

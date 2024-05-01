@@ -33,7 +33,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
-    image: node:16.13.1-alpine3.14
+    image: node:18.20.2-bookworm
     user: '1000:1000'
     working_dir: /doko/packages/server
     depends_on:
@@ -50,7 +50,7 @@ services:
       - DB_PW=${DOKO_SQL_PASSWORD}
       - DB_NAME=doko
     entrypoint:
-      - "yarn"
+      - "npm"
       - "run"
       - "dev"
     labels:
@@ -79,8 +79,9 @@ services:
     volumes:
       - ./:/doko:rw
     entrypoint:
-      - "yarn"
-      - "start"
+      - "npm"
+      - "run"
+      - "dev"
     labels:
       traefik.enable: true
       # http

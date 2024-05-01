@@ -25,6 +25,6 @@
   },
   "include": [
     "src",
-    "../../node_modules/@doko/common/@types"
+    "node_modules/@doko/common/@types"
   ]
 }

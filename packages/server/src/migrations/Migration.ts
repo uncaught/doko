@@ -18,7 +18,7 @@ async function loadMigrations(): Promise<Set<string>> {
 
 export async function runMigrations() {
   const files = await fs.readdir(__dirname);
-  const versions = files.filter((file) => regex.test(file)).map((file) => file.split('.')[0]);
+  const versions = files.filter((file) => regex.test(file)).map((file) => file.split('.')[0]!);
   versions.sort();
 
   if (versions.length) {

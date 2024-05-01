@@ -22,7 +22,7 @@ export type SubType<Base, Condition> = Pick<Base, {
 /**
  * Duck-typing for typescript
  */
-export function isDuck<A extends AnyObject>(obj: AnyObject, key: keyof A | Array<keyof A>): obj is A {
+export function isDuck<A>(obj: unknown, key: keyof A | Array<keyof A>): obj is A {
   const keys = Array.isArray(key) ? key : [key];
-  return keys.every((k) => obj.hasOwnProperty(k));
+  return !!obj && typeof obj === 'object' && keys.every((k) => k in obj);
 }

@@ -282,7 +282,7 @@ function addMissedAnnounces(data: GameData, statsByMember: StatsMap) {
     return;
   }
   const party = data[data.winner];
-  const minPips = +party.pips.split('-')[0];
+  const minPips = +party.pips.split('-')[0]!;
 
   function add(key: keyof MissedAnnounces) {
     party.members.forEach((mId) => {
