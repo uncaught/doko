@@ -38,7 +38,7 @@
     "@rsbuild/plugin-react": "^0.6.0",
     "@rsbuild/plugin-svgr": "^0.6.0",
     "@styled-jsx/plugin-sass": "^4.1.0",
-    "@swc/plugin-styled-jsx": "^1.5.126",
+    "@swc/plugin-styled-jsx": "^2.0.0",
     "@tsconfig/node18": "^18.2.4",
     "@types/node": "^18",
     "typescript": "^5"
