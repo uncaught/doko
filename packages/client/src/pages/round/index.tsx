@@ -1,27 +1,27 @@
 import React, {ReactElement} from 'react';
-import {Switch, useRouteMatch} from 'react-router-dom';
+import {Divider} from 'semantic-ui-react';
+import IconLink from '../../components/IconLink';
 import Page from '../../Page';
 import {useLoadRoundDetails, useRound} from '../../store/Rounds';
-import Games from '../games';
+import FinishRound from './FinishRound';
+import GamesInfo from './GamesInfo';
+import Players from './Players';
 import RemoveRoundMenuItem from './RemoveRoundMenuItem';
-import Round from './Round';
-import SittingOrder from './SittingOrder';
 
-export default function RoundIndex(): ReactElement | null {
+export default function Round(): ReactElement | null {
   useLoadRoundDetails();
-  const {url} = useRouteMatch();
   if (!useRound()) {
     return null;
   }
-  return <Switch>
-    <Page path={`${url}/players`} displayName={'Mitspieler'}>
-      <SittingOrder/>
-    </Page>
-    <Page path={`${url}/games`} displayName={'Spiele'}>
-      <Games/>
-    </Page>
-    <Page path={`${url}`} menuItems={[RemoveRoundMenuItem]}>
-      <Round/>
-    </Page>
-  </Switch>;
+  return <Page displayName={'Runde'} menuItems={[RemoveRoundMenuItem]}>
+    <section>
+      <IconLink to={`players`}>Sitzfolge / Teilnahme</IconLink>
+      <Divider/>
+      <GamesInfo/>
+      <Divider/>
+      <Players/>
+      <Divider/>
+      <FinishRound/>
+    </section>
+  </Page>;
 }

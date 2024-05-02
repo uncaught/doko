@@ -11,9 +11,11 @@ import classNames from 'classnames';
 import React, {ReactElement, ReactNode, useCallback, useMemo} from 'react';
 import {useSelector} from 'react-redux';
 import {Divider, Dropdown, StrictDropdownItemProps} from 'semantic-ui-react';
+import Page from '../../Page';
 import {useMemberInitials, useSortedGroupMembers} from '../../store/GroupMembers';
 import {useGroup} from '../../store/Groups';
 import {statisticsSelector, Ui, useSetUi} from '../../store/Ui';
+import EnableIrregularMembersMenuItem from './EnableIrregularMembersMenuItem';
 import Value from './Value';
 import ValueGrid from './ValueGrid';
 
@@ -230,22 +232,24 @@ export default function Statistics(): ReactElement {
     return [cols, cells];
   }, [filter, groupMembers, includeIrregularMembers, rows, setUi, selectedRow]);
 
-  return <section>
-    <Dropdown label={'Filter'}
-              options={filterOptions}
-              value={filter}
-              onChange={(e, {value}) => setFilter(value as Filter)}
-              selection/>
+  return <Page displayName={'Mitglieder'} menuItems={[EnableIrregularMembersMenuItem]}>
+    <section>
+      <Dropdown label={'Filter'}
+                options={filterOptions}
+                value={filter}
+                onChange={(e, {value}) => setFilter(value as Filter)}
+                selection/>
 
-    <Divider className='tiny' hidden/>
+      <Divider className='tiny' hidden/>
 
-    <div className='grid-table gamesTable statisticsTable u-text-center'
-         style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}>
-      <div className='grid-table-th'/>
-      {columns.map(({id, isYou}) => <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
-        {initials[id]}
-      </div>)}
-      {rowCells}
-    </div>
-  </section>;
+      <div className='grid-table gamesTable statisticsTable u-text-center'
+           style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}>
+        <div className='grid-table-th'/>
+        {columns.map(({id, isYou}) => <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
+          {initials[id]}
+        </div>)}
+        {rowCells}
+      </div>
+    </section>
+  </Page>;
 }

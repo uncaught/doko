@@ -1,7 +1,7 @@
 import {defaultGroupSettings, generateUuid, GroupMember, GroupsAdd} from '@doko/common';
 import {useCallback} from 'react';
 import {useDispatch} from 'react-redux';
-import {useHistory} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {LoguxDispatch} from '../Logux';
 
 function createMember(groupId: string, isYou: boolean, num: number): GroupMember {
@@ -15,7 +15,7 @@ function createMember(groupId: string, isYou: boolean, num: number): GroupMember
 }
 
 export function useAddGroup() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((groupName: string): void => {
     if (!groupName) {
@@ -40,6 +40,6 @@ export function useAddGroup() {
       ],
       type: 'groups/add',
     });
-    history.push(`/group/${groupId}`);
-  }, [dispatch, history]);
+    navigate(`/group/${groupId}`);
+  }, [dispatch, navigate]);
 }

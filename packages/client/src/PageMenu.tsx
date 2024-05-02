@@ -1,5 +1,6 @@
 import React, {ReactElement, useCallback} from 'react';
 import {useSelector} from 'react-redux';
+import {useParams} from 'react-router-dom';
 import {Checkbox, Icon, Menu} from 'semantic-ui-react';
 import {SemanticICONS} from 'semantic-ui-react/dist/commonjs/generic';
 import {asLink} from './AsLink';
@@ -35,7 +36,8 @@ function FollowLastGameMenuItem(): ReactElement {
 }
 
 export default function PageMenu({closeMenu}: {closeMenu: () => void}): ReactElement | null {
-  const {groupId, menuItems} = usePageContext<{groupId?: string}>();
+  const {groupId} = useParams<{groupId?: string}>();
+  const {menuItems} = usePageContext();
   const lastRound = useLatestGroupRound();
   const lastGame = useLatestGroupGame();
   const Item = useCallback(({children, route}: {children: React.ReactNode; route: string}) => {

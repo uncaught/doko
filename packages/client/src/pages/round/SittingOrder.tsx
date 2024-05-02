@@ -4,7 +4,7 @@ import React, {ReactElement} from 'react';
 import {Link} from 'react-router-dom';
 import {SortableContainer, SortableElement, SortableHandle, SortEndHandler} from 'react-sortable-hoc';
 import {Header, List, Message} from 'semantic-ui-react';
-import {usePageContext} from '../../Page';
+import Page from '../../Page';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {usePatchAttendance, usePatchSittingOrder, usePlayers} from '../../store/Players';
 
@@ -68,7 +68,6 @@ export default function SittingOrder(): ReactElement | null {
   const members = useGroupMembers();
   const players = usePlayers();
   const patchSittingOrder = usePatchSittingOrder();
-  const {parents} = usePageContext();
   if (!members) {
     return null;
   }
@@ -79,19 +78,21 @@ export default function SittingOrder(): ReactElement | null {
 
   const helperContainer = document.getElementById('dragItemListContainer')!;
 
-  return <section>
-    <Header as='h4'>Sitzreihenfolge</Header>
-    <SortableList members={members}
-                  players={players}
-                  onSortEnd={onSortEnd}
-                  helperContainer={helperContainer}
-                  useDragHandle/>
-    <Message info>
-      <p>Bitte so sortieren, dass der erste Geber oben steht.</p>
-      <p>Mitspieler können auch noch während einer Runde durch Klick auf das Spieler-Symbol hinzugefügt oder
-        entfernt werden.</p>
-    </Message>
+  return <Page displayName={'Mitspieler'}>
+    <section>
+      <Header as='h4'>Sitzreihenfolge</Header>
+      <SortableList members={members}
+                    players={players}
+                    onSortEnd={onSortEnd}
+                    helperContainer={helperContainer}
+                    useDragHandle/>
+      <Message info>
+        <p>Bitte so sortieren, dass der erste Geber oben steht.</p>
+        <p>Mitspieler können auch noch während einer Runde durch Klick auf das Spieler-Symbol hinzugefügt oder
+          entfernt werden.</p>
+      </Message>
 
-    <Link to={parents[0]!.url}>zu den Spielen</Link>
-  </section>;
+      <Link to={'..'}>zu den Spielen</Link>
+    </section>
+  </Page>;
 }
