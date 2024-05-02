@@ -7,7 +7,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DOKO_SQL_PASSWORD}
       - MYSQL_PWD=${DOKO_SQL_PASSWORD}
     volumes:
-      - ./packages/server/src/database/schema:/docker-entrypoint-initdb.d:ro
+      - ./packages/database/schema:/docker-entrypoint-initdb.d:ro
       - ./mysql:/var/lib/mysql:rw
     command:
       - "--character-set-server=utf8mb4"
@@ -33,7 +33,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
-    image: node:16.13.1-alpine3.14
+    image: node:20.12.2-bookworm
     user: '1000:1000'
     working_dir: /doko/packages/server
     depends_on:
@@ -50,7 +50,7 @@ services:
       - DB_PW=${DOKO_SQL_PASSWORD}
       - DB_NAME=doko
     entrypoint:
-      - "yarn"
+      - "npm"
       - "run"
       - "dev"
     labels:
@@ -70,7 +70,7 @@ services:
       traefik.http.services.doko-wss.loadbalancer.server.port: 3030
 
   client:
-    image: node:16.13.1-alpine3.14
+    image: node:20.12.2-bookworm
     user: '1000:1000'
     working_dir: /doko/packages/client
     environment:
@@ -79,8 +79,9 @@ services:
     volumes:
       - ./:/doko:rw
     entrypoint:
-      - "yarn"
-      - "start"
+      - "npm"
+      - "run"
+      - "dev"
     labels:
       traefik.enable: true
       # http

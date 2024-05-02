@@ -3,11 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
-  "scripts": {},
+  "scripts": {
+    "tsc": "tsc"
+  },
   "dependencies": {
-    "@types/lodash": "^4.14.149",
-    "@types/uuid": "^8.3.0",
-    "lodash": "^4.17.15",
-    "uuid": "^8.3.2"
+    "@types/lodash": "^4",
+    "@types/uuid": "^9",
+    "lodash": "^4",
+    "uuid": "^9"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20",
+    "@types/node": "^18",
+    "typescript": "^5"
   }
 }

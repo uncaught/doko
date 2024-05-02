@@ -1,4 +1,4 @@
-import {query} from '../../Connection';
+import {query} from '../Connection';
 
 async function fixBrokenRoundNumbers(update: typeof query) {
   await update(`update rounds set data = JSON_REPLACE(data, '$.roundDuration', 7)

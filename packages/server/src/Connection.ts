@@ -1,17 +1,22 @@
 import {AnyObject, DeepPartial, mergeStates} from '@doko/common';
+// @ts-ignore
+import {snakeCase} from 'change-case';
 import dayjs from 'dayjs';
 import {difference, intersection} from 'lodash';
-import mariadb, {PoolConnection, QueryOptions} from 'mariadb';
-import {snakeCase} from 'snake-case';
+import {createPool, PoolConnection, QueryOptions} from 'mariadb';
 import {DatabaseTypes, DbConfig} from './DbTypes';
 
-const pool = mariadb.createPool({
+const pool = createPool({
   host: process.env.DB_HOST,
   port: +process.env.DB_PORT!,
   user: process.env.DB_USER,
   password: process.env.DB_PW,
   database: process.env.DB_NAME,
   connectionLimit: 5,
+  checkNumberRange: true,
+  bigIntAsNumber: true,
+  decimalAsNumber: true,
+  insertIdAsNumber: true,
 });
 
 function doQuery<R>(conn: PoolConnection, sql: string, values?: any[] | object): Promise<R[]> {
@@ -135,7 +140,7 @@ export async function insertEntity<O extends AnyObject>(
     const values: Array<string | number | null> = [];
     keysToInsert.forEach((key: keyof O) => {
       columns.push(snakeCase(key as string));
-      values.push(`:${key}`);
+      values.push(`:${key as string}`);
       parameters[key] = toDbValue(key);
     });
     await update(`INSERT INTO ${table} (${columns.join(', ')}) VALUES (${values.join(', ')})`, parameters);
@@ -174,7 +179,7 @@ export async function updateEntity<O extends AnyObject>(
     const toDbValue = await getToDbTransformer<O>(partial, types, oldEntity, merger);
     const updateKeys = keysToUpdate.map((key: keyof O) => {
       parameters[key] = toDbValue(key);
-      return `${snakeCase(key as string)} = :${key}`;
+      return `${snakeCase(key as string)} = :${key as string}`;
     }).join(', ');
     await update(`UPDATE ${table} SET ${updateKeys} WHERE ${where}`, parameters);
   }

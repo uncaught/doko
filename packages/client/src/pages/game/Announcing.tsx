@@ -89,7 +89,7 @@ export default function Announcing({type, label, text, isRe}: {
           <Button onClick={() => selectAnnounce(id)}
                   color={party[type] === id ? 'green' : undefined}
                   inverted>
-            <Icon name='user'/> {members[id].name}
+            <Icon name='user'/> {members[id]!.name}
           </Button>
         </p>)}
       </Modal.Content>

@@ -1,32 +1,42 @@
 services:
   database:
     image: uncaught42/doko-stats-db:${DOKO_VERSION}
-    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${DOKO_SQL_PASSWORD}
       - MYSQL_PWD=${DOKO_SQL_PASSWORD}
     volumes:
       - ./mysql:/var/lib/mysql:rw
 
+  proxy:
+    image: traefik:3.0.0
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   server:
     image: uncaught42/doko-stats-server:${DOKO_VERSION}
-    restart: always
     depends_on:
       - database
     environment:
       - DB_PW=${DOKO_SQL_PASSWORD}
-    networks:
-      - default
-      - traefik
     labels:
       traefik.enable: true
-      traefik.docker.network: traefik
       # http
-      traefik.http.routers.doko-ws.rule: "Host(`doko.correnz.net`) && Path(`/ws`)"
+      traefik.http.routers.doko-ws.rule: "Path(`/ws`)"
       traefik.http.routers.doko-ws.entrypoints: web
       traefik.http.routers.doko-ws.priority: 200
       # https
-      traefik.http.routers.doko-wss.rule: "Host(`doko.correnz.net`) && Path(`/ws`)"
+      traefik.http.routers.doko-wss.rule: "Path(`/ws`)"
       traefik.http.routers.doko-wss.entrypoints: websecure
       traefik.http.routers.doko-wss.priority: 200
       traefik.http.routers.doko-wss.tls: 'true'
@@ -34,24 +44,15 @@ services:
 
   client:
     image: uncaught42/doko-stats-client:${DOKO_VERSION}
-    restart: always
-    networks:
-      - traefik
     labels:
       traefik.enable: true
-      traefik.docker.network: traefik
       # http
-      traefik.http.routers.doko-web.rule: "Host(`doko.correnz.net`)"
+      traefik.http.routers.doko-web.rule: "PathPrefix(`/`)"
       traefik.http.routers.doko-web.entrypoints: web
       traefik.http.routers.doko-web.priority: 100
       # https
-      traefik.http.routers.doko-webs.rule: "Host(`doko.correnz.net`)"
+      traefik.http.routers.doko-webs.rule: "PathPrefix(`/`)"
       traefik.http.routers.doko-webs.entrypoints: websecure
       traefik.http.routers.doko-webs.priority: 100
       traefik.http.routers.doko-webs.tls: 'true'
       traefik.http.routers.doko-webs.tls.certresolver: myresolver
-
-networks:
-  traefik:
-    name: traefik
-    external: true

@@ -92,7 +92,7 @@ export default function ExtraPointEntry({isRe, index}: {isRe: boolean; index: nu
           </Form.Field>
           {data[sideKey].members.map((id) => <Form.Field key={id}>
             <Radio
-              label={<label className='inverted'>{members[id].name}</label>}
+              label={<label className='inverted'>{members[id]!.name}</label>}
               name='to'
               value={id}
               checked={point.to === id}
@@ -107,7 +107,7 @@ export default function ExtraPointEntry({isRe, index}: {isRe: boolean; index: nu
             </Form.Field>
             {data[otherSideKey].members.map((id) => <Form.Field key={id}>
               <Radio
-                label={<label className='inverted'>{members[id].name}</label>}
+                label={<label className='inverted'>{members[id]!.name}</label>}
                 name='from'
                 value={id}
                 checked={point.from === id}

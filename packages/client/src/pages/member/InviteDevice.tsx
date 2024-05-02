@@ -1,5 +1,5 @@
 import {generateInvitationUrl} from '@doko/common';
-import QrCode from 'qrcode.react';
+import {QRCodeCanvas} from 'qrcode.react';
 import React, {ReactElement, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {Button, Header, Icon, Modal, Segment} from 'semantic-ui-react';
@@ -76,10 +76,10 @@ export default function InviteDevice(): ReactElement {
       QR-Code
     </Button>
 
-    <Segment vertical className='u-clear-both'>Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein
-      Gerät
-      kann nur mit einem Mitglied einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener
-      Gruppen.</Segment>
+    <Segment vertical className='u-clear-both'>
+      Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein Gerät kann nur mit einem Mitglied
+      einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener Gruppen.
+    </Segment>
 
     {showQr && <Modal className='scanInvitation-modal'
                       open={true}
@@ -89,7 +89,7 @@ export default function InviteDevice(): ReactElement {
                       size='small'>
       <Modal.Content>
         <div className='qrCodeContainer'>
-          {!showQrSuccess && <QrCode value={invitationUrl} size={window.screen.width - 64}/>}
+          {!showQrSuccess && <QRCodeCanvas value={invitationUrl} size={Math.min(window.innerWidth - 64, 680)}/>}
           {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'}/>}
         </div>
       </Modal.Content>

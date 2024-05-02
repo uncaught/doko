@@ -108,7 +108,7 @@ export default function GameTypeSelection(): ReactElement {
           <Button onClick={() => commitType(id)}
                   color={game.data.gameTypeMemberId === id ? 'green' : undefined}
                   inverted>
-            <Icon name='user'/> {members[id].name}
+            <Icon name='user'/> {members[id]!.name}
           </Button>
         </p>)}
       </Modal.Content>

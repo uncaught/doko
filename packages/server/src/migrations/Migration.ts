@@ -1,5 +1,5 @@
 import _fs from 'fs';
-import {getTransactional, query} from '../../Connection';
+import {getTransactional, query} from '../Connection';
 
 const fs = _fs.promises;
 
@@ -18,7 +18,7 @@ async function loadMigrations(): Promise<Set<string>> {
 
 export async function runMigrations() {
   const files = await fs.readdir(__dirname);
-  const versions = files.filter((file) => regex.test(file)).map((file) => file.split('.')[0]);
+  const versions = files.filter((file) => regex.test(file)).map((file) => file.split('.')[0]!);
   versions.sort();
 
   if (versions.length) {

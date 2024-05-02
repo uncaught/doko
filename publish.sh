@@ -35,29 +35,24 @@ fi
 
 
 echo ""
-step "Installing dependencies ..."
-./yarn.sh install
-
-
-echo ""
 step "Building client ..."
-./yarn.sh workspace @doko/client build
-./writeVersion.sh $vers
-clientDir=$scriptDir/packages/client
-docker build --pull -f $clientDir/Dockerfile -t $clientImage:$vers -t $clientImage:latest $clientDir
+cd $scriptDir/packages/client
+docker build --pull -f Dockerfile --build-arg vers=$vers -t $clientImage:$vers -t $clientImage:latest ..
 
 
 echo ""
 step "Building database ..."
-databaseDir=$scriptDir/packages/database
-docker build --pull -f $databaseDir/Dockerfile -t $databaseImage:$vers -t $databaseImage:latest $databaseDir
+cd $scriptDir/packages/database
+docker build --pull -f Dockerfile -t $databaseImage:$vers -t $databaseImage:latest .
 
 
 echo ""
 step "Building server ..."
-./yarn.sh workspace @doko/server build
-serverDir=$scriptDir/packages/server
-docker build --pull -f $serverDir/Dockerfile -t $serverImage:$vers -t $serverImage:latest $serverDir
+cd $scriptDir/packages/server
+docker build --pull -f Dockerfile -t $serverImage:$vers -t $serverImage:latest ..
+
+
+cd $scriptDir
 
 
 echo ""

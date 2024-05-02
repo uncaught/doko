@@ -9,13 +9,13 @@ import {memberIdsBelongToGroup} from './GroupMembers';
 
 export async function getGroupForRound(roundId: string): Promise<string | null> {
   const result = await query<{groupId: string}>(`SELECT group_id as groupId FROM rounds WHERE id = ?`, [roundId]);
-  return result.length ? result[0].groupId : null;
+  return result.length ? result[0]!.groupId : null;
 }
 
 export async function isRoundOpen(roundId: string): Promise<boolean> {
   const result = await query<{endDate: number | null}>(`SELECT end_date as endDate FROM rounds WHERE id = ?`,
     [roundId]);
-  return result.length ? result[0].endDate === null : false;
+  return result.length ? result[0]!.endDate === null : false;
 }
 
 export async function loadRounds(groupId: string): Promise<Round[]> {

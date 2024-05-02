@@ -1,4 +1,4 @@
-FROM node:16.13.1-alpine3.14
+FROM node:20.12.2-bookworm
 
 ENV NODE_ENV=production
 ENV LOGUX_HOST=0.0.0.0
@@ -10,10 +10,14 @@ ENV DB_USER=root
 
 EXPOSE 80
 
-RUN mkdir /server
+RUN mkdir -p /doko/packages/common /doko/packages/server
 
-COPY ./build /server
+COPY ./common /doko/packages/common
+COPY ./server /doko/packages/server
 
-WORKDIR /server
+RUN cd /doko/packages/common && npm ci
+RUN cd /doko/packages/server && npm ci
 
-ENTRYPOINT [ "node", "server.js" ]
+WORKDIR /doko/packages/server
+
+ENTRYPOINT [ "npm", "run", "prod" ]

@@ -20,7 +20,7 @@ export default function RemoveRoundMenuItem({closeMenu}: {closeMenu: () => void}
       setOpen(true);
     }}>
       <Icon name='delete'/>
-      Aktuelles Runde löschen
+      Aktuelle Runde löschen
     </Menu.Item>
 
     <Modal open={open} onClose={() => setOpen(false)} basic size='small'>

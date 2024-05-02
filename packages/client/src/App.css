@@ -198,6 +198,8 @@ input[type=number] {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  width: 100%;
+  height: 80vh;
 }
 
 .myGroups-group {
@@ -320,18 +322,18 @@ input[type=number] {
 
 .grid-table-td.won {
   box-shadow: inset 0 0 0 #a3c293;
-  background: #fcfff5;
-  color: #2c662d;
+  background-color: var(--grid-table-td-won-background, #fcfff5);
+  color: var(--grid-table-td-won-color, #2c662d);
 }
 
 .grid-table-td.lost {
   box-shadow: inset 0 0 0 #e0b4b4;
-  background: #fff6f6;
-  color: #9f3a38;
+  background-color: var(--grid-table-td-lost-background, #fff6f6);
+  color: var(--grid-table-td-lost-color, #9f3a38);
 }
 
 .grid-table-td.selected {
-  background: #DFF0FF;
+  background-color: var(--grid-table-td-selected-background, #DFF0FF);
 }
 
 .pushable > .pusher {

@@ -1,18 +1,12 @@
-import React, {ReactElement, useCallback, useState} from 'react';
-import QrReader from 'react-qr-reader';
+import React, {ReactElement, useState} from 'react';
 import {Button, Header, Icon, Message, Modal} from 'semantic-ui-react';
 import {useAcceptInvitation} from '../../store/GroupMembers';
+import QrReader from './QrReader';
 
 export default function ScanInvitation(): ReactElement {
   const [show, setShow] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState('');
   const acceptInvitation = useAcceptInvitation();
-
-  const onScan = useCallback(async (data: string | null) => {
-    if (data) {
-      await acceptInvitation(data); //this will already navigate away and thus close the dialog
-    }
-  }, [acceptInvitation]);
 
   return <>
     <Button icon floated='right' labelPosition='left' color={'blue'} onClick={() => setShow(true)}>
@@ -30,14 +24,21 @@ export default function ScanInvitation(): ReactElement {
       <Header icon='camera' content='Scanning ...'/>
       <Modal.Content>
         <QrReader
-          delay={300}
-          onError={setError}
-          onScan={onScan}
-          style={{width: '100%'}}
+          onResult={async (result, error) => {
+            if (error) {
+              console.error(error);
+              setError(error.message || error.name || 'unknown error');
+            } else if (result) {
+              const text = result.getText();
+              if (text) {
+                await acceptInvitation(text); //this will already navigate away and thus close the dialog
+              }
+            }
+          }}
         />
       </Modal.Content>
       {!!error && <Modal.Actions>
-        <Message negative>{error.message || error}</Message>
+        <Message negative>{error}</Message>
       </Modal.Actions>}
     </Modal>}
   </>;

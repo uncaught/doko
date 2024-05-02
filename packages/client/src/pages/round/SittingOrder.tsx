@@ -59,7 +59,7 @@ const SortableList = SortableContainer<SortableListProps>(({members, players}: S
       <SortableItem key={`player-${player.groupMemberId}`}
                     index={index}
                     player={player}
-                    member={members[player.groupMemberId]}/>
+                    member={members[player.groupMemberId]!}/>
     ))}
   </List>;
 });
@@ -92,6 +92,6 @@ export default function SittingOrder(): ReactElement | null {
         entfernt werden.</p>
     </Message>
 
-    <Link to={parents[0].url}>zu den Spielen</Link>
+    <Link to={parents[0]!.url}>zu den Spielen</Link>
   </section>;
 }

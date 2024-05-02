@@ -7,7 +7,7 @@ export default function GameLabelDealer(): ReactElement {
   const game = useGame()!;
   const groupMembers = useGroupMembers();
   const initials = useMemberInitials();
-  const dealer = groupMembers[game.dealerGroupMemberId];
+  const dealer = groupMembers[game.dealerGroupMemberId]!;
   return <div className='memberDetail'>
     <Label color={dealer.isYou ? 'teal' : 'blue'}>
       {initials[dealer.id]} <Icon name={'hand paper outline'}/>

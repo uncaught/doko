@@ -21,7 +21,7 @@ export default function FinishRoundPrematurely(): ReactElement | null {
         Runde abschließen
       </Header>
       <Modal.Content>
-        <p>Möchtest du die Runde jetzt nach {lastGame.gameNumber} Spielen wirklich abschließen?</p>
+        <p>Möchtest du die Runde jetzt nach {lastGame?.gameNumber || 0} Spielen wirklich abschließen?</p>
         {playersMissingSolo.length > 0 && <Message error visible>
           <Message.Header>Folgende Spieler haben noch nicht ihr Solo gespielt:</Message.Header>
           <Message.Content>{playersMissingSolo.map(({member}) => member.name).join(', ')}</Message.Content>

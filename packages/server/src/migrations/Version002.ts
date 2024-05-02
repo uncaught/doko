@@ -1,4 +1,4 @@
-import {query} from '../../Connection';
+import {query} from '../Connection';
 import {recalcRoundPlayerStatistics} from './RecalcRoundStatistics';
 
 async function fixForcedSoloMissesGameTypeMemberId(update: typeof query) {

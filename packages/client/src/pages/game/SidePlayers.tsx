@@ -12,7 +12,7 @@ export default function SidePlayers({isRe}: {isRe: boolean}): ReactElement {
     {sidePlayers.length > 0 && <>
       <Divider className='tiny'/>
       <div className='u-flex-row u-flex-wrap'>
-        {sidePlayers.map((id) => <GamePlayer key={id} member={members[id]}/>)}
+        {sidePlayers.map((id) => <GamePlayer key={id} member={members[id]!}/>)}
       </div>
     </>}
   </>;

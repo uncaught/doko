@@ -1,5 +1,5 @@
 import {GameData, GroupSettings, Party, RoundData} from '@doko/common';
-import {query} from '../../Connection';
+import {query} from '../Connection';
 
 async function migrateGroups(update: typeof query) {
   const rows = await update<{id: string; settings: GroupSettings}>('SELECT id, settings FROM `groups`');
@@ -29,7 +29,7 @@ async function migrateRounds(update: typeof query) {
       const gameDatas = await getRoundGames(update, row.id);
       data.results = {
         gamesCount: gameDatas.length,
-        runsCount: gameDatas[0].runNumber,
+        runsCount: gameDatas[0]!.runNumber,
         players: {},
       };
       const addPoints = (p: Party) => {
@@ -41,7 +41,7 @@ async function migrateRounds(update: typeof query) {
               pointDiffToTopPlayer: 0,
             };
           }
-          data.results!.players[id].pointBalance += p.totalPoints;
+          data.results!.players[id]!.pointBalance += p.totalPoints;
         });
       };
       gameDatas.forEach(({re, contra}) => {
@@ -49,7 +49,7 @@ async function migrateRounds(update: typeof query) {
         addPoints(contra);
       });
       const sorted = Object.values(data.results!.players).sort((a, b) => b.pointBalance - a.pointBalance);
-      const topPoints = sorted.length ? sorted[0].pointBalance : 0;
+      const topPoints = sorted.length ? sorted[0]!.pointBalance : 0;
       sorted.forEach((stat) => {
         stat.pointDiffToTopPlayer = topPoints - stat.pointBalance;
       });

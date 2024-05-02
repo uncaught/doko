@@ -7,7 +7,7 @@ import {useGroupMembers} from '../GroupMembers';
 import {useGroup} from '../Groups';
 import {LoguxDispatch} from '../Logux';
 
-export function useAddRound() {
+export function useAddRound(): () => void {
   const {id: groupId, settings} = useGroup()!;
   const dispatch = useDispatch<LoguxDispatch>();
   const members = useGroupMembers();

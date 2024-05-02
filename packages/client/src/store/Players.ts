@@ -30,7 +30,7 @@ addReducer<GroupMembersAdd>('groupMembers/add', (state, {newRoundPlayer}) => {
     return {
       ...state,
       [newRoundPlayer.roundId]: [
-        ...state[newRoundPlayer.roundId],
+        ...state[newRoundPlayer.roundId]!,
         newRoundPlayer,
       ],
     };
@@ -58,11 +58,12 @@ addReducer<PlayerSittingOrderPatch>('players/patchSittingOrder', (state, {roundI
 });
 
 addReducer<PlayersPatch>('players/patch', (state, {roundId, groupMemberId, player}) => {
-  if (state[roundId]) {
-    const players = [...state[roundId]];
+  const prevPlayers = state[roundId];
+  if (prevPlayers) {
+    const players = [...prevPlayers];
     const playerIdx = players.findIndex(({groupMemberId: memberId}) => groupMemberId === memberId);
     if (playerIdx > -1) {
-      players[playerIdx] = mergeStates<Player>(players[playerIdx], player);
+      players[playerIdx] = mergeStates<Player>(players[playerIdx]!, player);
       return {...state, [roundId]: players};
     }
   }
@@ -109,7 +110,7 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
       statsByMember.set(player.groupMemberId, {
         player,
         dutySoloPlayed: false,
-        member: members[player.groupMemberId],
+        member: members[player.groupMemberId]!,
         pointBalance: 0,
         pointDiffToTopPlayer: 0,
         statistics: createStatistics(),
@@ -130,11 +131,11 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
       }
 
       if (gameType === 'dutySolo' || gameType === 'forcedSolo') {
-        statsByMember.get(re.members[0])!.dutySoloPlayed = true;
+        statsByMember.get(re.members[0]!)!.dutySoloPlayed = true;
       }
 
       if (gameType === 'penalty' && penaltyCountsAsDutySolo && contra.members.length === 1) {
-        statsByMember.get(contra.members[0])!.dutySoloPlayed = true;
+        statsByMember.get(contra.members[0]!)!.dutySoloPlayed = true;
       }
 
       addPoints(re);
@@ -146,7 +147,7 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
     });
 
     const sorted = [...statsByMember.values()].sort((a, b) => b.pointBalance - a.pointBalance);
-    const topPoints = sorted.length ? sorted[0].pointBalance : 0;
+    const topPoints = sorted.length ? sorted[0]!.pointBalance : 0;
     sorted.forEach((stat) => {
       stat.pointDiffToTopPlayer = topPoints - stat.pointBalance;
     });
@@ -184,7 +185,7 @@ export function usePatchAttendance() {
       return;
     }
     const isAttending = player.leftAfterGameNumber === null;
-    const currentGameNumber = games.length ? games[games.length - 1].gameNumber : 0;
+    const currentGameNumber = games.length ? games[games.length - 1]!.gameNumber : 0;
     dispatch.sync<PlayersPatch>({
       groupMemberId,
       roundId,

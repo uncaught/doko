@@ -42,8 +42,8 @@ import {acceptedInvitationsSelector, rejectedInvitationsSelector} from './Ui';
 const {addReducer, combinedReducer} = createReducer<GroupMembers>({}, 'groupMembers');
 
 addReducer<GroupsAdd>('groups/add', (state, action) => {
-  const newState = {...state, [action.group.id]: {}};
-  action.groupMembers.forEach((gm) => newState[action.group.id][gm.id] = gm);
+  const newState: GroupMembers = {...state, [action.group.id]: {}};
+  action.groupMembers.forEach((gm) => newState[action.group.id]![gm.id] = gm);
   return newState;
 });
 
@@ -68,7 +68,7 @@ addReducer<GroupMembersPatch>('groupMembers/patch', (state, action) => {
       ...state,
       [action.groupId]: {
         ...state[action.groupId],
-        [action.id]: mergeStates<GroupMember>(state[action.groupId][action.id], action.groupMember),
+        [action.id]: mergeStates<GroupMember>(state[action.groupId]![action.id]!, action.groupMember),
       },
     };
   }
@@ -153,8 +153,8 @@ export function useAddGroupMember() {
 
     //Add the new member to the last open round if all data is there - otherwise bad luck
     let newRoundPlayer: Player | null = null;
-    if (rounds.length && rounds[rounds.length - 1].endDate === null) {
-      const lastOpenRoundId = rounds[rounds.length - 1].id;
+    if (rounds.length && rounds[rounds.length - 1]!.endDate === null) {
+      const lastOpenRoundId = rounds[rounds.length - 1]!.id;
       const roundGames = games[lastOpenRoundId];
       const roundPlayers = players[lastOpenRoundId];
       if (roundGames && roundPlayers) {
@@ -162,7 +162,7 @@ export function useAddGroupMember() {
           roundId: lastOpenRoundId,
           groupMemberId: groupMember.id,
           sittingOrder: roundPlayers.length,
-          joinedAfterGameNumber: Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0].gameNumber,
+          joinedAfterGameNumber: Object.values(roundGames).sort((a, b) => b.gameNumber - a.gameNumber)[0]!.gameNumber,
           leftAfterGameNumber: null,
         };
       }
@@ -182,7 +182,7 @@ export function useCreateInvitation() {
   }, [dispatch, groupId, groupMemberId]);
 }
 
-export function useAcceptInvitation() {
+export function useAcceptInvitation(): (url: string) => Promise<boolean> {
   const {getState} = useStore<State>();
   const dispatch = useDispatch<LoguxDispatch>();
   const history = useHistory();
@@ -252,7 +252,7 @@ export function useMemberInitials(): Record<string, string> {
     const maxLength = Math.max(...members.map(({name}) => name.length));
 
     const initials = members.reduce<Record<string, string>>((acc, member) => {
-      acc[member.id] = member.name[0];
+      acc[member.id] = member.name[0]!;
       return acc;
     }, {});
 
@@ -268,7 +268,7 @@ export function useMemberInitials(): Record<string, string> {
           ids.forEach((id) => {
             const char = memberList[id]!.name[i];
             if (char) {
-              initials[id] = `${initials[id][0]}${char}`;
+              initials[id] = `${initials[id]![0]!}${char}`;
             }
           });
         }

@@ -6,6 +6,9 @@
       <excludeFolder url="file://$MODULE_DIR$/mysql" />
       <excludeFolder url="file://$MODULE_DIR$/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/packages/client/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/server/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/client/.swc" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

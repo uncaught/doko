@@ -45,7 +45,7 @@ addReducer<RoundsPatch>('rounds/patch', (state, action) => {
       ...state,
       [action.groupId]: {
         ...state[action.groupId],
-        [action.id]: mergeStates<Round>(state[action.groupId][action.id], action.round),
+        [action.id]: mergeStates<Round>(state[action.groupId]![action.id]!, action.round),
       },
     };
   }
@@ -53,9 +53,9 @@ addReducer<RoundsPatch>('rounds/patch', (state, action) => {
 });
 
 addReducer<RoundsRemove>('rounds/remove', (state, {id, groupId}) => {
-  if (state[groupId][id]) {
+  if (state[groupId]?.[id]) {
     const newState = {...state, [groupId]: {...state[groupId]}};
-    delete newState[groupId][id];
+    delete newState[groupId]![id];
     return newState;
   }
   return state;
@@ -70,7 +70,7 @@ export const getRoundByIdSelector = createSelector(
   (rounds) => memoize((id: string): Round | null => {
     for (const round of Object.values(rounds)) {
       if (round[id]) {
-        return round[id];
+        return round[id]!;
       }
     }
     return null;

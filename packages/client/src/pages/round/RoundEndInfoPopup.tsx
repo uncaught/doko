@@ -13,7 +13,7 @@ export default function RoundEndInfoPopup({duration, endKnown, setOpen}: {
   const {data} = useRound()!;
   const patchRound = usePatchRound();
   const sortedGames = useSortedGames();
-  const lastGameRunNumber = sortedGames.length ? sortedGames[sortedGames.length - 1].data.runNumber : 1;
+  const lastGameRunNumber = sortedGames.length ? sortedGames[sortedGames.length - 1]!.data.runNumber : 1;
   const [remaining, setRemaining] = useState(data.roundDuration ? (data.roundDuration - lastGameRunNumber) : 1);
   const playersWithStats = usePlayersWithStats();
   const activePlayersWithoutSolo = playersWithStats.filter(

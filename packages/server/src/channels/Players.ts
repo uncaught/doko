@@ -25,7 +25,7 @@ async function memberIdsBelongToRound(roundId: string, memberIds: string[]): Pro
 
 server.type<PlayerSittingOrderPatch>('players/patchSittingOrder', {
   async access(ctx, {roundId, order}) {
-    const [belongsToRound, realGroupId] = await Promise.all<boolean, string | null>([
+    const [belongsToRound, realGroupId] = await Promise.all([
       memberIdsBelongToRound(roundId, order),
       getGroupForRound(roundId),
     ]);
@@ -44,7 +44,7 @@ server.type<PlayerSittingOrderPatch>('players/patchSittingOrder', {
 
 server.type<PlayersPatch>('players/patch', {
   async access(ctx, {roundId, groupMemberId}) {
-    const [groupId, belongsToRound] = await Promise.all<string | null, boolean>([
+    const [groupId, belongsToRound] = await Promise.all([
       getGroupForRound(roundId),
       memberIdsBelongToRound(roundId, [groupMemberId]),
     ]);

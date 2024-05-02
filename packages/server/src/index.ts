@@ -1,4 +1,4 @@
-import {runMigrations} from './database/migrations/Migration';
+import {runMigrations} from './migrations/Migration';
 import server from './Server';
 import './Auth';
 import './channels';

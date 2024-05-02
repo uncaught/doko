@@ -15,14 +15,14 @@ function findActivePlayerAtPosition(
     === startingDealerId);
   let curIndex = startingDealerIdx;
   let i = 0;
-  while (!isActiveInGame(roundParticipatingPlayers[curIndex], gameNumber)) {
+  while (!isActiveInGame(roundParticipatingPlayers[curIndex]!, gameNumber)) {
     curIndex = playersCount > (curIndex + 1) ? curIndex + 1 : 0;
     i++;
     if (i > playersCount) {
       throw new Error('Bad loop detecting active player for bock game');
     }
   }
-  return roundParticipatingPlayers[curIndex].groupMemberId;
+  return roundParticipatingPlayers[curIndex]!.groupMemberId;
 }
 
 export function detectBockGame(
