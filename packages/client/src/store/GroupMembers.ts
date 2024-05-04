@@ -192,7 +192,12 @@ export function useAcceptInvitation(): (url: string) => Promise<boolean> {
   const dispatch = useDispatch<LoguxDispatch>();
   const navigate = useNavigate();
   return useCallback(async (url: string): Promise<boolean> => {
-    const token = parseInvitationUrl(url);
+    let token: string | null = null;
+    try {
+      token = parseInvitationUrl(url);
+    } catch (e) {
+      console.error(e);
+    }
     if (token) {
       await dispatch.sync<GroupMembersAcceptInvitation>({token, type: 'groupMembers/acceptInvitation'});
       const state = getState();

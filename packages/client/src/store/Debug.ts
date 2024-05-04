@@ -1,5 +1,3 @@
-import {AnyObject} from './Generics';
-
 /**
  * To debug changes in hooks, create an instance of this method in your component, then call it with any values you
  * wish to compare:
@@ -16,8 +14,8 @@ import {AnyObject} from './Generics';
  *   //...
  * }
  */
-export function debugHooks(name = 'debugHooks'): (obj: AnyObject) => void {
-  let lastObj: AnyObject;
+export function debugHooks<O extends Record<string, unknown>>(name = 'debugHooks'): (obj: O) => void {
+  let lastObj: O;
   return ((obj) => {
     if (lastObj) {
       const changedValues: Array<{key: string; old: any; new: any}> = [];
