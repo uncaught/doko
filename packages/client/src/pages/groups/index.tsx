@@ -1,10 +1,8 @@
 import React, {ReactElement} from 'react';
-import {Switch} from 'react-router-dom';
 import {Checkbox, Divider, Icon, Menu} from 'semantic-ui-react';
 import {useToggleDarkMode} from '../../DarkMode';
 import {forceReload} from '../../forceReload';
 import Page from '../../Page';
-import Group from '../group';
 import AddGroup from './AddGroup';
 import CashInvitation from './CashInvitation';
 import MyGroups from './MyGroups';
@@ -29,17 +27,12 @@ const menuItems = [
   ForceReloadMenuItem,
 ];
 
-export default function GroupsIndex(): ReactElement {
-  return <Switch>
-    <Page path={`/group/:groupId`} displayName={'Gruppe'}>
-      <Group/>
-    </Page>
-    <Page path={'/'} menuItems={menuItems}>
-      <MyGroups/>
-      <Divider section/>
-      <AddGroup/>
-      <Divider section/>
-      <CashInvitation/>
-    </Page>
-  </Switch>;
+export default function Groups(): ReactElement {
+  return <Page displayName={'Doppelkopf'} menuItems={menuItems}>
+    <MyGroups/>
+    <Divider section/>
+    <AddGroup/>
+    <Divider section/>
+    <CashInvitation/>
+  </Page>;
 }

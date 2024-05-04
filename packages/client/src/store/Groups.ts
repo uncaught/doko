@@ -15,7 +15,7 @@ import {
 } from '@doko/common';
 import {useCallback, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {usePageContext} from '../Page';
+import {useParams} from 'react-router-dom';
 import {LoguxDispatch} from './Logux';
 import {arrayToList, createReducer} from './Reducer';
 import {useSimulatedGroup, useSimulation} from './Simulation';
@@ -77,9 +77,9 @@ export const groupsReducer = combinedReducer;
 export const groupsSelector = (state: State) => state.groups;
 
 function useRealGroup(): Group | undefined {
-  const {groupId} = usePageContext<{groupId: string}>();
+  const {groupId} = useParams<{groupId: string}>();
   const groups = useSelector(groupsSelector);
-  return groups[groupId];
+  return groups[groupId ?? ''];
 }
 
 export function useGroup(): Group | undefined {

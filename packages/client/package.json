@@ -15,17 +15,17 @@
     "fomantic-ui-css": "^2.9.0",
     "lodash": "^4",
     "qrcode.react": "^3",
-    "react": "17.0.2",
-    "react-dnd": "14.0.4",
-    "react-dnd-html5-backend": "14.0.2",
-    "react-dnd-touch-backend": "14.1.1",
-    "react-dom": "17.0.2",
-    "react-redux": "7.2.6",
-    "react-router-dom": "5.3.0",
-    "react-sortable-hoc": "2.0.0",
-    "redux": "4.1.2",
-    "reselect": "4.1.5",
-    "semantic-ui-react": "2.0.4"
+    "react": "^18",
+    "react-dnd": "^16",
+    "react-dnd-html5-backend": "^16",
+    "react-dnd-touch-backend": "^16",
+    "react-dom": "^18",
+    "react-redux": "^9",
+    "react-router-dom": "^6",
+    "react-sortable-hoc": "^2",
+    "redux": "^5",
+    "reselect": "^5",
+    "semantic-ui-react": "3.0.0-beta.2"
   },
   "devDependencies": {
     "@rsbuild/core": "^0.6.0",
@@ -34,13 +34,11 @@
     "@styled-jsx/plugin-sass": "^4.1.0",
     "@swc/plugin-styled-jsx": "^2.0.0",
     "@tsconfig/node20": "^20",
-    "@types/classnames": "2.3.1",
+    "@types/classnames": "^2.3.1",
     "@types/lodash": "^4",
-    "@types/node": "^18",
-    "@types/react": "17.0.37",
-    "@types/react-dom": "17.0.11",
-    "@types/react-redux": "7.1.20",
-    "@types/react-router-dom": "5.3.2",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "typescript": "^5"
   },
   "scripts": {
@@ -59,5 +57,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "overrides": {
+    "react-sortable-hoc": {
+      "react": "^18",
+      "react-dom": "^18"
+    }
   }
 }

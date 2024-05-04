@@ -15,8 +15,8 @@ import useSubscription from '@logux/redux/use-subscription';
 import {memoize} from 'lodash';
 import {useCallback, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {useParams} from 'react-router-dom';
 import {createSelector} from 'reselect';
-import {usePageContext} from '../Page';
 import {groupsSelector} from './Groups';
 import {LoguxDispatch} from './Logux';
 import {arrayToList, createReducer} from './Reducer';
@@ -78,27 +78,27 @@ export const getRoundByIdSelector = createSelector(
 );
 
 export function useLoadRounds() {
-  const {groupId} = usePageContext<{groupId: string}>();
-  const group = useSelector(groupsSelector)[groupId];
+  const {groupId} = useParams<{groupId: string}>();
+  const group = useSelector(groupsSelector)[groupId ?? ''];
   //Only subscribe if the group is not new (otherwise the server will respond with `Access denied`:
-  useSubscription<RoundsLoad>(group && !group.isNew ? [{channel: 'rounds/load', groupId}] : []);
+  useSubscription<RoundsLoad>(group && !group.isNew ? [{channel: 'rounds/load', groupId: group.id}] : []);
 }
 
 export function useLoadRoundDetails() {
-  const {roundId} = usePageContext<{roundId: string}>();
-  useSubscription<RoundDetailsLoad>([{channel: 'roundDetails/load', roundId}]);
+  const {roundId} = useParams<{roundId: string}>();
+  useSubscription<RoundDetailsLoad>(roundId ? [{channel: 'roundDetails/load', roundId}] : []);
 }
 
 export function useLatestGroupRound(): Round | undefined {
-  const {groupId} = usePageContext<{groupId: string}>();
-  const rounds = useSelector(roundsSelector)[groupId] || {};
+  const {groupId} = useParams<{groupId: string}>();
+  const rounds = useSelector(roundsSelector)[groupId ?? ''] || {};
   return Object.values(rounds).sort((a, b) => b.startDate - a.startDate)[0];
 }
 
 export function useRound(): Round | undefined {
-  const {groupId, roundId} = usePageContext<{groupId: string; roundId: string}>();
-  const rounds = useSelector(roundsSelector)[groupId] || {};
-  return rounds[roundId];
+  const {groupId, roundId} = useParams<{groupId: string; roundId: string}>();
+  const rounds = useSelector(roundsSelector)[groupId ?? ''] || {};
+  return rounds[roundId ?? ''];
 }
 
 export function usePatchRound() {
@@ -123,7 +123,7 @@ export function usePatchRound() {
 }
 
 export function useSortedRounds(): Round[] {
-  const {groupId} = usePageContext<{groupId: string}>();
-  const rounds = useSelector(roundsSelector)[groupId];
+  const {groupId} = useParams<{groupId: string}>();
+  const rounds = useSelector(roundsSelector)[groupId ?? ''];
   return useMemo(() => rounds ? Object.values(rounds).sort((a, b) => b.startDate - a.startDate) : [], [rounds]);
 }

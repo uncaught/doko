@@ -21,8 +21,7 @@ import {
 import {difference} from 'lodash';
 import {useCallback, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {useHistory} from 'react-router-dom';
-import {usePageContext} from '../Page';
+import {useNavigate, useParams} from 'react-router-dom';
 import {detectBockGame} from './Games/DetectBockGame';
 import {detectLastGameAndForcedSolo} from './Games/DetectLastGameAndForcedSolo';
 import {detectPlayers} from './Games/DetectPlayers';
@@ -113,8 +112,8 @@ export function useLatestGroupGame(): Game | undefined {
 const emptyGames: Games = {};
 
 export function useSortedGames(): Game[] {
-  const {roundId} = usePageContext<{roundId: string}>();
-  const games = useSelector(gamesSelector)[roundId] || emptyGames;
+  const {roundId} = useParams<{roundId: string}>();
+  const games = useSelector(gamesSelector)[roundId ?? ''] || emptyGames;
   return useMemo(() => Object.values(games).sort((a, b) => a.gameNumber - b.gameNumber), [games]);
 }
 
@@ -153,7 +152,7 @@ export function useAddGame() {
   const currentGames = useSortedGames();
   const roundParticipatingPlayers = useRoundParticipatingPlayers();
   const playersWithStats = usePlayersWithStats();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch<LoguxDispatch>();
   return useCallback((): void => {
     if (!round) {
@@ -182,15 +181,15 @@ export function useAddGame() {
       roundId: round.id,
     };
     dispatch.sync<GamesAdd>({game, type: 'games/add'});
-    history.push(`/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
-  }, [round, currentGames, roundParticipatingPlayers, settings, playersWithStats, dispatch, history]);
+    navigate(`/group/${round.groupId}/rounds/round/${round.id}/games/game/${id}`);
+  }, [round, currentGames, roundParticipatingPlayers, settings, playersWithStats, dispatch, navigate]);
 }
 
 export function useRemoveGame() {
   const round = useRound()!;
   const game = useGame();
   const currentGames = useSortedGames();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch<LoguxDispatch>();
   const lastGame = currentGames.length ? currentGames[currentGames.length - 1] : null;
   const isLastGame = lastGame === game;
@@ -203,14 +202,14 @@ export function useRemoveGame() {
       return;
     }
     dispatch.sync<GamesRemove>({id: game.id, roundId: round.id, type: 'games/remove'});
-    history.push(`/group/${round.groupId}/rounds/round/${round.id}/games`);
-  }, [round, game, isLastGame, dispatch, history]);
+    navigate(`/group/${round.groupId}/rounds/round/${round.id}/games`);
+  }, [round, game, isLastGame, dispatch, navigate]);
 }
 
 function useRealGame(): Game | undefined {
-  const {gameId, roundId} = usePageContext<{gameId: string; roundId: string}>();
-  const games = useSelector(gamesSelector)[roundId] || {};
-  return games[gameId];
+  const {gameId, roundId} = useParams<{gameId: string; roundId: string}>();
+  const games = useSelector(gamesSelector)[roundId ?? ''] || {};
+  return games[gameId ?? ''];
 }
 
 export function useGame(): Game | undefined {

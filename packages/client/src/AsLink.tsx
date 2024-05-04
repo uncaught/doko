@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FunctionComponent, PropsWithChildren} from 'react';
 import {Link} from 'react-router-dom';
 
 /**
@@ -7,6 +7,6 @@ import {Link} from 'react-router-dom';
 export function asLink(
   route: string,
   {onClick}: {onClick?: () => void} = {},
-): React.FC<{className?: string}> {
+): FunctionComponent<PropsWithChildren<{className?: string}>> {
   return ({children, className}) => <Link className={className} onClick={onClick} to={route}>{children}</Link>;
 }

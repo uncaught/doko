@@ -10,7 +10,7 @@ import {
 import Log from '@logux/core/log';
 import {useCallback, useEffect} from 'react';
 import {useDispatch, useSelector, useStore} from 'react-redux';
-import {useHistory} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import * as LocalStorage from '../LocalStorage';
 import {LoguxDispatch} from './Logux';
 import {createReducer, isAction} from './Reducer';
@@ -109,7 +109,7 @@ export function useSetUi() {
 export function useFollowLatestGame() {
   const getRoundById = useSelector(getRoundByIdSelector);
   const followLastGame = useSelector(followLastGameSelector);
-  const history = useHistory();
+  const navigate = useNavigate();
   const store = useStore() as unknown as {log: Log};
   useEffect(() => {
     if (followLastGame) {
@@ -118,10 +118,10 @@ export function useFollowLatestGame() {
           const {game} = action;
           const round = getRoundById(game.roundId);
           if (round) {
-            history.push(`/group/${round.groupId}/rounds/round/${game.roundId}/games/game/${game.id}`);
+            navigate(`/group/${round.groupId}/rounds/round/${game.roundId}/games/game/${game.id}`);
           }
         }
       });
     }
-  }, [followLastGame, history, store, getRoundById]);
+  }, [followLastGame, navigate, store, getRoundById]);
 }

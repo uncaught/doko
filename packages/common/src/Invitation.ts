@@ -5,15 +5,11 @@ export function generateInvitationUrl(domain: string, invitationToken: string): 
 }
 
 export function parseInvitationUrl(url: string): string | null {
-  try {
-    if (url.includes('/invitation/')) {
-      const token = url.split('/invitation/')[1];
-      if (isToken(token)) {
-        return token;
-      }
+  if (url.includes('/invitation/')) {
+    const token = url.split('/invitation/')[1];
+    if (isToken(token)) {
+      return token;
     }
-  } catch (e) {
-    console.error(e);
   }
   return null;
 }

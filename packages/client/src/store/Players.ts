@@ -15,7 +15,7 @@ import {
 } from '@doko/common';
 import {useCallback, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {usePageContext} from '../Page';
+import {useParams} from 'react-router-dom';
 import {useSortedGames} from './Games';
 import {useGroupMembers} from './GroupMembers';
 import {LoguxDispatch} from './Logux';
@@ -77,8 +77,8 @@ export const playersSelector = (state: State) => state.players;
 const emptyPlayers: Player[] = [];
 
 export function usePlayers(): Player[] {
-  const {roundId} = usePageContext<{roundId: string}>();
-  return useSelector(playersSelector)[roundId] || emptyPlayers;
+  const {roundId} = useParams<{roundId: string}>();
+  return useSelector(playersSelector)[roundId ?? ''] || emptyPlayers;
 }
 
 /**

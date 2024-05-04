@@ -11,7 +11,7 @@ import {
   recalcPoints,
 } from '@doko/common';
 import {useCallback, useEffect, useState} from 'react';
-import {useRouteMatch} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 
 const player1 = '00000000-0000-0000-0000-000000000001';
 const player2 = '00000000-0000-0000-0000-000000000002';
@@ -66,8 +66,8 @@ game = mergeStates<Game>(game, {
 game.data = recalcPoints(game.data);
 
 export function useSimulation(): boolean {
-  const {url} = useRouteMatch();
-  return /simulation/.test(url);
+  const {pathname} = useLocation();
+  return /simulation/.test(pathname);
 }
 
 const updateTriggers = new Set<(o: object) => void>();

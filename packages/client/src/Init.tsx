@@ -8,10 +8,10 @@ import badgeMessages from '@logux/client/badge/en';
 import log from '@logux/client/log';
 // @ts-ignore
 import createLoguxCreator from '@logux/redux/create-logux-creator';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import App from './App';
 import {getAuth} from './Auth';
 import {initDarkMode} from './DarkMode';
@@ -40,16 +40,21 @@ function initLogux() {
 
   initDarkMode();
 
-  ReactDOM.render(
-    <Provider store={store}>
-      <Router>
-        <DndContext>
-          <App/>
-        </DndContext>
-      </Router>
-    </Provider>,
-    document.getElementById('root'),
-  );
+  const divRoot = document.getElementById('root');
+  if (divRoot) {
+    const reactRoot = createRoot(divRoot);
+    reactRoot.render(
+      <StrictMode>
+        <Provider store={store}>
+          <BrowserRouter>
+            <DndContext>
+              <App/>
+            </DndContext>
+          </BrowserRouter>
+        </Provider>
+      </StrictMode>,
+    );
+  }
 }
 
 export async function initApp() {

@@ -14,7 +14,7 @@ export default function EditableName<T extends {name: string}>({
 }: EditableNameProps<T>): ReactElement {
   const entity = useGet();
   const patchEntity = usePatch();
-  const inputRef = useRef<Input>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState(false);

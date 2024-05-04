@@ -2,7 +2,7 @@ import {generateUuid, getDefaultRoundData, Player, Round, RoundsAdd} from '@doko
 import dayjs from 'dayjs';
 import {useCallback, useMemo} from 'react';
 import {useDispatch} from 'react-redux';
-import {useHistory} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {useGroupMembers} from '../GroupMembers';
 import {useGroup} from '../Groups';
 import {LoguxDispatch} from '../Logux';
@@ -16,7 +16,7 @@ export function useAddRound(): () => void {
     return compareIsRegular === 0 ? a.name.localeCompare(b.name) : compareIsRegular;
   }), [members]);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   return useCallback(() => {
     const roundId = generateUuid();
     const round: Round = {
@@ -41,6 +41,6 @@ export function useAddRound(): () => void {
       players,
       type: 'rounds/add',
     });
-    history.push(`/group/${groupId}/rounds/round/${roundId}/players`);
-  }, [dispatch, groupId, history, sortedMembers, settings]);
+    navigate(`/group/${groupId}/rounds/round/${roundId}/players`);
+  }, [dispatch, groupId, navigate, sortedMembers, settings]);
 }

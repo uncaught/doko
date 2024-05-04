@@ -1,12 +1,10 @@
 import React, {ReactElement} from 'react';
 import {Icon, Label, List} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
-import {usePageContext} from '../../Page';
 import {useSortedGroupMembers} from '../../store/GroupMembers';
 import {useGroup} from '../../store/Groups';
 
 export default function Members(): ReactElement {
-  const {groupId} = usePageContext<{groupId: string}>();
   const {completedRoundsCount} = useGroup() || {};
   const groupMembers = useSortedGroupMembers();
 
@@ -22,7 +20,7 @@ export default function Members(): ReactElement {
           euroBalance,
           isYou,
         }) =>
-          <List.Item as={asLink(`/group/${groupId}/member/${id}`)} key={id}>
+          <List.Item as={asLink(`member/${id}`)} key={id}>
             <List.Icon color={'black'} size={'large'} name='user' verticalAlign='middle'/>
             <List.Content>
               <List.Header>{name}</List.Header>
