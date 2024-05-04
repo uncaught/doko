@@ -16,7 +16,7 @@ export interface State {
   ui: Ui;
 }
 
-export const storeReducer = combineReducers<State>({
+export const storeReducer = combineReducers({
   games,
   groups,
   groupMembers,

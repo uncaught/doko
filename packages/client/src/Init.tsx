@@ -8,7 +8,7 @@ import badgeMessages from '@logux/client/badge/en';
 import log from '@logux/client/log';
 // @ts-ignore
 import createLoguxCreator from '@logux/redux/create-logux-creator';
-import React, {StrictMode} from 'react';
+import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
 import {BrowserRouter} from 'react-router-dom';

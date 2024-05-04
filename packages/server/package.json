@@ -13,7 +13,7 @@
     "@logux/server": "0.5.3",
     "@tsconfig/node20": "^20",
     "@types/lodash": "^4",
-    "@types/node": "^18",
+    "@types/node": "^20",
     "change-case": "^5.4.4",
     "dayjs": "^1",
     "lodash": "^4",

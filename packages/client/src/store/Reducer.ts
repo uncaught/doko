@@ -8,7 +8,7 @@ export function isAction<A extends AnyAction>(action: AnyAction, type: A['type']
 export function createReducer<S>(defaultState: any = {}, syncKey: string | null = null) {
   const map = new Map<string, Reducer<S>>();
 
-  const addReducer = <A extends Action>(type: A['type'], reducer: (state: S, action: A) => S) => {
+  const addReducer = <A extends Action>(type: A['type'], reducer: (state: S, action: A) => S): void => {
     if (!type) {
       throw new Error('Empty type');
     }
@@ -16,7 +16,7 @@ export function createReducer<S>(defaultState: any = {}, syncKey: string | null 
     map.set(type, reducer);
   };
 
-  const combinedReducer = (state: S | undefined = undefined, action: Action = {type: ''}) => {
+  const combinedReducer = (state: S | undefined = undefined, action: Action = {type: ''}): S => {
     if (typeof state === 'undefined') {
       return syncKey ? LocalStorage.getCached(syncKey, defaultState) : defaultState;
     }

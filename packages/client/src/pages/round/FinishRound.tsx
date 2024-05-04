@@ -17,7 +17,7 @@ export default function FinishRound(): ReactElement | null {
 
   if (lastGame.data.isLastGame) {
     return <section>
-      <Form.Button color={'teal'} onClick={finishRound}>Runde abschließen</Form.Button>
+      <Form.Button color={'teal'} onClick={() => finishRound()}>Runde abschließen</Form.Button>
     </section>;
   } else {
     return <FinishRoundPrematurely/>;
