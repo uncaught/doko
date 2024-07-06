@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@types/lodash": "^4",
-    "@types/uuid": "^9",
+    "@types/uuid": "^10",
     "lodash": "^4",
-    "uuid": "^9"
+    "uuid": "^10"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20",

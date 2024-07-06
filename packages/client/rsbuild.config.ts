@@ -1,5 +1,6 @@
 import {defineConfig} from '@rsbuild/core';
 import {pluginReact} from '@rsbuild/plugin-react';
+import {pluginSass} from '@rsbuild/plugin-sass';
 import {pluginSvgr} from '@rsbuild/plugin-svgr';
 // import tailwindcss from 'tailwindcss';
 
@@ -31,6 +32,7 @@ export default defineConfig({
       },
     }),
     pluginReact(),
+    pluginSass(),
   ],
   server: {
     port: 3000,
