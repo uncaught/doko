@@ -45,6 +45,9 @@ html.darkMode {
   border-bottom-color: var(--border-color);
 }
 
+.ui.checkbox:not(.invisible) label:hover,
+.ui.checkbox:not(.invisible) + label:hover,
+.ui.checkbox:not(.invisible) input:focus ~ label,
 i.black.icon.icon.icon.icon.icon.icon {
   color: var(--std-color);
 }

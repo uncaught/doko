@@ -7,7 +7,7 @@ export default function GroupName(): ReactElement {
   const group = useGroup();
   return <div className='u-flex-row-between groupNameHeader'>
     <Header as={'h2'}><Icon name={'group'} size={'small'}/> {group && group.name}</Header>
-    <Link to={`/settings`}>
+    <Link to={`settings`}>
       <Icon name={'cogs'}/>
     </Link>
   </div>;
