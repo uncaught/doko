@@ -33,6 +33,13 @@ export default function Settings(): ReactElement | null {
             <BockEffect/>
           </>}
         </section>
+
+        <Divider section/>
+
+        <section>
+          <Header as='h4'>Gruppe sperren</Header>
+          <Checkbox path={`isGroupLocked`} label={'Keine neuen Runden mehr erlauben'}/>
+        </section>
       </Form>
     </section>
   </Page>;

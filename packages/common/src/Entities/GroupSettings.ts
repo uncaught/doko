@@ -50,6 +50,7 @@ export interface GroupSettings {
   };
   dynamicRoundDuration: boolean;
   eurosPerPointDiffToTopPlayer: number | null;
+  isGroupLocked?: boolean;
 }
 
 export const extraPointsTranslations = new Map<keyof GroupSettings['extraPoints'], string>([

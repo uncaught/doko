@@ -2,10 +2,12 @@ import dayjs from 'dayjs';
 import React, {ReactElement} from 'react';
 import {Icon, Label} from 'semantic-ui-react';
 import {asLink} from '../../AsLink';
+import {useGroup} from '../../store/Groups';
 import {useAddRound} from '../../store/Round/AddRound';
 import {useSortedRounds} from '../../store/Rounds';
 
 export default function RoundsInfo(): ReactElement {
+  const {isGroupLocked} = useGroup()!.settings;
   const rounds = useSortedRounds();
   const addRound = useAddRound();
   const lastRound = rounds[0];
@@ -29,7 +31,7 @@ export default function RoundsInfo(): ReactElement {
       </Label>
     </div>}
 
-    {(!lastRound || lastRound.endDate !== null) && <div className='memberDetail'>
+    {!isGroupLocked && (!lastRound || lastRound.endDate !== null) && <div className='memberDetail'>
       <Label color={'green'} onClick={addRound}>
         Neue Runde
         <Label.Detail>
