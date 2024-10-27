@@ -1,4 +1,4 @@
-FROM mariadb:10.11.7
+FROM mariadb:10.11.9
 
 ENV MYSQL_DATABASE=doko
 
