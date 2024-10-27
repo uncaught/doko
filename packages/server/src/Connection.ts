@@ -67,17 +67,16 @@ export async function deviceBoundQuery<R>(deviceId: string, sql: string, values?
 
 type Parameters<O extends AnyObject> = {
   [k in keyof O]?: string | number | null | object | undefined;
-}
+};
 
-function prepareId<O extends AnyObject>(
-  id: string | Partial<O>,
-  parameters: Parameters<O>,
-): string {
+function prepareId<O extends AnyObject>(id: string | Partial<O>, parameters: Parameters<O>): string {
   const ids = typeof id === 'string' ? {id} : id;
-  return Object.entries(ids).map(([key, val]) => {
-    parameters[key as keyof O] = val;
-    return `${snakeCase(key as string)} = :${key}`;
-  }).join(' AND ');
+  return Object.entries(ids)
+    .map(([key, val]) => {
+      parameters[key as keyof O] = val;
+      return `${snakeCase(key as string)} = :${key}`;
+    })
+    .join(' AND ');
 }
 
 export function fromDbValue<O extends AnyObject>(entities: O[], types: DatabaseTypes<O>): void {
@@ -147,11 +146,7 @@ export async function insertEntity<O extends AnyObject>(
   }
 }
 
-export async function insertSingleEntity<O extends AnyObject>(
-  deviceId: string,
-  dbConfig: DbConfig<O>,
-  entity: O,
-) {
+export async function insertSingleEntity<O extends AnyObject>(deviceId: string, dbConfig: DbConfig<O>, entity: O) {
   await getTransactional(deviceId, async (update) => {
     await insertEntity<O>(update, dbConfig, entity);
   });
@@ -165,10 +160,7 @@ export async function updateEntity<O extends AnyObject>(
   merger = mergeStates,
 ) {
   const ids = typeof id === 'string' ? {id} : id;
-  const keysToUpdate = difference<keyof O>(
-    intersection<keyof O>(Object.keys(partial), updateFields),
-    Object.keys(ids),
-  );
+  const keysToUpdate = difference<keyof O>(intersection<keyof O>(Object.keys(partial), updateFields), Object.keys(ids));
 
   const parameters: Parameters<O> = {};
   const where = prepareId<O>(id, parameters);
@@ -177,10 +169,12 @@ export async function updateEntity<O extends AnyObject>(
       ? (await update<O>(`SELECT * FROM ${table} WHERE ${where}`, parameters))[0]
       : null;
     const toDbValue = await getToDbTransformer<O>(partial, types, oldEntity, merger);
-    const updateKeys = keysToUpdate.map((key: keyof O) => {
-      parameters[key] = toDbValue(key);
-      return `${snakeCase(key as string)} = :${key as string}`;
-    }).join(', ');
+    const updateKeys = keysToUpdate
+      .map((key: keyof O) => {
+        parameters[key] = toDbValue(key);
+        return `${snakeCase(key as string)} = :${key as string}`;
+      })
+      .join(', ');
     await update(`UPDATE ${table} SET ${updateKeys} WHERE ${where}`, parameters);
   }
 }

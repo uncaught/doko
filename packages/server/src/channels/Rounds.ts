@@ -13,19 +13,23 @@ export async function getGroupForRound(roundId: string): Promise<string | null> 
 }
 
 export async function isRoundOpen(roundId: string): Promise<boolean> {
-  const result = await query<{endDate: number | null}>(`SELECT end_date as endDate FROM rounds WHERE id = ?`,
-    [roundId]);
+  const result = await query<{endDate: number | null}>(`SELECT end_date as endDate FROM rounds WHERE id = ?`, [
+    roundId,
+  ]);
   return result.length ? result[0]!.endDate === null : false;
 }
 
 export async function loadRounds(groupId: string): Promise<Round[]> {
-  const rounds = await query<Round>(`SELECT id, 
-                                            group_id as groupId,
-                                            UNIX_TIMESTAMP(start_date) as startDate,
-                                            UNIX_TIMESTAMP(end_date) as endDate,
-                                            data
-                                       FROM rounds
-                                      WHERE group_id = ?`, [groupId]);
+  const rounds = await query<Round>(
+    `SELECT id, 
+            group_id as groupId,
+            UNIX_TIMESTAMP(start_date) as startDate,
+            UNIX_TIMESTAMP(end_date) as endDate,
+            data
+       FROM rounds
+      WHERE group_id = ?`,
+    [groupId],
+  );
   fromDbValue(rounds, roundsDbConfig.types);
   return rounds;
 }
@@ -71,7 +75,7 @@ server.type<RoundsAdd>('rounds/add', {
 
 async function canEditRound(deviceId: string, roundId: string, groupId: string) {
   const realGroupId = await getGroupForRound(roundId);
-  return realGroupId === groupId && await canEditGroup(deviceId, realGroupId) && await isRoundOpen(roundId);
+  return realGroupId === groupId && (await canEditGroup(deviceId, realGroupId)) && (await isRoundOpen(roundId));
 }
 
 server.type<RoundsPatch>('rounds/patch', {
@@ -96,7 +100,7 @@ server.type<RoundsPatch>('rounds/patch', {
 
 server.type<RoundsRemove>('rounds/remove', {
   async access(ctx, {id, groupId}) {
-    return await canEditRound(ctx.userId!, id, groupId) && await getGameCountForRound(id) === 0;
+    return (await canEditRound(ctx.userId!, id, groupId)) && (await getGameCountForRound(id)) === 0;
   },
   resend() {
     return {channel: 'rounds/load'};

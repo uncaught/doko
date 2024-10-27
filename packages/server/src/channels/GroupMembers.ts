@@ -39,15 +39,17 @@ async function getGroupForMember(id: string): Promise<string | null> {
 export async function loadGroupMembers(deviceId: string, groupId: string): Promise<GroupMember[]> {
   const groupMembers = await query<GroupMember>(
     `SELECT gm.id, 
-              gm.name, 
-              gm.group_id as groupId, 
-              gm.is_regular as isRegular, 
-              IF(gmd.device_id IS NULL, 0, 1) as isYou
-         FROM group_members gm
-    LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
-          AND gmd.device_id = ?
-        WHERE gm.group_id = ?
-     GROUP BY gm.id`, [deviceId, groupId]);
+            gm.name, 
+            gm.group_id as groupId, 
+            gm.is_regular as isRegular, 
+            IF(gmd.device_id IS NULL, 0, 1) as isYou
+       FROM group_members gm
+  LEFT JOIN group_member_devices gmd ON gmd.group_member_id = gm.id
+        AND gmd.device_id = ?
+      WHERE gm.group_id = ?
+   GROUP BY gm.id`,
+    [deviceId, groupId],
+  );
   fromDbValue(groupMembers, groupMembersDbConfig.types);
   return groupMembers;
 }
@@ -125,9 +127,11 @@ setTimeout(cleanupTokens, inviteTtl);
 
 server.type<GroupMembersInvite>('groupMembers/invite', {
   async access(ctx, {groupId, groupMemberId, invitationToken}) {
-    return await canEditGroup(ctx.userId!, groupId) //inviter can edit group
-      && groupId === await getGroupForMember(groupMemberId) //member is part of group
-      && !invitationTokens.has(invitationToken);
+    return (
+      (await canEditGroup(ctx.userId!, groupId)) && //inviter can edit group
+      groupId === (await getGroupForMember(groupMemberId)) && //member is part of group
+      !invitationTokens.has(invitationToken)
+    );
   },
   //no resend
   process(ctx, {groupMemberId, groupId, invitationToken}) {
@@ -147,7 +151,7 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
   //no resend
   async process(ctx, {token}) {
     const invitation = invitationTokens.get(token);
-    if (!invitation || invitation.invitedOn < (Date.now() - inviteTtl)) {
+    if (!invitation || invitation.invitedOn < Date.now() - inviteTtl) {
       await ctx.sendBack<GroupMembersInvitationRejected>({
         token,
         type: 'groupMembers/invitationRejected',
@@ -158,13 +162,16 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
     const {groupId, groupMemberId, inviterDeviceId} = invitation;
 
     //Check if the user is already connected to a group member:
-    const existing = await query(`SELECT gm.id
-                                    FROM group_member_devices gmd
-                              INNER JOIN group_members gm ON gm.id = gmd.group_member_id AND gm.group_id = :groupId
-                                   WHERE gmd.device_id = :deviceId`, {
-      groupId,
-      deviceId: ctx.userId,
-    });
+    const existing = await query(
+      `SELECT gm.id
+         FROM group_member_devices gmd
+   INNER JOIN group_members gm ON gm.id = gmd.group_member_id AND gm.group_id = :groupId
+        WHERE gmd.device_id = :deviceId`,
+      {
+        groupId,
+        deviceId: ctx.userId,
+      },
+    );
     if (existing.length === 0) {
       await insertSingleEntity(ctx.userId!, groupMemberDevicesDbConfig, {
         groupMemberId,
@@ -177,8 +184,10 @@ server.type<GroupMembersAcceptInvitation>('groupMembers/acceptInvitation', {
     invitationTokens.delete(token);
 
     //Inform the inviter:
-    server.log.add<GroupMembersInvitationUsed>({token, type: 'groupMembers/invitationUsed'},
-      {users: [inviterDeviceId]});
+    server.log.add<GroupMembersInvitationUsed>(
+      {token, type: 'groupMembers/invitationUsed'},
+      {users: [inviterDeviceId]},
+    );
 
     //Inform the invitee:
     const group = (await loadGroups(new Set([groupId])))[0];

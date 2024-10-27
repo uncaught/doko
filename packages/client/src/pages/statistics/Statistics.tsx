@@ -101,66 +101,68 @@ type ValueComponents = {
 };
 
 const sumUp = (stats: Stats[keyof Stats]) => Object.values(stats).reduce((sum, val) => sum + val, 0);
-const perGame = (statistics: Stats, value: number) => `${Math.round(value / statistics.gameTypes.total * 1000)}‰ p.g.`;
+const perGame = (statistics: Stats, value: number) =>
+  `${Math.round((value / statistics.gameTypes.total) * 1000)}‰ p.g.`;
 
 const valueComponents: ValueComponents = {
   gameTypes: ({key, statistics}) => {
-    return <>
-      <Value value={statistics.gameTypes[key]} total={statistics.gameTypes.total}/>
-      <Value value={statistics.gameTypesWon[key]} total={statistics.gameTypesWon.total} won/>
-    </>;
+    return (
+      <>
+        <Value value={statistics.gameTypes[key]} total={statistics.gameTypes.total} />
+        <Value value={statistics.gameTypesWon[key]} total={statistics.gameTypesWon.total} won />
+      </>
+    );
   },
   soloTypes: ({key, statistics}) => {
     const total = sumUp(statistics.soloTypes);
     const totalWon = sumUp(statistics.soloTypesWon);
-    return <>
-      <Value value={key === 'total' ? total : statistics.soloTypes[key]} total={total}/>
-      <Value value={key === 'total' ? totalWon : statistics.soloTypesWon[key]} total={totalWon} won/>
-    </>;
+    return (
+      <>
+        <Value value={key === 'total' ? total : statistics.soloTypes[key]} total={total} />
+        <Value value={key === 'total' ? totalWon : statistics.soloTypesWon[key]} total={totalWon} won />
+      </>
+    );
   },
   extraPoints: ({key, statistics}) => {
     if (key === 'total') {
       const s = statistics.extraPoints;
       const won = s.doppelkopf + s.foxCaught + s.karlCaught + s.karlGotLastTrick + s.wonAgainstQueensOfClubs;
       const lost = s.foxLost + s.karlLost;
-      return <>
-        <ValueGrid values={[
-          won,
-          perGame(statistics, won),
-        ]} won/>
-        <ValueGrid values={[
-          lost,
-          perGame(statistics, lost),
-        ]} lost/>
-      </>;
+      return (
+        <>
+          <ValueGrid values={[won, perGame(statistics, won)]} won />
+          <ValueGrid values={[lost, perGame(statistics, lost)]} lost />
+        </>
+      );
     }
 
     const isLost = key === 'foxLost' || key === 'karlLost';
     const points = statistics.extraPoints[key];
-    return <ValueGrid values={[
-      points,
-      perGame(statistics, points),
-    ]} won={!isLost} lost={isLost}/>;
+    return <ValueGrid values={[points, perGame(statistics, points)]} won={!isLost} lost={isLost} />;
   },
   announces: ({key, statistics}) => {
     const total = sumUp(statistics.announces);
     const value = key === 'total' ? total : statistics.announces[key];
     const totalWon = sumUp(statistics.announcesWon);
     const valueWon = key === 'total' ? totalWon : statistics.announcesWon[key];
-    return <>
-      <Value value={value} total={total}/>
-      <ValueGrid values={[perGame(statistics, value)]}/>
-      <Value value={valueWon} total={totalWon} won/>
-      <ValueGrid values={[perGame(statistics, valueWon)]} won/>
-    </>;
+    return (
+      <>
+        <Value value={value} total={total} />
+        <ValueGrid values={[perGame(statistics, value)]} />
+        <Value value={valueWon} total={totalWon} won />
+        <ValueGrid values={[perGame(statistics, valueWon)]} won />
+      </>
+    );
   },
   missedAnnounces: ({key, statistics}) => {
     const total = sumUp(statistics.missedAnnounces);
     const value = key === 'total' ? total : statistics.missedAnnounces[key];
-    return <>
-      <Value value={value} total={total}/>
-      <ValueGrid values={[perGame(statistics, value)]}/>
-    </>;
+    return (
+      <>
+        <Value value={value} total={total} />
+        <ValueGrid values={[perGame(statistics, value)]} />
+      </>
+    );
   },
 };
 
@@ -191,21 +193,25 @@ export default function Statistics(): ReactElement {
     return cols;
   }, [filter, settings.allowedSoloTypes]);
 
-  const setFilter = useCallback((filter: Filter): void => {
-    setUi({statistics: {filter, selectedRow: null}});
-  }, [setUi]);
+  const setFilter = useCallback(
+    (filter: Filter): void => {
+      setUi({statistics: {filter, selectedRow: null}});
+    },
+    [setUi],
+  );
 
   const [columns, rowCells] = useMemo(() => {
-    const cols = groupMembers.filter((gm) => includeIrregularMembers || gm.isRegular)
-                             .sort((a, b) => {
-                               if (a.isYou) {
-                                 return -1;
-                               }
-                               if (b.isYou) {
-                                 return 1;
-                               }
-                               return a.name.localeCompare(b.name);
-                             });
+    const cols = groupMembers
+      .filter((gm) => includeIrregularMembers || gm.isRegular)
+      .sort((a, b) => {
+        if (a.isYou) {
+          return -1;
+        }
+        if (b.isYou) {
+          return 1;
+        }
+        return a.name.localeCompare(b.name);
+      });
 
     const cells: ReactNode[] = [];
     rows.forEach(([key, text]) => {
@@ -219,37 +225,51 @@ export default function Statistics(): ReactElement {
         setUi({statistics: {selectedRow: key}});
       };
 
-      cells.push(<div key={`label_${key}`} className={classNames(rowClasses, 'label')} onClick={onClick}>{text}</div>);
+      cells.push(
+        <div key={`label_${key}`} className={classNames(rowClasses, 'label')} onClick={onClick}>
+          {text}
+        </div>,
+      );
 
       cols.forEach(({id, isYou, statistics}) => {
         //@ts-ignore
         const value = valueComponents[filter]({key, statistics});
-        cells.push(<div key={`value_${key}_${id}`} className={classNames(rowClasses, {isYou})} onClick={onClick}>
-          {value}
-        </div>);
+        cells.push(
+          <div key={`value_${key}_${id}`} className={classNames(rowClasses, {isYou})} onClick={onClick}>
+            {value}
+          </div>,
+        );
       });
     });
     return [cols, cells];
   }, [filter, groupMembers, includeIrregularMembers, rows, setUi, selectedRow]);
 
-  return <Page displayName={'Mitglieder'} menuItems={[EnableIrregularMembersMenuItem]}>
-    <section>
-      <Dropdown label={'Filter'}
-                options={filterOptions}
-                value={filter}
-                onChange={(e, {value}) => setFilter(value as Filter)}
-                selection/>
+  return (
+    <Page displayName={'Statistiken'} menuItems={[EnableIrregularMembersMenuItem]}>
+      <section>
+        <Dropdown
+          label={'Filter'}
+          options={filterOptions}
+          value={filter}
+          onChange={(e, {value}) => setFilter(value as Filter)}
+          selection
+        />
 
-      <Divider className='tiny' hidden/>
+        <Divider className='tiny' hidden />
 
-      <div className='grid-table gamesTable statisticsTable u-text-center'
-           style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}>
-        <div className='grid-table-th'/>
-        {columns.map(({id, isYou}) => <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
-          {initials[id]}
-        </div>)}
-        {rowCells}
-      </div>
-    </section>
-  </Page>;
+        <div
+          className='grid-table gamesTable statisticsTable u-text-center'
+          style={{gridTemplateColumns: `auto repeat(${columns.length}, auto)`}}
+        >
+          <div className='grid-table-th' />
+          {columns.map(({id, isYou}) => (
+            <div className={classNames('grid-table-th', {isYou})} key={`head_${id}`}>
+              {initials[id]}
+            </div>
+          ))}
+          {rowCells}
+        </div>
+      </section>
+    </Page>
+  );
 }

@@ -8,14 +8,16 @@ import Settings from './Settings';
 import Stats from './Stats';
 
 export default function Member(): ReactElement {
-  return <Page displayName={'Mitglied'}>
-    <div>
-      <EditableName icon={'user'} useGet={useGroupMember} usePatch={usePatchGroupMember}/>
-      <Stats/>
-      <Divider section/>
-      <Settings/>
-      <Divider section/>
-      <InviteDevice/>
-    </div>
-  </Page>;
+  return (
+    <Page displayName={'Mitglied'}>
+      <div>
+        <EditableName icon={'user'} useGet={useGroupMember} usePatch={usePatchGroupMember} />
+        <Stats />
+        <Divider section />
+        <Settings />
+        <Divider section />
+        <InviteDevice />
+      </div>
+    </Page>
+  );
 }

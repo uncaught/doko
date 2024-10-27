@@ -21,9 +21,13 @@ export default function HeartsTrickToggle(): ReactElement | null {
     return null;
   }
 
-  return <div>
-    <Button icon={'heart'}
-            color={isOn ? 'green' : undefined}
-            onClick={() => patchGame({data: {heartsTrickWentThrough: !isOn}})}/>
-  </div>;
+  return (
+    <div>
+      <Button
+        icon={'heart'}
+        color={isOn ? 'green' : undefined}
+        onClick={() => patchGame({data: {heartsTrickWentThrough: !isOn}})}
+      />
+    </div>
+  );
 }

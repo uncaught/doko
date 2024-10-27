@@ -15,7 +15,9 @@ export async function recalcRoundPlayerStatistics(update: typeof query) {
       });
 
       const gameRows = await update<{data: GameData}>(
-        'SELECT data FROM games WHERE round_id = ? ORDER BY game_number DESC', [roundRow.id]);
+        'SELECT data FROM games WHERE round_id = ? ORDER BY game_number DESC',
+        [roundRow.id],
+      );
       gameRows.forEach((gameRow) => {
         addGameToStats(gameRow.data, statsByMember);
       });

@@ -29,8 +29,9 @@ function mergeObjects(targetState: AnyObject, partialState: AnyObject, options: 
   const newState = {...targetState};
   Object.entries(partialState).forEach(([key, val]) => {
     const newValue = merge(targetState[key], val, options);
-    if (newValue !== newState[key]
-      || (newValue === undefined && options.explicitUndefines && !newState.hasOwnProperty(key))
+    if (
+      newValue !== newState[key] ||
+      (newValue === undefined && options.explicitUndefines && !newState.hasOwnProperty(key))
     ) {
       newState[key] = newValue;
       changed = true;

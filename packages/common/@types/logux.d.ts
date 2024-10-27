@@ -61,9 +61,7 @@ declare module '@logux/core' {
     [extraProps: string]: any;
   }
 
-  export interface Meta {
-
-  }
+  export interface Meta {}
 }
 
 declare module '@logux/server/context' {
@@ -92,8 +90,7 @@ declare module '@logux/server/base-server' {
   import {ChannelContext, Context} from '@logux/server/context';
   import {LogTarget} from '@logux/core/log';
 
-  interface Client {
-  }
+  interface Client {}
 
   interface Authenticator {
     /**
@@ -115,8 +112,7 @@ declare module '@logux/server/base-server' {
     (ctx: Context, action: A, meta: Meta): boolean | Promise<boolean>;
   }
 
-  interface ResendResponse extends LogTarget {
-  }
+  interface ResendResponse extends LogTarget {}
 
   interface Resender<A extends Action> {
     /**
@@ -210,7 +206,6 @@ declare module '@logux/server/base-server' {
 
     type<A extends Action>(name: A['type'], callbacks: TypeCallbacks<A>): void;
   }
-
 }
 
 declare module '@logux/server/server' {
@@ -229,7 +224,7 @@ declare module '@logux/server/server' {
     host?: string;
     key?: string;
     cert?: string;
-    env?: "production" | "development";
+    env?: 'production' | 'development';
     bunyan?: string;
     reporter?: () => void;
     backend?: string;

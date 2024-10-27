@@ -1,5 +1,5 @@
 export type SoloType =
-  'trump' //also known as 'diamonds'
+  | 'trump' //also known as 'diamonds'
   | 'queens'
   | 'jacks'
   | 'kings'

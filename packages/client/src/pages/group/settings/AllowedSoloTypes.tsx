@@ -6,12 +6,16 @@ import {useGroup, usePatchGroup} from '../../../store/Groups';
 export default function AllowedSoloTypes(): ReactElement | null {
   const group = useGroup()!;
   const patch = usePatchGroup();
-  return <Form.Dropdown placeholder='Erlaubte Soli'
-                        fluid
-                        multiple
-                        label='Erlaubte Soli'
-                        selection
-                        onChange={(e, {value}) => patch({settings: {allowedSoloTypes: value as SoloType[]}})}
-                        options={soloTypeOptions}
-                        value={group.settings.allowedSoloTypes}/>;
+  return (
+    <Form.Dropdown
+      placeholder='Erlaubte Soli'
+      fluid
+      multiple
+      label='Erlaubte Soli'
+      selection
+      onChange={(e, {value}) => patch({settings: {allowedSoloTypes: value as SoloType[]}})}
+      options={soloTypeOptions}
+      value={group.settings.allowedSoloTypes}
+    />
+  );
 }

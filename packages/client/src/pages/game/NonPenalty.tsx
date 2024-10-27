@@ -26,31 +26,37 @@ function Column({Comp, isRe}: {Comp: React.FC<{isRe: boolean}>; isRe: boolean}):
       isOverCurrent: monitor.isOver({shallow: true}),
     }),
   });
-  return <div className={'column'} ref={drop}>
-    <Comp isRe={isRe}/>
-  </div>;
+  return (
+    <div className={'column'} ref={drop}>
+      <Comp isRe={isRe} />
+    </div>
+  );
 }
 
 function Row({Comp}: {Comp: React.FC<{isRe: boolean}>}): ReactElement {
-  return <Grid.Row>
-    <Column Comp={Comp} isRe={true}/>
-    <Column Comp={Comp} isRe={false}/>
-  </Grid.Row>;
+  return (
+    <Grid.Row>
+      <Column Comp={Comp} isRe={true} />
+      <Column Comp={Comp} isRe={false} />
+    </Grid.Row>
+  );
 }
 
 export default function NonPenalty(): ReactElement {
-  return <>
-    <Segment vertical>
-      <Grid columns={2} relaxed='very' className='tinyVertical'>
-        <Row Comp={Announcements}/>
-        <Row Comp={ExtraPoints}/>
-        <Row Comp={SidePlayers}/>
-        <Row Comp={GamePips}/>
-        <Row Comp={Points}/>
-      </Grid>
-      <Divider vertical>VS</Divider>
-    </Segment>
-    <UndecidedPlayers/>
-    <GameCalcBlame/>
-  </>;
+  return (
+    <>
+      <Segment vertical>
+        <Grid columns={2} relaxed='very' className='tinyVertical'>
+          <Row Comp={Announcements} />
+          <Row Comp={ExtraPoints} />
+          <Row Comp={SidePlayers} />
+          <Row Comp={GamePips} />
+          <Row Comp={Points} />
+        </Grid>
+        <Divider vertical>VS</Divider>
+      </Segment>
+      <UndecidedPlayers />
+      <GameCalcBlame />
+    </>
+  );
 }

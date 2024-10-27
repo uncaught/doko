@@ -8,13 +8,19 @@ export default function ExtraPoints({isRe}: {isRe: boolean}): ReactElement {
   const {data} = useGame()!;
   const isSoloLike = soloLikeGameTypes.includes(data.gameType);
   const extraPoints = data[isRe ? 're' : 'contra'].extraPoints;
-  return <>
-    {!isSoloLike && <>
-      <Divider className='tiny'/>
-      <div className='u-flex-row u-flex-wrap'>
-        {extraPoints.map((_, index) => <ExtraPointEntry key={index} isRe={isRe} index={index}/>)}
-        <ExtraPointEntry key={-1} isRe={isRe} index={-1}/>
-      </div>
-    </>}
-  </>;
+  return (
+    <>
+      {!isSoloLike && (
+        <>
+          <Divider className='tiny' />
+          <div className='u-flex-row u-flex-wrap'>
+            {extraPoints.map((_, index) => (
+              <ExtraPointEntry key={index} isRe={isRe} index={index} />
+            ))}
+            <ExtraPointEntry key={-1} isRe={isRe} index={-1} />
+          </div>
+        </>
+      )}
+    </>
+  );
 }

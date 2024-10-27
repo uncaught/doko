@@ -37,34 +37,45 @@ export default function EditableName<T extends {name: string}>({
     }
   };
 
-  return <div className='u-flex-row-between editableNameHeader'>
-    {!editing && <>
-      <Header as={'h2'}><Icon name={icon} size={'small'}/> {name}</Header>
-      <Icon name={'edit'} onClick={() => {
-        setEditing(true);
-        setTimeout(() => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-            inputRef.current.select();
-          }
-        }, 100);
-      }}/>
-    </>}
-    {editing && <>
-      <Input error={error}
-             ref={inputRef}
-             value={name}
-             onChange={onChange}
-             onBlur={save}
-             onKeyPress={(e: KeyboardEvent) => {
-               if (e.key === 'Enter') {
-                 save();
-               }
-             }}
-             maxLength={191}
-             placeholder={'Name'}
-             size={'small'}
-             required/>
-    </>}
-  </div>;
+  return (
+    <div className='u-flex-row-between editableNameHeader'>
+      {!editing && (
+        <>
+          <Header as={'h2'}>
+            <Icon name={icon} size={'small'} /> {name}
+          </Header>
+          <Icon
+            name={'edit'}
+            onClick={() => {
+              setEditing(true);
+              setTimeout(() => {
+                if (inputRef.current) {
+                  inputRef.current.focus();
+                  inputRef.current.select();
+                }
+              }, 100);
+            }}
+          />
+        </>
+      )}
+      {editing && (
+        <Input
+          error={error}
+          ref={inputRef}
+          value={name}
+          onChange={onChange}
+          onBlur={save}
+          onKeyPress={(e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+              save();
+            }
+          }}
+          maxLength={191}
+          placeholder={'Name'}
+          size={'small'}
+          required
+        />
+      )}
+    </div>
+  );
 }

@@ -9,8 +9,10 @@ export default function Pot(): ReactElement | null {
   if (!group?.settings.eurosPerPointDiffToTopPlayer) {
     return null;
   }
-  return <>
-    <FullPot as={asLink(`pot`)}/>
-    <Divider/>
-  </>;
+  return (
+    <>
+      <FullPot as={asLink(`pot`)} />
+      <Divider />
+    </>
+  );
 }

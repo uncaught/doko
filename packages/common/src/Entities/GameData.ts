@@ -2,7 +2,7 @@ import {GameCalcLog} from '../GameCalc';
 import {GroupSettings, SoloType} from './GroupSettings';
 
 export type PipRange =
-  '0'
+  | '0'
   | '1-29'
   | '30'
   | '31-59'
@@ -64,7 +64,7 @@ export type Announce = 'announced' | 'no9' | 'no6' | 'no3' | 'no0';
 export const announceChain: Announce[] = ['announced', 'no9', 'no6', 'no3', 'no0'];
 
 export type GameType =
-  'normal'
+  | 'normal'
   | 'poverty'
   | 'wedding'
   | 'silentWedding'

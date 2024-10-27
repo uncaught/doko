@@ -20,8 +20,9 @@ export function setBuildTime(buildTime: number): void {
   loguxPrefix = `logux:${buildTime}`;
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i) || '';
-    if ((key.startsWith('cache:') && !key.startsWith(cachePrefix))
-      || (key.startsWith('logux:') && !key.startsWith(loguxPrefix))
+    if (
+      (key.startsWith('cache:') && !key.startsWith(cachePrefix)) ||
+      (key.startsWith('logux:') && !key.startsWith(loguxPrefix))
     ) {
       localStorage.removeItem(key);
     }

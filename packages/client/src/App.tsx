@@ -24,24 +24,26 @@ export default function App(): ReactElement | null {
   useSubscription<GroupsLoad>(['groups/load']);
   useFollowLatestGame();
 
-  return <Routes>
-    <Route path='/group/:groupId' element={<Group/>}>
-      <Route path={'settings'} element={<Settings/>}/>
-      <Route path={'member/:groupMemberId'} element={<Member/>}/>
-      <Route path={'addMembers'} element={<AddMembers/>}/>
-      <Route path={'statistics'} element={<Statistics/>}/>
-      <Route path={'pot'} element={<PotIndex/>}/>
-      <Route path={'rounds'} element={<Rounds/>}>
-        <Route path={'round/:roundId'} element={<Round/>}>
-          <Route path={'players'} element={<SittingOrder/>}/>
-          <Route path={'games'} element={<Games/>}>
-            <Route path={'game/:gameId'} element={<Game/>}/>
+  return (
+    <Routes>
+      <Route path='/group/:groupId' element={<Group />}>
+        <Route path={'settings'} element={<Settings />} />
+        <Route path={'member/:groupMemberId'} element={<Member />} />
+        <Route path={'addMembers'} element={<AddMembers />} />
+        <Route path={'statistics'} element={<Statistics />} />
+        <Route path={'pot'} element={<PotIndex />} />
+        <Route path={'rounds'} element={<Rounds />}>
+          <Route path={'round/:roundId'} element={<Round />}>
+            <Route path={'players'} element={<SittingOrder />} />
+            <Route path={'games'} element={<Games />}>
+              <Route path={'game/:gameId'} element={<Game />} />
+            </Route>
           </Route>
         </Route>
       </Route>
-    </Route>
-    <Route path='/invitation' element={<HandleInvitation/>}/>
-    <Route path='/simulation' element={<Simulation/>}/>
-    <Route path='/' element={<Groups/>}/>
-  </Routes>;
+      <Route path='/invitation' element={<HandleInvitation />} />
+      <Route path='/simulation' element={<Simulation />} />
+      <Route path='/' element={<Groups />} />
+    </Routes>
+  );
 }

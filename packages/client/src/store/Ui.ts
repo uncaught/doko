@@ -18,7 +18,7 @@ import {getRoundByIdSelector} from './Rounds';
 import {State} from './Store';
 
 export interface Ui {
-  acceptedInvitations: {[token: string]: string}, //token => groupId for the invitee
+  acceptedInvitations: {[token: string]: string}; //token => groupId for the invitee
   followLastGame: boolean;
   rejectedInvitations: string[]; //for the invitee
   usedInvitationTokens: string[]; //for the inviter
@@ -84,8 +84,9 @@ addReducer<UiSet>('ui/set', (state, action) => {
   return newState;
 });
 
-addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted',
-  (state, {groupId, token}) => mergeStates(state, {acceptedInvitations: {[token]: groupId}}));
+addReducer<GroupMembersInvitationAccepted>('groupMembers/invitationAccepted', (state, {groupId, token}) =>
+  mergeStates(state, {acceptedInvitations: {[token]: groupId}}),
+);
 
 addReducer<GroupMembersInvitationRejected>('groupMembers/invitationRejected', addUniqueToken('rejectedInvitations'));
 
@@ -101,9 +102,12 @@ export const statisticsSelector = (state: State) => state.ui.statistics;
 
 export function useSetUi() {
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((ui: DeepPartial<Ui>): void => {
-    dispatch({type: 'ui/set', ui} as UiSet);
-  }, [dispatch]);
+  return useCallback(
+    (ui: DeepPartial<Ui>): void => {
+      dispatch({type: 'ui/set', ui} as UiSet);
+    },
+    [dispatch],
+  );
 }
 
 export function useFollowLatestGame() {

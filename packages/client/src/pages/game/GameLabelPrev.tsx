@@ -10,16 +10,23 @@ export default function GameLabelPrev(): ReactElement {
   const sortedGames = useSortedGames();
   const index = sortedGames.indexOf(game);
   const prevGame = sortedGames[index - 1];
-  return <>
-    <div className='memberDetail'>
-      {!!prevGame &&
-        <Label as={asLink(`/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${prevGame.id}`)}
-               color={'blue'}>
-          <Icon className='u-margin-none' name={'arrow left'}/> <Icon name={'hashtag'}/>
-        </Label>}
-      {!prevGame && <Label>
-        <Icon className='u-margin-none' name={'arrow left'}/> <Icon name={'hashtag'}/>
-      </Label>}
-    </div>
-  </>;
+  return (
+    <>
+      <div className='memberDetail'>
+        {!!prevGame && (
+          <Label
+            as={asLink(`/group/${currentRound.groupId}/rounds/round/${currentRound.id}/games/game/${prevGame.id}`)}
+            color={'blue'}
+          >
+            <Icon className='u-margin-none' name={'arrow left'} /> <Icon name={'hashtag'} />
+          </Label>
+        )}
+        {!prevGame && (
+          <Label>
+            <Icon className='u-margin-none' name={'arrow left'} /> <Icon name={'hashtag'} />
+          </Label>
+        )}
+      </div>
+    </>
+  );
 }

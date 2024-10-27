@@ -9,14 +9,17 @@ export async function loadGroups(groupIds: Set<string>): Promise<Group[]> {
   let groups: Group[] = [];
   if (groupIds.size) {
     const ary = `,?`.repeat(groupIds.size).substring(1);
-    groups = await query<Group>(`SELECT g.id, g.name, g.settings,
-                                        COUNT(r.id) as roundsCount, 
-                                        SUM(IF(r.end_date IS NULL, 0, 1)) as completedRoundsCount, 
-                                        UNIX_TIMESTAMP(MAX(r.start_date)) as lastRoundUnix 
-                                   FROM groups g
-                              LEFT JOIN rounds r ON r.group_id = g.id 
-                                  WHERE g.id IN (${ary})
-                               GROUP BY g.id`, [...groupIds]);
+    groups = await query<Group>(
+      `SELECT g.id, g.name, g.settings,
+              COUNT(r.id) as roundsCount, 
+              SUM(IF(r.end_date IS NULL, 0, 1)) as completedRoundsCount, 
+              UNIX_TIMESTAMP(MAX(r.start_date)) as lastRoundUnix 
+         FROM \`groups\` g
+    LEFT JOIN rounds r ON r.group_id = g.id 
+        WHERE g.id IN (${ary})
+     GROUP BY g.id`,
+      [...groupIds],
+    );
     fromDbValue(groups, groupsDbConfig.types);
   }
   return groups;
@@ -41,9 +44,11 @@ server.channel<GroupsLoad>('groups/load', {
 
 server.type<GroupsAdd>('groups/add', {
   async access(ctx, action) {
-    return action.groupMembers.length === 4
-      && Boolean(action.groupMembers[0]!.isYou)
-      && action.groupMembers.every((gm) => action.group.id === gm.groupId);
+    return (
+      action.groupMembers.length === 4 &&
+      Boolean(action.groupMembers[0]!.isYou) &&
+      action.groupMembers.every((gm) => action.group.id === gm.groupId)
+    );
   },
   //No resend needed - no other client may see this group, yet, because no other client is a member
   async process(ctx, action) {

@@ -11,14 +11,16 @@ async function migrateGroups(update: typeof query) {
 }
 
 async function getRoundGames(update: typeof query, roundId: string): Promise<GameData[]> {
-  const rows = await update<{data: GameData}>(
-    'SELECT data FROM games WHERE round_id = ? ORDER BY game_number DESC', [roundId]);
+  const rows = await update<{data: GameData}>('SELECT data FROM games WHERE round_id = ? ORDER BY game_number DESC', [
+    roundId,
+  ]);
   return rows.map(({data}) => data);
 }
 
 async function migrateRounds(update: typeof query) {
   const rows = await update<{id: string; data: RoundData; end: number}>(
-    'SELECT id, data, UNIX_TIMESTAMP(end_date) as end FROM rounds');
+    'SELECT id, data, UNIX_TIMESTAMP(end_date) as end FROM rounds',
+  );
   for (const row of rows) {
     console.log(`Adding results for round ${row.id} ...`);
 

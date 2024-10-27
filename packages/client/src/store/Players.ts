@@ -29,10 +29,7 @@ addReducer<GroupMembersAdd>('groupMembers/add', (state, {newRoundPlayer}) => {
   if (newRoundPlayer && state[newRoundPlayer.roundId]) {
     return {
       ...state,
-      [newRoundPlayer.roundId]: [
-        ...state[newRoundPlayer.roundId]!,
-        newRoundPlayer,
-      ],
+      [newRoundPlayer.roundId]: [...state[newRoundPlayer.roundId]!, newRoundPlayer],
     };
   }
   return state;
@@ -40,7 +37,10 @@ addReducer<GroupMembersAdd>('groupMembers/add', (state, {newRoundPlayer}) => {
 
 addReducer<RoundsAdd>('rounds/add', (state, {round, players}) => ({...state, [round.id]: players}));
 
-addReducer<RoundDetailsLoaded>('roundDetails/loaded', (state, {roundId, players}) => ({...state, [roundId]: players}));
+addReducer<RoundDetailsLoaded>('roundDetails/loaded', (state, {roundId, players}) => ({
+  ...state,
+  [roundId]: players,
+}));
 
 addReducer<PlayerSittingOrderPatch>('players/patchSittingOrder', (state, {roundId, order}) => {
   const oldPlayers = state[roundId];
@@ -124,7 +124,9 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
     };
 
     games.forEach((game) => {
-      const {data: {isComplete, gameType, re, contra, penaltyCountsAsDutySolo}} = game;
+      const {
+        data: {isComplete, gameType, re, contra, penaltyCountsAsDutySolo},
+      } = game;
       if (!isComplete) {
         //only complete games are counted for the player stats.
         return;
@@ -158,16 +160,19 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
 export function usePatchSittingOrder() {
   const round = useRound()!;
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((order: string[]) => {
-    if (round.endDate) {
-      return;
-    }
-    dispatch.sync<PlayerSittingOrderPatch>({
-      order,
-      roundId: round.id,
-      type: 'players/patchSittingOrder',
-    });
-  }, [dispatch, round]);
+  return useCallback(
+    (order: string[]) => {
+      if (round.endDate) {
+        return;
+      }
+      dispatch.sync<PlayerSittingOrderPatch>({
+        order,
+        roundId: round.id,
+        type: 'players/patchSittingOrder',
+      });
+    },
+    [dispatch, round],
+  );
 }
 
 export function usePatchAttendance() {
@@ -176,24 +181,27 @@ export function usePatchAttendance() {
   const dispatch = useDispatch<LoguxDispatch>();
   const players = usePlayers();
   const games = useSortedGames();
-  return useCallback((groupMemberId: string) => {
-    const player = players.find(({groupMemberId: memberId}) => groupMemberId === memberId);
-    if (!player) {
-      throw new Error(`Missing player '${groupMemberId}' in loaded round players`);
-    }
-    if (round.endDate) {
-      return;
-    }
-    const isAttending = player.leftAfterGameNumber === null;
-    const currentGameNumber = games.length ? games[games.length - 1]!.gameNumber : 0;
-    dispatch.sync<PlayersPatch>({
-      groupMemberId,
-      roundId,
-      player: {
-        joinedAfterGameNumber: isAttending ? player.joinedAfterGameNumber : currentGameNumber,
-        leftAfterGameNumber: isAttending ? currentGameNumber : null,
-      },
-      type: 'players/patch',
-    });
-  }, [dispatch, games, players, round.endDate, roundId]);
+  return useCallback(
+    (groupMemberId: string) => {
+      const player = players.find(({groupMemberId: memberId}) => groupMemberId === memberId);
+      if (!player) {
+        throw new Error(`Missing player '${groupMemberId}' in loaded round players`);
+      }
+      if (round.endDate) {
+        return;
+      }
+      const isAttending = player.leftAfterGameNumber === null;
+      const currentGameNumber = games.length ? games[games.length - 1]!.gameNumber : 0;
+      dispatch.sync<PlayersPatch>({
+        groupMemberId,
+        roundId,
+        player: {
+          joinedAfterGameNumber: isAttending ? player.joinedAfterGameNumber : currentGameNumber,
+          leftAfterGameNumber: isAttending ? currentGameNumber : null,
+        },
+        type: 'players/patch',
+      });
+    },
+    [dispatch, games, players, round.endDate, roundId],
+  );
 }

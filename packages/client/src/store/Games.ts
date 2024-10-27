@@ -36,8 +36,10 @@ import {State} from './Store';
 
 const {addReducer, combinedReducer} = createReducer<Games>({}, 'games');
 
-addReducer<RoundDetailsLoaded>('roundDetails/loaded',
-  (state, {roundId, games}) => ({...state, [roundId]: arrayToList(games)}));
+addReducer<RoundDetailsLoaded>('roundDetails/loaded', (state, {roundId, games}) => ({
+  ...state,
+  [roundId]: arrayToList(games),
+}));
 
 addReducer<GamesAdd>('games/add', (state, {game}) => ({
   ...state,
@@ -105,7 +107,7 @@ export function useLatestGroupGame(): Game | undefined {
   const round = useLatestGroupRound();
   const games = useSelector(gamesSelector);
   // eslint-disable-next-line
-  const roundGames = round && games[round.id] || {};
+  const roundGames = (round && games[round.id]) || {};
   return getLastGameOfRoundGames(roundGames);
 }
 
@@ -220,22 +222,25 @@ function useRealPatchGame() {
   const currentGame = useGame();
   const dispatch = useDispatch<LoguxDispatch>();
   const round = useRound()!;
-  return useCallback((game: PatchableGame) => {
-    if (!currentGame) {
-      throw new Error(`No currentGame`);
-    }
-    if (round.endDate || (currentGame.data.isComplete && game.data?.isComplete !== false)) {
-      return; //block edits on complete games
-    }
-    if (!objectContains(currentGame, game)) {
-      dispatch.sync<GamesPatch>({
-        game,
-        id: currentGame.id,
-        roundId: currentGame.roundId,
-        type: 'games/patch',
-      });
-    }
-  }, [currentGame, dispatch, round.endDate]);
+  return useCallback(
+    (game: PatchableGame) => {
+      if (!currentGame) {
+        throw new Error(`No currentGame`);
+      }
+      if (round.endDate || (currentGame.data.isComplete && game.data?.isComplete !== false)) {
+        return; //block edits on complete games
+      }
+      if (!objectContains(currentGame, game)) {
+        dispatch.sync<GamesPatch>({
+          game,
+          id: currentGame.id,
+          roundId: currentGame.roundId,
+          type: 'games/patch',
+        });
+      }
+    },
+    [currentGame, dispatch, round.endDate],
+  );
 }
 
 export function usePatchGame(): (game: PatchableGame) => void {

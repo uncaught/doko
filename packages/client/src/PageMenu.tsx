@@ -27,12 +27,16 @@ function isConfig(item: PageMenuItemConfig | PageMenuItemComp): item is PageMenu
 function FollowLastGameMenuItem(): ReactElement {
   const checked = useSelector(followLastGameSelector);
   const setUi = useSetUi();
-  return <Menu.Item>
-    <Icon name='forward'/>
-    <Checkbox label={'Spielen folgen'}
-              checked={checked}
-              onChange={(_e, {checked}) => setUi({followLastGame: checked})}/>
-  </Menu.Item>;
+  return (
+    <Menu.Item>
+      <Icon name='forward' />
+      <Checkbox
+        label={'Spielen folgen'}
+        checked={checked}
+        onChange={(_e, {checked}) => setUi({followLastGame: checked})}
+      />
+    </Menu.Item>
+  );
 }
 
 export default function PageMenu({closeMenu}: {closeMenu: () => void}): ReactElement | null {
@@ -40,48 +44,63 @@ export default function PageMenu({closeMenu}: {closeMenu: () => void}): ReactEle
   const {menuItems} = usePageContext();
   const lastRound = useLatestGroupRound();
   const lastGame = useLatestGroupGame();
-  const Item = useCallback(({children, route}: {children: React.ReactNode; route: string}) => {
-    return <Menu.Item as={asLink(route, {onClick: closeMenu})}>{children}</Menu.Item>;
-  }, [closeMenu]);
-  return <>
-    <Item route={'/'}>
-      <Icon name='group'/>
-      Meine Gruppen
-    </Item>
-    <Item route={'/simulation'}>
-      <Icon name='gamepad'/>
-      Simulation
-    </Item>
-
-    {!!groupId && <>
-      <Item route={`/group/${groupId}/statistics`}>
-        <Icon name='balance scale'/>
-        Statistiken
+  const Item = useCallback(
+    ({children, route}: {children: React.ReactNode; route: string}) => {
+      return <Menu.Item as={asLink(route, {onClick: closeMenu})}>{children}</Menu.Item>;
+    },
+    [closeMenu],
+  );
+  return (
+    <>
+      <Item route={'/'}>
+        <Icon name='group' />
+        Meine Gruppen
+      </Item>
+      <Item route={'/simulation'}>
+        <Icon name='gamepad' />
+        Simulation
       </Item>
 
-      {!!lastRound && <>
-        <Item route={`/group/${groupId}/rounds/round/${lastRound.id}`}>
-          <Icon name='bullseye'/>
-          Letzte Runde
-        </Item>
-      </>}
+      {!!groupId && (
+        <>
+          <Item route={`/group/${groupId}/statistics`}>
+            <Icon name='balance scale' />
+            Statistiken
+          </Item>
 
-      {!!lastGame && <>
-        <Item route={`/group/${groupId}/rounds/round/${lastGame.roundId}/games/game/${lastGame.id}`}>
-          <Icon name='hashtag'/>
-          Letztes Spiel
-        </Item>
-      </>}
-    </>}
+          {!!lastRound && (
+            <>
+              <Item route={`/group/${groupId}/rounds/round/${lastRound.id}`}>
+                <Icon name='bullseye' />
+                Letzte Runde
+              </Item>
+            </>
+          )}
 
-    <FollowLastGameMenuItem/>
+          {!!lastGame && (
+            <>
+              <Item route={`/group/${groupId}/rounds/round/${lastGame.roundId}/games/game/${lastGame.id}`}>
+                <Icon name='hashtag' />
+                Letztes Spiel
+              </Item>
+            </>
+          )}
+        </>
+      )}
 
-    {menuItems.map((MenuItem, idx) => {
-      if (isConfig(MenuItem)) {
-        return <Item key={idx} route={MenuItem.route}>
-          <Icon name={MenuItem.icon}/>{MenuItem.title}</Item>;
-      }
-      return <MenuItem key={idx} closeMenu={closeMenu}/>;
-    })}
-  </>;
+      <FollowLastGameMenuItem />
+
+      {menuItems.map((MenuItem, idx) => {
+        if (isConfig(MenuItem)) {
+          return (
+            <Item key={idx} route={MenuItem.route}>
+              <Icon name={MenuItem.icon} />
+              {MenuItem.title}
+            </Item>
+          );
+        }
+        return <MenuItem key={idx} closeMenu={closeMenu} />;
+      })}
+    </>
+  );
 }

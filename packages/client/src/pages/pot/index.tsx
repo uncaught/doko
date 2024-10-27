@@ -6,13 +6,15 @@ import SplitPotAttendance from './SplitPotAttendance';
 import TopUpByAverage from './TopUpByAverage';
 
 export default function PotIndex(): ReactElement | null {
-  return <Page displayName={'Pott'}>
-    <section>
-      <FullPot/>
-      <Divider section/>
-      <SplitPotAttendance/>
-      <Divider section/>
-      <TopUpByAverage/>
-    </section>
-  </Page>;
+  return (
+    <Page displayName={'Pott'}>
+      <section>
+        <FullPot />
+        <Divider section />
+        <SplitPotAttendance />
+        <Divider section />
+        <TopUpByAverage />
+      </section>
+    </Page>
+  );
 }

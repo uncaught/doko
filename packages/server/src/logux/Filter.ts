@@ -1,6 +1,6 @@
-import {Action, Meta} from "@logux/core";
-import {Filter} from "@logux/server/base-server";
-import {Context} from "@logux/server/context";
+import {Action, Meta} from '@logux/core';
+import {Filter} from '@logux/server/base-server';
+import {Context} from '@logux/server/context';
 
 export function createFilter() {
   const map = new Map<string, Filter<Action>>();

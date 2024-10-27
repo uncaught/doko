@@ -11,10 +11,14 @@ export function useAddRound(): () => void {
   const {id: groupId, settings} = useGroup()!;
   const dispatch = useDispatch<LoguxDispatch>();
   const members = useGroupMembers();
-  const sortedMembers = useMemo(() => Object.values(members).sort((a, b) => {
-    const compareIsRegular = +b.isRegular - +a.isRegular;
-    return compareIsRegular === 0 ? a.name.localeCompare(b.name) : compareIsRegular;
-  }), [members]);
+  const sortedMembers = useMemo(
+    () =>
+      Object.values(members).sort((a, b) => {
+        const compareIsRegular = +b.isRegular - +a.isRegular;
+        return compareIsRegular === 0 ? a.name.localeCompare(b.name) : compareIsRegular;
+      }),
+    [members],
+  );
 
   const navigate = useNavigate();
   return useCallback(() => {

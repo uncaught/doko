@@ -15,8 +15,10 @@ export default function Points({isRe}: {isRe: boolean}): ReactElement | null {
   const hasLost = data.winner === otherSideKey;
   const points = data[sideKey].totalPoints;
 
-  return <>
-    <Divider className='tiny'/>
-    <PointsLabel green={hasWon} points={points} red={hasLost}/>
-  </>;
+  return (
+    <>
+      <Divider className='tiny' />
+      <PointsLabel green={hasWon} points={points} red={hasLost} />
+    </>
+  );
 }

@@ -26,27 +26,35 @@ function getDescription({joinedAfterGameNumber, leftAfterGameNumber}: Player): s
   return `Ist dabei`;
 }
 
-const DragHandle = SortableHandle(() => <List.Content floated='right'>
-  <List.Icon name={'arrows alternate vertical'} size={'large'} className='listDragHandle'/>
-</List.Content>);
+const DragHandle = SortableHandle(() => (
+  <List.Content floated='right'>
+    <List.Icon name={'arrows alternate vertical'} size={'large'} className='listDragHandle' />
+  </List.Content>
+));
 
 function UserIcon({player: {groupMemberId, leftAfterGameNumber}}: {player: Player}): ReactElement {
   const patchAttendance = usePatchAttendance();
-  return <List.Icon color={leftAfterGameNumber === null ? 'green' : 'red'}
-                    name={leftAfterGameNumber === null ? 'user delete' : 'user plus'}
-                    size={'large'}
-                    onClick={() => patchAttendance(groupMemberId)}
-                    verticalAlign='middle'/>;
+  return (
+    <List.Icon
+      color={leftAfterGameNumber === null ? 'green' : 'red'}
+      name={leftAfterGameNumber === null ? 'user delete' : 'user plus'}
+      size={'large'}
+      onClick={() => patchAttendance(groupMemberId)}
+      verticalAlign='middle'
+    />
+  );
 }
 
-const SortableItem = SortableElement<SortableItemProps>(({member, player}: SortableItemProps) => <List.Item>
-  <DragHandle/>
-  <UserIcon player={player}/>
-  <List.Content>
-    <List.Header>{member.name}</List.Header>
-    <List.Description className='u-font-smaller'>{getDescription(player)}</List.Description>
-  </List.Content>
-</List.Item>);
+const SortableItem = SortableElement<SortableItemProps>(({member, player}: SortableItemProps) => (
+  <List.Item>
+    <DragHandle />
+    <UserIcon player={player} />
+    <List.Content>
+      <List.Header>{member.name}</List.Header>
+      <List.Description className='u-font-smaller'>{getDescription(player)}</List.Description>
+    </List.Content>
+  </List.Item>
+));
 
 interface SortableListProps {
   members: GroupGroupMembers;
@@ -54,14 +62,18 @@ interface SortableListProps {
 }
 
 const SortableList = SortableContainer<SortableListProps>(({members, players}: SortableListProps) => {
-  return <List divided relaxed>
-    {players.map((player, index) => (
-      <SortableItem key={`player-${player.groupMemberId}`}
-                    index={index}
-                    player={player}
-                    member={members[player.groupMemberId]!}/>
-    ))}
-  </List>;
+  return (
+    <List divided relaxed>
+      {players.map((player, index) => (
+        <SortableItem
+          key={`player-${player.groupMemberId}`}
+          index={index}
+          player={player}
+          member={members[player.groupMemberId]!}
+        />
+      ))}
+    </List>
+  );
 });
 
 export default function SittingOrder(): ReactElement | null {
@@ -78,21 +90,27 @@ export default function SittingOrder(): ReactElement | null {
 
   const helperContainer = document.getElementById('dragItemListContainer')!;
 
-  return <Page displayName={'Mitspieler'}>
-    <section>
-      <Header as='h4'>Sitzreihenfolge</Header>
-      <SortableList members={members}
-                    players={players}
-                    onSortEnd={onSortEnd}
-                    helperContainer={helperContainer}
-                    useDragHandle/>
-      <Message info>
-        <p>Bitte so sortieren, dass der erste Geber oben steht.</p>
-        <p>Mitspieler können auch noch während einer Runde durch Klick auf das Spieler-Symbol hinzugefügt oder
-          entfernt werden.</p>
-      </Message>
+  return (
+    <Page displayName={'Mitspieler'}>
+      <section>
+        <Header as='h4'>Sitzreihenfolge</Header>
+        <SortableList
+          members={members}
+          players={players}
+          onSortEnd={onSortEnd}
+          helperContainer={helperContainer}
+          useDragHandle
+        />
+        <Message info>
+          <p>Bitte so sortieren, dass der erste Geber oben steht.</p>
+          <p>
+            Mitspieler können auch noch während einer Runde durch Klick auf das Spieler-Symbol hinzugefügt oder entfernt
+            werden.
+          </p>
+        </Message>
 
-      <Link to={'..'}>zu den Spielen</Link>
-    </section>
-  </Page>;
+        <Link to={'..'}>zu den Spielen</Link>
+      </section>
+    </Page>
+  );
 }

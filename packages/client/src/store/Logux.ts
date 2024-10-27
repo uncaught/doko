@@ -16,18 +16,21 @@ export interface LoguxDispatch<A extends Action = AnyAction> {
 export function useLoguxClientOnce() {
   // @ts-ignore
   const {client} = useStore<State>();
-  return useCallback(async <A extends Action>(type: A['type'], timeout: number = 1000): Promise<A> => {
-    const [prom, resolve, reject] = createPromise<A>();
-    setTimeout(reject, timeout);
-    const listener = client.on('add', (action: Action) => {
-      if (isAction<A>(action, type)) {
-        resolve(action);
+  return useCallback(
+    async <A extends Action>(type: A['type'], timeout: number = 1000): Promise<A> => {
+      const [prom, resolve, reject] = createPromise<A>();
+      setTimeout(reject, timeout);
+      const listener = client.on('add', (action: Action) => {
+        if (isAction<A>(action, type)) {
+          resolve(action);
+        }
+      });
+      try {
+        return await prom;
+      } finally {
+        listener();
       }
-    });
-    try {
-      return await prom;
-    } finally {
-      listener();
-    }
-  }, [client]);
+    },
+    [client],
+  );
 }

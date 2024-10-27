@@ -8,5 +8,9 @@ export function asLink(
   route: string,
   {onClick}: {onClick?: () => void} = {},
 ): FunctionComponent<PropsWithChildren<{className?: string}>> {
-  return ({children, className}) => <Link className={className} onClick={onClick} to={route}>{children}</Link>;
+  return ({children, className}) => (
+    <Link className={className} onClick={onClick} to={route}>
+      {children}
+    </Link>
+  );
 }

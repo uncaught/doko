@@ -20,18 +20,20 @@ export default function GameIndex(): ReactElement | null {
 
   const isPenalty = game.data.gameType === 'penalty';
 
-  return <Page displayName={'Spiel'} menuItems={[RemoveGameMenuItem]} ExtraSidebar={ExtraSidebar}>
-    <section>
-      <GameLabels/>
-      <Segment vertical className='u-flex-row u-flex-wrap'>
-        <GameTypeSelection/>
-        <SoloTypeSelection/>
-        <HeartsTrickToggle/>
-      </Segment>
-      {isPenalty && <Penalty/>}
-      {!isPenalty && <NonPenalty/>}
+  return (
+    <Page displayName={'Spiel'} menuItems={[RemoveGameMenuItem]} ExtraSidebar={ExtraSidebar}>
+      <section>
+        <GameLabels />
+        <Segment vertical className='u-flex-row u-flex-wrap'>
+          <GameTypeSelection />
+          <SoloTypeSelection />
+          <HeartsTrickToggle />
+        </Segment>
+        {isPenalty && <Penalty />}
+        {!isPenalty && <NonPenalty />}
 
-      <FinishButton/>
-    </section>
-  </Page>;
+        <FinishButton />
+      </section>
+    </Page>
+  );
 }

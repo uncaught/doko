@@ -365,9 +365,11 @@ function addExtraPoints(data: GameData, statsByMember: StatsMap) {
   addExtraPointsForParty(data.re);
   addExtraPointsForParty(data.contra);
 
-  if (data.winner === 'contra'
-    && data.wonAgainstQueensOfClubsExtraPoint
-    && !soloLikeGameTypes.includes(data.gameType)) {
+  if (
+    data.winner === 'contra' &&
+    data.wonAgainstQueensOfClubsExtraPoint &&
+    !soloLikeGameTypes.includes(data.gameType)
+  ) {
     data.contra.members.forEach((id) => {
       statsByMember.get(id)!.statistics.extraPoints.wonAgainstQueensOfClubs++;
     });
@@ -380,4 +382,3 @@ export function addGameToStats(data: GameData, statsByMember: StatsMap) {
   addMissedAnnounces(data, statsByMember);
   addExtraPoints(data, statsByMember);
 }
-

@@ -7,12 +7,14 @@ import GameLabelNumber from './GameLabelNumber';
 import GameLabelPrev from './GameLabelPrev';
 
 export default function GameLabels(): ReactElement {
-  return <div className='u-flex-row-between u-flex-wrap'>
-    <GameLabelPrev/>
-    <GameLabelNumber/>
-    <GameLabelBock/>
-    <GameLabelDealer/>
-    <GameLabelComplete/>
-    <GameLabelNext/>
-  </div>;
+  return (
+    <div className='u-flex-row-between u-flex-wrap'>
+      <GameLabelPrev />
+      <GameLabelNumber />
+      <GameLabelBock />
+      <GameLabelDealer />
+      <GameLabelComplete />
+      <GameLabelNext />
+    </div>
+  );
 }

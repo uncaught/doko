@@ -51,48 +51,60 @@ export default function InviteDevice(): ReactElement {
     };
   }, [invitationToken, showQr, usedInvitationTokens]);
 
-  return <section className='u-relative u-overflow-hidden'>
-    <Header as={'h4'}>Einladen/Verbinden</Header>
-    {canShare && <Button icon
-                         floated='right'
-                         labelPosition='left'
-                         color={'blue'}
-                         onClick={async () => navigator.share!({url: await generateCode()})}
-                         loading={isLoading}>
-      <Icon name='share alternate'/>
-      Teilen
-    </Button>}
+  return (
+    <section className='u-relative u-overflow-hidden'>
+      <Header as={'h4'}>Einladen/Verbinden</Header>
+      {canShare && (
+        <Button
+          icon
+          floated='right'
+          labelPosition='left'
+          color={'blue'}
+          onClick={async () => navigator.share!({url: await generateCode()})}
+          loading={isLoading}
+        >
+          <Icon name='share alternate' />
+          Teilen
+        </Button>
+      )}
 
-    <Button icon
-            floated='right'
-            labelPosition='left'
-            color={'blue'}
-            onClick={async () => {
-              await generateCode();
-              setShowQr(true);
-            }}
-            loading={isLoading}>
-      <Icon name='qrcode'/>
-      QR-Code
-    </Button>
+      <Button
+        icon
+        floated='right'
+        labelPosition='left'
+        color={'blue'}
+        onClick={async () => {
+          await generateCode();
+          setShowQr(true);
+        }}
+        loading={isLoading}
+      >
+        <Icon name='qrcode' />
+        QR-Code
+      </Button>
 
-    <Segment vertical className='u-clear-both'>
-      Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein Gerät kann nur mit einem Mitglied
-      einer Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener Gruppen.
-    </Segment>
+      <Segment vertical className='u-clear-both'>
+        Das eingeladene Gerät wird mit diesem Gruppenmitglied verknüpft. Ein Gerät kann nur mit einem Mitglied einer
+        Gruppe verknüpft sein, aber mit mehreren Mitgliedern verschiedener Gruppen.
+      </Segment>
 
-    {showQr && <Modal className='scanInvitation-modal'
-                      open={true}
-                      dimmer={'inverted'}
-                      onClose={() => setShowQr(false)}
-                      basic
-                      size='small'>
-      <Modal.Content>
-        <div className='qrCodeContainer'>
-          {!showQrSuccess && <QRCodeCanvas value={invitationUrl} size={Math.min(window.innerWidth - 64, 680)}/>}
-          {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'}/>}
-        </div>
-      </Modal.Content>
-    </Modal>}
-  </section>;
+      {showQr && (
+        <Modal
+          className='scanInvitation-modal'
+          open={true}
+          dimmer={'inverted'}
+          onClose={() => setShowQr(false)}
+          basic
+          size='small'
+        >
+          <Modal.Content>
+            <div className='qrCodeContainer'>
+              {!showQrSuccess && <QRCodeCanvas value={invitationUrl} size={Math.min(window.innerWidth - 64, 680)} />}
+              {showQrSuccess && <Icon name={'check circle'} color={'green'} size={'massive'} />}
+            </div>
+          </Modal.Content>
+        </Modal>
+      )}
+    </section>
+  );
 }

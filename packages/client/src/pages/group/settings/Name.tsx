@@ -24,18 +24,22 @@ export default function Name(): ReactElement {
     }
   };
 
-  return <Form.Input error={error}
-                     value={name}
-                     onChange={onChange}
-                     onBlur={save}
-                     onKeyPress={(e: KeyboardEvent) => {
-                       if (e.key === 'Enter') {
-                         save();
-                       }
-                     }}
-                     maxLength={191}
-                     placeholder={'Gruppenname'}
-                     label={'Gruppenname'}
-                     size={'small'}
-                     required/>;
+  return (
+    <Form.Input
+      error={error}
+      value={name}
+      onChange={onChange}
+      onBlur={save}
+      onKeyPress={(e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          save();
+        }
+      }}
+      maxLength={191}
+      placeholder={'Gruppenname'}
+      label={'Gruppenname'}
+      size={'small'}
+      required
+    />
+  );
 }

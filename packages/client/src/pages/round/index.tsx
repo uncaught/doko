@@ -13,15 +13,17 @@ export default function Round(): ReactElement | null {
   if (!useRound()) {
     return null;
   }
-  return <Page displayName={'Runde'} menuItems={[RemoveRoundMenuItem]}>
-    <section>
-      <IconLink to={`players`}>Sitzfolge / Teilnahme</IconLink>
-      <Divider/>
-      <GamesInfo/>
-      <Divider/>
-      <Players/>
-      <Divider/>
-      <FinishRound/>
-    </section>
-  </Page>;
+  return (
+    <Page displayName={'Runde'} menuItems={[RemoveRoundMenuItem]}>
+      <section>
+        <IconLink to={`players`}>Sitzfolge / Teilnahme</IconLink>
+        <Divider />
+        <GamesInfo />
+        <Divider />
+        <Players />
+        <Divider />
+        <FinishRound />
+      </section>
+    </Page>
+  );
 }

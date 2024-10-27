@@ -21,9 +21,11 @@ interface PageContextProps {
   menuItems?: PageMenuItems;
 }
 
-function PageContextProvider(
-  {children, parentPageContext, menuItems}: PropsWithChildren<PageContextProps>,
-): ReactElement {
+function PageContextProvider({
+  children,
+  parentPageContext,
+  menuItems,
+}: PropsWithChildren<PageContextProps>): ReactElement {
   const fullParams: PageContext = {
     ...parentPageContext,
     menuItems: [...parentPageContext.menuItems.filter((item) => item.passDown), ...(menuItems || [])],
@@ -44,36 +46,39 @@ export default function Page({children, displayName, menuItems, ExtraSidebar}: P
   const closeMenu = useCallback(() => setVisible(false), []);
   const parentPageContext = usePageContext();
 
-  return <PageContextProvider parentPageContext={parentPageContext} menuItems={menuItems}>
-    <Sidebar.Pushable as={'div'} className='appPageWrapper'>
-      <Sidebar
-        as={Menu}
-        animation='overlay'
-        icon='labeled'
-        inverted
-        onHide={() => setVisible(false)}
-        vertical
-        visible={visible}
-        width='thin'
-        direction='right'
-      >
-        <PageMenu closeMenu={closeMenu}/>
-      </Sidebar>
-      {ExtraSidebar && <ExtraSidebar visible={extraSidebarVisible}
-                                     close={() => setExtraSidebarVisible(false)}/>}
-      <Sidebar.Pusher dimmed={visible || extraSidebarVisible}>
-        <div className='appPage'>
-          <PageHeader displayName={displayName} openMenu={openMenu} onNameClick={() => {
-            if (ExtraSidebar) {
-              setExtraSidebarVisible(true);
-            }
-          }}/>
-          <div className='appPageContent'>
-            {children}
+  return (
+    <PageContextProvider parentPageContext={parentPageContext} menuItems={menuItems}>
+      <Sidebar.Pushable as={'div'} className='appPageWrapper'>
+        <Sidebar
+          as={Menu}
+          animation='overlay'
+          icon='labeled'
+          inverted
+          onHide={() => setVisible(false)}
+          vertical
+          visible={visible}
+          width='thin'
+          direction='right'
+        >
+          <PageMenu closeMenu={closeMenu} />
+        </Sidebar>
+        {ExtraSidebar && <ExtraSidebar visible={extraSidebarVisible} close={() => setExtraSidebarVisible(false)} />}
+        <Sidebar.Pusher dimmed={visible || extraSidebarVisible}>
+          <div className='appPage'>
+            <PageHeader
+              displayName={displayName}
+              openMenu={openMenu}
+              onNameClick={() => {
+                if (ExtraSidebar) {
+                  setExtraSidebarVisible(true);
+                }
+              }}
+            />
+            <div className='appPageContent'>{children}</div>
           </div>
-        </div>
-      </Sidebar.Pusher>
-    </Sidebar.Pushable>
-    <Outlet/>
-  </PageContextProvider>;
+        </Sidebar.Pusher>
+      </Sidebar.Pushable>
+      <Outlet />
+    </PageContextProvider>
+  );
 }

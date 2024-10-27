@@ -16,7 +16,7 @@
  */
 export function debugHooks<O extends Record<string, unknown>>(name = 'debugHooks'): (obj: O) => void {
   let lastObj: O;
-  return ((obj) => {
+  return (obj) => {
     if (lastObj) {
       const changedValues: Array<{key: string; old: any; new: any}> = [];
       Object.entries(lastObj).forEach(([key, val]) => {
@@ -29,5 +29,5 @@ export function debugHooks<O extends Record<string, unknown>>(name = 'debugHooks
       }
     }
     lastObj = obj;
-  });
+  };
 }

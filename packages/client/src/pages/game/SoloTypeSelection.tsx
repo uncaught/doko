@@ -14,26 +14,31 @@ export default function SoloTypeSelection(): ReactElement | null {
     return null;
   }
 
-  return <div>
-    <Dropdown
-      text={soloType ? soloTypeTexts.get(soloType) : 'Solo-Typ'}
-      icon='play'
-      floating
-      labeled
-      button
-      className='icon'
-    >
-      <Dropdown.Menu>
-        <Dropdown.Header content='Solo'/>
-        <Dropdown.Divider/>
-        {[...soloTypeTexts].filter(([type]) => group.settings.allowedSoloTypes.includes(type))
-                           .map(([type, text]) => <Dropdown.Item
-                             key={type}
-                             active={type === soloType}
-                             onClick={() => patchGame({data: {soloType: type}})}
-                             text={text}
-                           />)}
-      </Dropdown.Menu>
-    </Dropdown>
-  </div>;
+  return (
+    <div>
+      <Dropdown
+        text={soloType ? soloTypeTexts.get(soloType) : 'Solo-Typ'}
+        icon='play'
+        floating
+        labeled
+        button
+        className='icon'
+      >
+        <Dropdown.Menu>
+          <Dropdown.Header content='Solo' />
+          <Dropdown.Divider />
+          {[...soloTypeTexts]
+            .filter(([type]) => group.settings.allowedSoloTypes.includes(type))
+            .map(([type, text]) => (
+              <Dropdown.Item
+                key={type}
+                active={type === soloType}
+                onClick={() => patchGame({data: {soloType: type}})}
+                text={text}
+              />
+            ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
+  );
 }

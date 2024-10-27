@@ -9,12 +9,14 @@ export default function AddGame(): ReactElement | null {
   if (lastGame && (!lastGame.data.isComplete || lastGame.data.isLastGame)) {
     return null;
   }
-  return <div className='memberDetail'>
-    <Label color={'green'} onClick={addGame}>
-      Neues Spiel
-      <Label.Detail>
-        <Icon name={'plus'}/>
-      </Label.Detail>
-    </Label>
-  </div>;
+  return (
+    <div className='memberDetail'>
+      <Label color={'green'} onClick={addGame}>
+        Neues Spiel
+        <Label.Detail>
+          <Icon name={'plus'} />
+        </Label.Detail>
+      </Label>
+    </div>
+  );
 }

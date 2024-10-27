@@ -10,11 +10,14 @@ interface CheckboxGroupProps {
 }
 
 export default function CheckboxGroup({label, parentKey, options}: CheckboxGroupProps): ReactElement | null {
-  return <Segment>
-    <Label attached={'top'}>{label}</Label>
-    <Form.Group unstackable>
-      {[...options].map(([key, text]) =>
-        <Checkbox key={`${parentKey}.${key}`} path={`${parentKey}.${key}`} label={text}/>)}
-    </Form.Group>
-  </Segment>;
+  return (
+    <Segment>
+      <Label attached={'top'}>{label}</Label>
+      <Form.Group unstackable>
+        {[...options].map(([key, text]) => (
+          <Checkbox key={`${parentKey}.${key}`} path={`${parentKey}.${key}`} label={text} />
+        ))}
+      </Form.Group>
+    </Segment>
+  );
 }

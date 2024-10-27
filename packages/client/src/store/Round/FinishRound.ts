@@ -12,22 +12,25 @@ export function useFinishRound() {
   const sortedGames = useSortedGames();
   const navigate = useNavigate();
   const lastGame = sortedGames[sortedGames.length - 1];
-  return useCallback((forcePrematureEnd = false) => {
-    if (!round || !lastGame || (!lastGame.data.isLastGame && !forcePrematureEnd)) {
-      return;
-    }
-    const results: RoundResults = {
-      gamesCount: sortedGames.length,
-      runsCount: lastGame.data.runNumber,
-      players: {},
-    };
-    playersWithStats.forEach(({member, pointBalance, pointDiffToTopPlayer, statistics}) => {
-      results.players[member.id] = {pointBalance, pointDiffToTopPlayer, statistics};
-    });
-    patchRound({
-      endDate: Math.round(Date.now() / 1000),
-      data: {results},
-    });
-    navigate(`/group/${round.groupId}/rounds`);
-  }, [navigate, lastGame, patchRound, playersWithStats, round, sortedGames.length]);
+  return useCallback(
+    (forcePrematureEnd = false) => {
+      if (!round || !lastGame || (!lastGame.data.isLastGame && !forcePrematureEnd)) {
+        return;
+      }
+      const results: RoundResults = {
+        gamesCount: sortedGames.length,
+        runsCount: lastGame.data.runNumber,
+        players: {},
+      };
+      playersWithStats.forEach(({member, pointBalance, pointDiffToTopPlayer, statistics}) => {
+        results.players[member.id] = {pointBalance, pointDiffToTopPlayer, statistics};
+      });
+      patchRound({
+        endDate: Math.round(Date.now() / 1000),
+        data: {results},
+      });
+      navigate(`/group/${round.groupId}/rounds`);
+    },
+    [navigate, lastGame, patchRound, playersWithStats, round, sortedGames.length],
+  );
 }

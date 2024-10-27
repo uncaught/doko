@@ -48,7 +48,7 @@ function initLogux() {
         <Provider store={store}>
           <BrowserRouter>
             <DndContext>
-              <App/>
+              <App />
             </DndContext>
           </BrowserRouter>
         </Provider>
@@ -60,8 +60,8 @@ function initLogux() {
 export async function initApp() {
   let buildTime: number = 4711; //dev
   if (process.env.NODE_ENV === 'production') {
-    const response = await fetch('/version.json', {cache: "no-cache"});
-    buildTime = (await response.json() as {buildTime: number}).buildTime;
+    const response = await fetch('/version.json', {cache: 'no-cache'});
+    buildTime = ((await response.json()) as {buildTime: number}).buildTime;
   }
   localStorage.setItem('buildTime', buildTime.toString());
   setBuildTime(buildTime);

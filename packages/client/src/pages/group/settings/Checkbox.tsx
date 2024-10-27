@@ -7,11 +7,14 @@ export default function Checkbox({label, path}: {label: string; path: string}): 
   const group = useGroup()!;
   const patch = usePatchGroup();
   const checked = get(group.settings, path) as boolean;
-  return <Form.Checkbox checked={checked}
-                        onChange={(
-                          event: React.FormEvent<HTMLInputElement>,
-                          {checked}: CheckboxProps,
-                        ) => patch({settings: set({}, path, !!checked)})}
-                        label={label}
-                        size={'small'}/>;
+  return (
+    <Form.Checkbox
+      checked={checked}
+      onChange={(event: React.FormEvent<HTMLInputElement>, {checked}: CheckboxProps) =>
+        patch({settings: set({}, path, !!checked)})
+      }
+      label={label}
+      size={'small'}
+    />
+  );
 }

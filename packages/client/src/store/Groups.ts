@@ -89,18 +89,21 @@ export function useGroup(): Group | undefined {
 export function usePatchGroup() {
   const currentGroup = useGroup();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((group: PatchableGroup) => {
-    if (!currentGroup) {
-      throw new Error(`No currentGroup`);
-    }
-    if (!objectContains(currentGroup, group)) {
-      dispatch.sync<GroupsPatch>({
-        group,
-        id: currentGroup.id,
-        type: 'groups/patch',
-      });
-    }
-  }, [currentGroup, dispatch]);
+  return useCallback(
+    (group: PatchableGroup) => {
+      if (!currentGroup) {
+        throw new Error(`No currentGroup`);
+      }
+      if (!objectContains(currentGroup, group)) {
+        dispatch.sync<GroupsPatch>({
+          group,
+          id: currentGroup.id,
+          type: 'groups/patch',
+        });
+      }
+    },
+    [currentGroup, dispatch],
+  );
 }
 
 export function useSortedGroups(): Group[] {

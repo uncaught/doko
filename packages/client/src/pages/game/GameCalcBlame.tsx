@@ -8,9 +8,13 @@ export default function GameCalcBlame(): React.ReactElement | null {
   if (data.gameType === 'penalty' || !data.isComplete) {
     return null;
   }
-  return <Segment vertical>
-    <List bulleted>
-      {data.gameCalcLog.map((log, idx) => <List.Item key={idx}>{logTexts[log]}</List.Item>)}
-    </List>
-  </Segment>;
+  return (
+    <Segment vertical>
+      <List bulleted>
+        {data.gameCalcLog.map((log, idx) => (
+          <List.Item key={idx}>{logTexts[log]}</List.Item>
+        ))}
+      </List>
+    </Segment>
+  );
 }

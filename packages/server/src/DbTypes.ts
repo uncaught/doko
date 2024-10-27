@@ -1,7 +1,7 @@
 import {AnyObject, Game, Group, GroupMember, Player, Round} from '@doko/common';
 
 type Table =
-  'devices'
+  | 'devices'
   | 'groups'
   | 'group_members'
   | 'group_member_devices'
@@ -16,8 +16,8 @@ export type DatabaseTypes<O extends AnyObject> = {
 export interface DbConfig<O extends AnyObject> {
   table: Table;
   types: DatabaseTypes<O>;
-  insertFields: Array<keyof O>,
-  updateFields: Array<keyof O>,
+  insertFields: Array<keyof O>;
+  updateFields: Array<keyof O>;
 }
 
 export const groupsDbConfig: DbConfig<Group> = {

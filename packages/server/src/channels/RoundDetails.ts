@@ -17,11 +17,12 @@ import {getGroupForRound} from './Rounds';
 server.channel<RoundDetailsLoad>('roundDetails/load', {
   async access(ctx, {roundId}) {
     const groupId = await getGroupForRound(roundId);
-    return groupId === null || await canReadGroup(ctx.userId!, groupId);
+    return groupId === null || (await canReadGroup(ctx.userId!, groupId));
   },
   async init(ctx, {roundId}) {
     const groupId = await getGroupForRound(roundId);
-    if (groupId !== null) { //unkown group, assume newly created
+    if (groupId !== null) {
+      //unkown group, assume newly created
       const [games, players] = await Promise.all([loadGames(roundId), loadPlayers(roundId)]);
       await ctx.sendBack<RoundDetailsLoaded>({
         games,
@@ -41,4 +42,3 @@ server.channel<RoundDetailsLoad>('roundDetails/load', {
     return combinedFilter;
   },
 });
-

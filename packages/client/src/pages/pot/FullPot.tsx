@@ -4,16 +4,20 @@ import {useSortedGroupMembers} from '../../store/GroupMembers';
 
 export default function FullPot({as}: {as?: any}): ReactElement {
   const groupMembers = useSortedGroupMembers();
-  const fullPot = useMemo(() => groupMembers.reduce((acc, {euroBalance}) => acc + (euroBalance || 0), 0),
-    [groupMembers]);
-  return <section>
-    <div className='memberDetail'>
-      <Label as={as} color={'purple'}>
-        Gesamter Pott
-        <Label.Detail>
-          {fullPot.toFixed(2)} <Icon name={'euro'}/>
-        </Label.Detail>
-      </Label>
-    </div>
-  </section>;
+  const fullPot = useMemo(
+    () => groupMembers.reduce((acc, {euroBalance}) => acc + (euroBalance || 0), 0),
+    [groupMembers],
+  );
+  return (
+    <section>
+      <div className='memberDetail'>
+        <Label as={as} color={'purple'}>
+          Gesamter Pott
+          <Label.Detail>
+            {fullPot.toFixed(2)} <Icon name={'euro'} />
+          </Label.Detail>
+        </Label>
+      </div>
+    </section>
+  );
 }

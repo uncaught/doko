@@ -8,12 +8,18 @@ export default function SidePlayers({isRe}: {isRe: boolean}): ReactElement {
   const {data} = useGame()!;
   const members = useGroupMembers();
   const sidePlayers = data[isRe ? 're' : 'contra'].members;
-  return <>
-    {sidePlayers.length > 0 && <>
-      <Divider className='tiny'/>
-      <div className='u-flex-row u-flex-wrap'>
-        {sidePlayers.map((id) => <GamePlayer key={id} member={members[id]!}/>)}
-      </div>
-    </>}
-  </>;
+  return (
+    <>
+      {sidePlayers.length > 0 && (
+        <>
+          <Divider className='tiny' />
+          <div className='u-flex-row u-flex-wrap'>
+            {sidePlayers.map((id) => (
+              <GamePlayer key={id} member={members[id]!} />
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
 }

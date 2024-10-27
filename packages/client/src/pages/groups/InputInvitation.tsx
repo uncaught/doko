@@ -7,31 +7,40 @@ export default function InputInvitation(): ReactElement {
   const [error, setError] = useState(false);
   const acceptInvitation = useAcceptInvitation();
 
-  return <>
-    <Button icon floated='right' labelPosition='left' color={'blue'} onClick={() => setShow(true)}>
-      <Icon name='linkify'/>
-      Eingabe
-    </Button>
+  return (
+    <>
+      <Button icon floated='right' labelPosition='left' color={'blue'} onClick={() => setShow(true)}>
+        <Icon name='linkify' />
+        Eingabe
+      </Button>
 
-    {show && <Modal className='scanInvitation-modal'
-                    open={show}
-                    dimmer={'inverted'}
-                    onClose={() => setShow(false)}
-                    basic
-                    closeIcon
-                    size='small'>
-      <Header icon='linkify' content='Einladungs-URL'/>
-      <Modal.Content>
-        <Input error={error}
-               onChange={async (event, {value}) => {
-                 setError(false);
-                 if (value && !await acceptInvitation(value)) { //this will already navigate away and thus close the dialog
-                   setError(true);
-                 }
-               }}
-               fluid
-               focus/>
-      </Modal.Content>
-    </Modal>}
-  </>;
+      {show && (
+        <Modal
+          className='scanInvitation-modal'
+          open={show}
+          dimmer={'inverted'}
+          onClose={() => setShow(false)}
+          basic
+          closeIcon
+          size='small'
+        >
+          <Header icon='linkify' content='Einladungs-URL' />
+          <Modal.Content>
+            <Input
+              error={error}
+              onChange={async (event, {value}) => {
+                setError(false);
+                if (value && !(await acceptInvitation(value))) {
+                  //this will already navigate away and thus close the dialog
+                  setError(true);
+                }
+              }}
+              fluid
+              focus
+            />
+          </Modal.Content>
+        </Modal>
+      )}
+    </>
+  );
 }

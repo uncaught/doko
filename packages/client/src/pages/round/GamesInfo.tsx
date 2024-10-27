@@ -10,26 +10,30 @@ export default function GamesInfo(): ReactElement {
   const lastGame = sortedGames[sortedGames.length - 1];
   const hasOpenGame = !!lastGame && !lastGame.data.isComplete;
 
-  return <section>
-    <Header as='h4'>Spiele</Header>
+  return (
+    <section>
+      <Header as='h4'>Spiele</Header>
 
-    <div className='memberDetail'>
-      <Label as={asLink(`games`)} color={'orange'}>
-        Alle Spiele
-        <Label.Detail>
-          {sortedGames.length} <Icon name={'hashtag'}/>
-        </Label.Detail>
-      </Label>
-    </div>
+      <div className='memberDetail'>
+        <Label as={asLink(`games`)} color={'orange'}>
+          Alle Spiele
+          <Label.Detail>
+            {sortedGames.length} <Icon name={'hashtag'} />
+          </Label.Detail>
+        </Label>
+      </div>
 
-    <RoundEndInfo/>
+      <RoundEndInfo />
 
-    {hasOpenGame && <div className='memberDetail'>
-      <Label as={asLink(`games/game/${lastGame.id}`)} color={'blue'}>
-        Laufendes Spiel
-      </Label>
-    </div>}
+      {hasOpenGame && (
+        <div className='memberDetail'>
+          <Label as={asLink(`games/game/${lastGame.id}`)} color={'blue'}>
+            Laufendes Spiel
+          </Label>
+        </div>
+      )}
 
-    <AddGame/>
-  </section>;
+      <AddGame />
+    </section>
+  );
 }

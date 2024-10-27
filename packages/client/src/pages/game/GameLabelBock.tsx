@@ -26,10 +26,12 @@ function Remaining(): ReactElement {
   }
   if (bockStartIndex > -1) {
     const number = gameIndex - bockStartIndex + 1;
-    return <div>
-      <div>Bockspiel #{number}</div>
-      <div>Voraussichtlich noch {playerCount - number + soloCount}</div>
-    </div>;
+    return (
+      <div>
+        <div>Bockspiel #{number}</div>
+        <div>Voraussichtlich noch {playerCount - number + soloCount}</div>
+      </div>
+    );
   }
   return <div>???</div>;
 }
@@ -40,11 +42,20 @@ export default function GameLabelBock(): ReactElement | null {
   if (!data.bockGameWeight) {
     return null;
   }
-  return <Popup content={<Remaining/>} pinned on={'click'} position={'bottom center'} disabled={popupDisabled} trigger={
-    <div className='memberDetail'>
-      <Label className={data.bockGameWeight > 1 ? '' : 'iconOnly'} color={'purple'}>
-        {data.bockGameWeight > 1 ? data.bockGameWeight : ''} <Icon name={'btc'}/>
-      </Label>
-    </div>
-  }/>;
+  return (
+    <Popup
+      content={<Remaining />}
+      pinned
+      on={'click'}
+      position={'bottom center'}
+      disabled={popupDisabled}
+      trigger={
+        <div className='memberDetail'>
+          <Label className={data.bockGameWeight > 1 ? '' : 'iconOnly'} color={'purple'}>
+            {data.bockGameWeight > 1 ? data.bockGameWeight : ''} <Icon name={'btc'} />
+          </Label>
+        </div>
+      }
+    />
+  );
 }

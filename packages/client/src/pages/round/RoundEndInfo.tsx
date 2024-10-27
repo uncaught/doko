@@ -14,19 +14,25 @@ export default function RoundEndInfo(): ReactElement | null {
   const endKnown = !data.dynamicRoundDuration || data.roundDuration !== null;
   const duration = data.dynamicRoundDuration ? data.roundDuration : 6;
 
-  return <>
-    <div className='memberDetail'>
-      {endKnown && <Label color={'yellow'} onClick={() => setOpen(true)}>
-        Ende nach {duration} Durchgängen <Icon name={'sync alternate'}/>
-      </Label>}
+  return (
+    <>
+      <div className='memberDetail'>
+        {endKnown && (
+          <Label color={'yellow'} onClick={() => setOpen(true)}>
+            Ende nach {duration} Durchgängen <Icon name={'sync alternate'} />
+          </Label>
+        )}
 
-      {!endKnown && <Label color={'yellow'} onClick={() => setOpen(true)}>
-        Ende noch nicht gemeldet <Icon name={'warning'}/>
-      </Label>}
-    </div>
+        {!endKnown && (
+          <Label color={'yellow'} onClick={() => setOpen(true)}>
+            Ende noch nicht gemeldet <Icon name={'warning'} />
+          </Label>
+        )}
+      </div>
 
-    <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
-      <RoundEndInfoPopup duration={duration} endKnown={endKnown} setOpen={setOpen}/>
-    </Modal>
-  </>;
+      <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
+        <RoundEndInfoPopup duration={duration} endKnown={endKnown} setOpen={setOpen} />
+      </Modal>
+    </>
+  );
 }

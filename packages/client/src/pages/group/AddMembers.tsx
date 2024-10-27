@@ -5,9 +5,11 @@ import AddMember from './AddMember';
 import Members from './Members';
 
 export default function AddMembers(): ReactElement {
-  return <Page displayName={'Mitglieder'}>
-    <Members/>
-    <Divider section/>
-    <AddMember/>
-  </Page>;
+  return (
+    <Page displayName={'Mitglieder'}>
+      <Members />
+      <Divider section />
+      <AddMember />
+    </Page>
+  );
 }

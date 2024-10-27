@@ -15,15 +15,19 @@ export default function Group(): ReactElement | null {
   if (!useGroup()) {
     return null;
   }
-  return <Page displayName={'Gruppe'}
-               menuItems={[{icon: 'user plus', route: `/addMembers`, title: 'Mitglieder hinzufügen'}]}>
-    <div>
-      <GroupName/>
-      <Divider/>
-      <RoundsInfo/>
-      <Divider/>
-      <Pot/>
-      <Members/>
-    </div>
-  </Page>;
+  return (
+    <Page
+      displayName={'Gruppe'}
+      menuItems={[{icon: 'user plus', route: `/addMembers`, title: 'Mitglieder hinzufügen'}]}
+    >
+      <div>
+        <GroupName />
+        <Divider />
+        <RoundsInfo />
+        <Divider />
+        <Pot />
+        <Members />
+      </div>
+    </Page>
+  );
 }

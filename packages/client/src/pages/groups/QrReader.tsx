@@ -50,21 +50,23 @@ export default function QrReader({onResult}: Props): ReactElement {
         }}
       >
         {!isMediaDevicesSupported && <div>MediaDevices-API not available</div>}
-        {isMediaDevicesSupported && <video
-          muted
-          id={videoId}
-          style={{
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            display: 'block',
-            overflow: 'hidden',
-            position: 'absolute',
-            transform: 'scaleX(-1)',
-          }}
-        />}
+        {isMediaDevicesSupported && (
+          <video
+            muted
+            id={videoId}
+            style={{
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'block',
+              overflow: 'hidden',
+              position: 'absolute',
+              transform: 'scaleX(-1)',
+            }}
+          />
+        )}
       </div>
     </section>
   );
-};
+}

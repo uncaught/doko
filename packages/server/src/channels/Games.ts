@@ -23,19 +23,23 @@ export async function getRoundForGame(gameId: string): Promise<string | null> {
 export async function isGameOpen(gameId: string): Promise<boolean> {
   const result = await query<{isComplete: number}>(
     `SELECT IF(json_extract(data, '$.isComplete'), 1, 0) as isComplete FROM games WHERE id = ?`,
-    [gameId]);
+    [gameId],
+  );
   return result.length ? +result[0]!.isComplete === 0 : false;
 }
 
 export async function loadGames(roundId: string): Promise<Game[]> {
-  const games = await query<Game>(`SELECT id, 
-                                          round_id as roundId,
-                                          game_number as gameNumber,
-                                          dealer_group_member_id as dealerGroupMemberId,
-                                          data
-                                     FROM games
-                                    WHERE round_id = ?
-                                 ORDER BY game_number`, [roundId]);
+  const games = await query<Game>(
+    `SELECT id, 
+            round_id as roundId,
+            game_number as gameNumber,
+            dealer_group_member_id as dealerGroupMemberId,
+            data
+       FROM games
+      WHERE round_id = ?
+   ORDER BY game_number`,
+    [roundId],
+  );
   fromDbValue(games, gamesDbConfig.types);
   return games;
 }
@@ -47,9 +51,8 @@ export async function getGameCountForRound(roundId: string): Promise<number> {
 
 export async function getLastGameIdOfRound(roundId: string): Promise<string | null> {
   const lastGame = await query<{
-    id: string
-  }>(`SELECT id FROM games WHERE round_id = ? ORDER BY game_number DESC LIMIT 1`,
-    [roundId]);
+    id: string;
+  }>(`SELECT id FROM games WHERE round_id = ? ORDER BY game_number DESC LIMIT 1`, [roundId]);
   return lastGame.length ? lastGame[0]!.id : null;
 }
 
@@ -61,7 +64,7 @@ export async function isLastGameOfRound(gameId: string, roundId: string): Promis
 server.type<GamesAdd>('games/add', {
   async access(ctx, {game}) {
     const groupId = await getGroupForRound(game.roundId);
-    return groupId !== null && await canEditGroup(ctx.userId!, groupId) && await isRoundOpen(game.roundId);
+    return groupId !== null && (await canEditGroup(ctx.userId!, groupId)) && (await isRoundOpen(game.roundId));
   },
   resend() {
     return {channel: 'roundDetails/load'};
@@ -73,11 +76,13 @@ server.type<GamesAdd>('games/add', {
 
 async function canEditGame(deviceId: string, gameId: string, roundId: string, isOpening: boolean = false) {
   const [realRoundId, realGroupId] = await Promise.all([getRoundForGame(gameId), getGroupForRound(roundId)]);
-  return realRoundId === roundId
-    && realGroupId !== null
-    && await canEditGroup(deviceId, realGroupId)
-    && await isRoundOpen(roundId)
-    && (isOpening || await isGameOpen(gameId));
+  return (
+    realRoundId === roundId &&
+    realGroupId !== null &&
+    (await canEditGroup(deviceId, realGroupId)) &&
+    (await isRoundOpen(roundId)) &&
+    (isOpening || (await isGameOpen(gameId)))
+  );
 }
 
 server.type<GamesPatch>('games/patch', {
@@ -100,7 +105,7 @@ server.type<GamesPatch>('games/patch', {
 
 server.type<GamesRemove>('games/remove', {
   async access(ctx, {id, roundId}) {
-    return await canEditGame(ctx.userId!, id, roundId) && await isLastGameOfRound(id, roundId);
+    return (await canEditGame(ctx.userId!, id, roundId)) && (await isLastGameOfRound(id, roundId));
   },
   resend() {
     return {channel: 'roundDetails/load'};

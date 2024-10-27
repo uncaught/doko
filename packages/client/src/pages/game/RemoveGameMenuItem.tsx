@@ -13,25 +13,33 @@ export default function RemoveGameMenuItem({closeMenu}: {closeMenu: () => void})
     return null;
   }
 
-  return <>
-    <Menu.Item onClick={() => {
-      closeMenu();
-      setOpen(true);
-    }}>
-      <Icon name='delete'/>
-      Aktuelles Spiel löschen
-    </Menu.Item>
+  return (
+    <>
+      <Menu.Item
+        onClick={() => {
+          closeMenu();
+          setOpen(true);
+        }}
+      >
+        <Icon name='delete' />
+        Aktuelles Spiel löschen
+      </Menu.Item>
 
-    <Modal open={open} onClose={() => setOpen(false)} basic size='small'>
-      <Header icon='remove' content='Aktuelles Spiel wirklich löschen?'/>
-      <Modal.Actions>
-        <Button color='red' inverted onClick={() => {
-          setOpen(false);
-          removeGame();
-        }}>
-          <Icon name='remove'/> Ja, löschen!
-        </Button>
-      </Modal.Actions>
-    </Modal>
-  </>;
+      <Modal open={open} onClose={() => setOpen(false)} basic size='small'>
+        <Header icon='remove' content='Aktuelles Spiel wirklich löschen?' />
+        <Modal.Actions>
+          <Button
+            color='red'
+            inverted
+            onClick={() => {
+              setOpen(false);
+              removeGame();
+            }}
+          >
+            <Icon name='remove' /> Ja, löschen!
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    </>
+  );
 }

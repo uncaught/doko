@@ -5,13 +5,7 @@ import {useGame, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {usePlayersWithStats} from '../../store/Players';
 
-type DropdownType = 'normal'
-  | 'solo'
-  | 'poverty'
-  | 'wedding'
-  | 'silentWedding'
-  | 'soloWedding'
-  | 'penalty';
+type DropdownType = 'normal' | 'solo' | 'poverty' | 'wedding' | 'silentWedding' | 'soloWedding' | 'penalty';
 
 const types = new Map<DropdownType, {text: string}>([
   ['normal', {text: 'Normalspiel'}],
@@ -76,42 +70,50 @@ export default function GameTypeSelection(): ReactElement {
     setOpen(false);
   };
 
-  return <div>
-    <Dropdown
-      text={gameTypeTexts.get(gameType)}
-      icon='play'
-      floating
-      labeled
-      button
-      className='icon'
-      disabled={gameType === 'forcedSolo'}
-    >
-      <Dropdown.Menu>
-        <Dropdown.Header content='Spieltyp'/>
-        <Dropdown.Divider/>
-        {[...types].map(([type, {text}]) => <Dropdown.Item
-          key={type}
-          active={type === gameType || (type === 'solo' && isSolo)}
-          onClick={() => select(type)}
-          text={text}
-        />)}
-      </Dropdown.Menu>
-    </Dropdown>
+  return (
+    <div>
+      <Dropdown
+        text={gameTypeTexts.get(gameType)}
+        icon='play'
+        floating
+        labeled
+        button
+        className='icon'
+        disabled={gameType === 'forcedSolo'}
+      >
+        <Dropdown.Menu>
+          <Dropdown.Header content='Spieltyp' />
+          <Dropdown.Divider />
+          {[...types].map(([type, {text}]) => (
+            <Dropdown.Item
+              key={type}
+              active={type === gameType || (type === 'solo' && isSolo)}
+              onClick={() => select(type)}
+              text={text}
+            />
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
 
-    <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
-      <Header>
-        <Icon name={'male'}/>
-        {(types.get(selectedType) || {}).text} von
-      </Header>
-      <Modal.Content className='u-flex-row-around u-flex-wrap'>
-        {game.data.players.map((id) => <p key={id}>
-          <Button onClick={() => commitType(id)}
-                  color={game.data.gameTypeMemberId === id ? 'green' : undefined}
-                  inverted>
-            <Icon name='user'/> {members[id]!.name}
-          </Button>
-        </p>)}
-      </Modal.Content>
-    </Modal>
-  </div>;
+      <Modal open={open} onClose={() => setOpen(false)} basic size='small' closeIcon>
+        <Header>
+          <Icon name={'male'} />
+          {(types.get(selectedType) || {}).text} von
+        </Header>
+        <Modal.Content className='u-flex-row-around u-flex-wrap'>
+          {game.data.players.map((id) => (
+            <p key={id}>
+              <Button
+                onClick={() => commitType(id)}
+                color={game.data.gameTypeMemberId === id ? 'green' : undefined}
+                inverted
+              >
+                <Icon name='user' /> {members[id]!.name}
+              </Button>
+            </p>
+          ))}
+        </Modal.Content>
+      </Modal>
+    </div>
+  );
 }

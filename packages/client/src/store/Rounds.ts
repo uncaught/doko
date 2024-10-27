@@ -65,9 +65,8 @@ export const roundsReducer = combinedReducer;
 
 export const roundsSelector = (state: State) => state.rounds;
 
-export const getRoundByIdSelector = createSelector(
-  roundsSelector,
-  (rounds) => memoize((id: string): Round | null => {
+export const getRoundByIdSelector = createSelector(roundsSelector, (rounds) =>
+  memoize((id: string): Round | null => {
     for (const round of Object.values(rounds)) {
       if (round[id]) {
         return round[id]!;
@@ -104,26 +103,29 @@ export function useRound(): Round | undefined {
 export function usePatchRound() {
   const currentRound = useRound();
   const dispatch = useDispatch<LoguxDispatch>();
-  return useCallback((round: PatchableRound) => {
-    if (!currentRound) {
-      throw new Error(`No currentRound`);
-    }
-    if (currentRound.endDate) {
-      return;
-    }
-    if (!objectContains(currentRound, round)) {
-      dispatch.sync<RoundsPatch>({
-        round,
-        id: currentRound.id,
-        groupId: currentRound.groupId,
-        type: 'rounds/patch',
-      });
-    }
-  }, [currentRound, dispatch]);
+  return useCallback(
+    (round: PatchableRound) => {
+      if (!currentRound) {
+        throw new Error(`No currentRound`);
+      }
+      if (currentRound.endDate) {
+        return;
+      }
+      if (!objectContains(currentRound, round)) {
+        dispatch.sync<RoundsPatch>({
+          round,
+          id: currentRound.id,
+          groupId: currentRound.groupId,
+          type: 'rounds/patch',
+        });
+      }
+    },
+    [currentRound, dispatch],
+  );
 }
 
 export function useSortedRounds(): Round[] {
   const {groupId} = useParams<{groupId: string}>();
   const rounds = useSelector(roundsSelector)[groupId ?? ''];
-  return useMemo(() => rounds ? Object.values(rounds).sort((a, b) => b.startDate - a.startDate) : [], [rounds]);
+  return useMemo(() => (rounds ? Object.values(rounds).sort((a, b) => b.startDate - a.startDate) : []), [rounds]);
 }

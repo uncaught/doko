@@ -187,12 +187,13 @@ function game(data: GameData): GameData {
     }
   }
 
-  const qualifiesNewBockGames = (data.bockGameConditions.heartsTrick && data.heartsTrickWentThrough)
-    || (data.bockGameConditions.bothParties120Points && data.re.pips === '120')
-    || (data.bockGameConditions.zeroGame && contraPoints === 0)
-    || (data.bockGameConditions.rePartyLostWithAnnounce && contraWon && !!data.re.announced)
-    || (data.bockGameConditions.contraPartyLostWithAnnounce && reWon && !!data.contra.announced)
-    || (data.bockGameConditions.soloLost && contraWon && isSoloLike);
+  const qualifiesNewBockGames =
+    (data.bockGameConditions.heartsTrick && data.heartsTrickWentThrough) ||
+    (data.bockGameConditions.bothParties120Points && data.re.pips === '120') ||
+    (data.bockGameConditions.zeroGame && contraPoints === 0) ||
+    (data.bockGameConditions.rePartyLostWithAnnounce && contraWon && !!data.re.announced) ||
+    (data.bockGameConditions.contraPartyLostWithAnnounce && reWon && !!data.contra.announced) ||
+    (data.bockGameConditions.soloLost && contraWon && isSoloLike);
 
   if (qualifiesNewBockGames) {
     log.push('qualifies_new_bock_games');
