@@ -456,3 +456,27 @@ input[type=number] {
   grid-template-columns: repeat(2, max-content);
   grid-column-gap: 1em;
 }
+
+.graph-statistic {
+  height: calc(100vh - 8rem);
+  margin-left: -1rem;
+  margin-right: 1rem;
+}
+
+.graph-statistic-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.5rem;
+  justify-items: center;
+  justify-content: center;
+}
+
+.graph-statistic-legend-item {
+  cursor: pointer;
+  font-weight: bold;
+  padding: .5rem 1rem;
+}
+
+.ui.selection.dropdown .menu {
+  max-height: calc(100vh - 8rem) !important;
+}

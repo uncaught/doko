@@ -261,9 +261,7 @@ export function useSortedGroupMembers(): GroupMemberWithRoundStats[] {
   return useMemo(
     () =>
       members
-        ? Object.values(members).sort(
-            (a, b) => b.pointDiffToTopPlayer - a.pointDiffToTopPlayer || a.name.localeCompare(b.name),
-          )
+        ? Object.values(members).sort((a, b) => b.pointBalance - a.pointBalance || a.name.localeCompare(b.name))
         : [],
     [members],
   );

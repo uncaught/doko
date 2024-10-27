@@ -22,11 +22,7 @@ export interface Ui {
   followLastGame: boolean;
   rejectedInvitations: string[]; //for the invitee
   usedInvitationTokens: string[]; //for the inviter
-  statistics: {
-    filter: 'gameTypes' | 'soloTypes' | 'announces' | 'missedAnnounces' | 'extraPoints';
-    includeIrregularMembers: boolean;
-    selectedRow: string | null;
-  };
+  statistics: {};
 }
 
 export interface UiSet {
@@ -39,11 +35,7 @@ const initial: Ui = {
   followLastGame: false,
   rejectedInvitations: [],
   usedInvitationTokens: [],
-  statistics: {
-    filter: 'gameTypes',
-    includeIrregularMembers: false,
-    selectedRow: null,
-  },
+  statistics: {},
 };
 
 function addUniqueToken(key: keyof SubType<Ui, string[]>) {

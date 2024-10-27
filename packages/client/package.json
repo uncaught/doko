@@ -23,6 +23,7 @@
     "react-redux": "^9",
     "react-router-dom": "^6",
     "react-sortable-hoc": "^2",
+    "recharts": "^2.13.0",
     "redux": "^5",
     "reselect": "^5",
     "semantic-ui-react": "3.0.0-beta.2"
