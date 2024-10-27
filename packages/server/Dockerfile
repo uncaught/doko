@@ -1,4 +1,4 @@
-FROM node:20.12.2-bookworm
+FROM node:22.10.0-bookworm
 
 ENV NODE_ENV=production
 ENV LOGUX_HOST=0.0.0.0

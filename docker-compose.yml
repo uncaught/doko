@@ -16,7 +16,7 @@ services:
       - "3306:3306"
 
   proxy:
-    image: traefik:3.0.0
+    image: traefik:3.1.6
     restart: always
     command:
       - "--log.level=DEBUG"
@@ -33,7 +33,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
-    image: node:20.12.2-bookworm
+    image: node:22.10.0-bookworm
     user: '1000:1000'
     working_dir: /doko/packages/server
     depends_on:
@@ -70,7 +70,7 @@ services:
       traefik.http.services.doko-wss.loadbalancer.server.port: 3030
 
   client:
-    image: node:20.12.2-bookworm
+    image: node:22.10.0-bookworm
     user: '1000:1000'
     working_dir: /doko/packages/client
     environment:
