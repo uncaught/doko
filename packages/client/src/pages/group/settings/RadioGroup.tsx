@@ -6,7 +6,7 @@ import {useGroup, usePatchGroup} from '../../../store/Groups';
 interface RadioGroupProps {
   label: string;
   options: Map<string, string>;
-  parentKey: keyof SubType<GroupSettings, string>;
+  parentKey: keyof SubType<Required<GroupSettings>, string>;
 }
 
 export default function RadioGroup({label, parentKey, options}: RadioGroupProps): ReactElement | null {
