@@ -1,0 +1,62 @@
+services:
+  proxy:
+    image: traefik:3.1.6
+    restart: unless-stopped
+    networks:
+      - traefik
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  database:
+    image: mariadb:10.11.9
+    environment:
+      - MYSQL_DATABASE=doko
+    volumes:
+      - ./packages/database/schema:/docker-entrypoint-initdb.d:ro
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+    ports:
+      - "3306:3306"
+
+  server:
+    image: node:22.10.0-bookworm
+    user: '1000:1000'
+    working_dir: /doko/packages/server
+    volumes:
+      - ./:/doko:rw
+    environment:
+      - NODE_ENV=development
+      - LOGUX_HOST=0.0.0.0
+      - LOGUX_PORT=3030
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PW=${DOKO_SQL_PASSWORD}
+      - DB_NAME=doko
+    entrypoint: [ "npm", "run", "dev" ]
+
+  client:
+    image: node:22.10.0-bookworm
+    user: '1000:1000'
+    working_dir: /doko/packages/client
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/doko:rw
+    entrypoint: [ "npm", "run", "dev" ]
+
+networks:
+  traefik:
+    external: false

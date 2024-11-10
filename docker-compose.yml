@@ -1,99 +1,79 @@
 services:
   database:
-    image: mariadb:10.11.9
-    restart: always
+    image: uncaught42/doko-stats-db:${DOKO_VERSION}
+    restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=doko
       - MYSQL_ROOT_PASSWORD=${DOKO_SQL_PASSWORD}
       - MYSQL_PWD=${DOKO_SQL_PASSWORD}
     volumes:
-      - ./packages/database/schema:/docker-entrypoint-initdb.d:ro
       - ./mysql:/var/lib/mysql:rw
-    command:
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
-    ports:
-      - "3306:3306"
-
-  proxy:
-    image: traefik:3.1.6
-    restart: always
-    command:
-      - "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
-    image: node:22.10.0-bookworm
-    user: '1000:1000'
-    working_dir: /doko/packages/server
+    image: uncaught42/doko-stats-server:${DOKO_VERSION}
+    restart: unless-stopped
     depends_on:
       - database
-    volumes:
-      - ./:/doko:rw
     environment:
-      - NODE_ENV=development
-      - LOGUX_HOST=0.0.0.0
-      - LOGUX_PORT=3030
-      - DB_HOST=database
-      - DB_PORT=3306
-      - DB_USER=root
       - DB_PW=${DOKO_SQL_PASSWORD}
-      - DB_NAME=doko
-    entrypoint:
-      - "npm"
-      - "run"
-      - "dev"
+      - DOKO_HOST=${DOKO_HOST}
+    networks:
+      - default
+      - traefik
     labels:
       traefik.enable: true
-      # http
-      traefik.http.routers.doko-ws.rule: "Path(`/ws`)"
-      traefik.http.routers.doko-ws.entrypoints: web
-      traefik.http.routers.doko-ws.priority: 200
-      traefik.http.routers.doko-ws.service: doko-ws
-      traefik.http.services.doko-ws.loadbalancer.server.port: 3030
-      # https
-      traefik.http.routers.doko-wss.rule: "Path(`/ws`)"
-      traefik.http.routers.doko-wss.entrypoints: websecure
-      traefik.http.routers.doko-wss.priority: 200
-      traefik.http.routers.doko-wss.service: doko-wss
-      traefik.http.routers.doko-wss.tls: 'true'
-      traefik.http.services.doko-wss.loadbalancer.server.port: 3030
+      # logux
+      traefik.http.services.doko-stats-ws.loadbalancer.server.port: 3030
+      ## http
+      traefik.http.routers.doko-stats-ws.entrypoints: web
+      traefik.http.routers.doko-stats-ws.priority: 200
+      traefik.http.routers.doko-stats-ws.rule: "Host(`${DOKO_HOST}`) && Path(`/ws`)"
+      traefik.http.routers.doko-stats-ws.service: doko-stats-ws
+      ## https
+      traefik.http.routers.doko-stats-wss.entrypoints: websecure
+      traefik.http.routers.doko-stats-wss.priority: 200
+      traefik.http.routers.doko-stats-wss.rule: "Host(`${DOKO_HOST}`) && Path(`/ws`)"
+      traefik.http.routers.doko-stats-wss.service: doko-stats-ws
+      traefik.http.routers.doko-stats-wss.tls.certresolver: myresolver
+      traefik.http.routers.doko-stats-wss.tls: 'true'
+
+      # api
+      traefik.http.middlewares.doko-stats-api-stripprefix.stripprefix.prefixes: /api
+      traefik.http.services.doko-stats-api.loadbalancer.server.port: 3000
+      ## http
+      traefik.http.routers.doko-stats-api.entrypoints: web
+      traefik.http.routers.doko-stats-api.middlewares: 'doko-stats-api-stripprefix'
+      traefik.http.routers.doko-stats-api.priority: 200
+      traefik.http.routers.doko-stats-api.rule: "Host(`${DOKO_HOST}`) && PathPrefix(`/api`)"
+      traefik.http.routers.doko-stats-api.service: doko-stats-api
+      ## https
+      traefik.http.routers.doko-stats-apis.entrypoints: websecure
+      traefik.http.routers.doko-stats-apis.middlewares: 'doko-stats-api-stripprefix'
+      traefik.http.routers.doko-stats-apis.priority: 200
+      traefik.http.routers.doko-stats-apis.rule: "Host(`${DOKO_HOST}`) && PathPrefix(`/api`)"
+      traefik.http.routers.doko-stats-apis.service: doko-stats-api
+      traefik.http.routers.doko-stats-apis.tls.certresolver: myresolver
+      traefik.http.routers.doko-stats-apis.tls: 'true'
 
   client:
-    image: node:22.10.0-bookworm
-    user: '1000:1000'
-    working_dir: /doko/packages/client
-    environment:
-      - BROWSER=none # see https://github.com/facebook/create-react-app/issues/7251
-      - NODE_ENV=development
-    volumes:
-      - ./:/doko:rw
-    entrypoint:
-      - "npm"
-      - "run"
-      - "dev"
+    image: uncaught42/doko-stats-client:${DOKO_VERSION}
+    restart: unless-stopped
+    networks:
+      - traefik
     labels:
       traefik.enable: true
+      traefik.http.services.doko-stats-web.loadbalancer.server.port: 3000
       # http
-      traefik.http.routers.doko-web.rule: "PathPrefix(`/`)"
-      traefik.http.routers.doko-web.entrypoints: web
-      traefik.http.routers.doko-web.priority: 100
-      traefik.http.routers.doko-web.service: doko-web
-      traefik.http.services.doko-web.loadbalancer.server.port: 3000
+      traefik.http.routers.doko-stats-web.entrypoints: web
+      traefik.http.routers.doko-stats-web.priority: 100
+      traefik.http.routers.doko-stats-web.rule: "Host(`${DOKO_HOST}`)"
       # https
-      traefik.http.routers.doko-webs.rule: "PathPrefix(`/`)"
-      traefik.http.routers.doko-webs.entrypoints: websecure
-      traefik.http.routers.doko-webs.priority: 100
-      traefik.http.routers.doko-webs.service: doko-webs
-      traefik.http.routers.doko-webs.tls: 'true'
-      traefik.http.services.doko-webs.loadbalancer.server.port: 3000
+      traefik.http.routers.doko-stats-webs.entrypoints: websecure
+      traefik.http.routers.doko-stats-webs.priority: 100
+      traefik.http.routers.doko-stats-webs.rule: "Host(`${DOKO_HOST}`)"
+      traefik.http.routers.doko-stats-webs.tls.certresolver: myresolver
+      traefik.http.routers.doko-stats-webs.tls: 'true'
+
+networks:
+  traefik:
+    name: traefik
+    external: true
