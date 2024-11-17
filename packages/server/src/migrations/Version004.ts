@@ -25,6 +25,5 @@ where id ='ff13004f-3185-4171-a028-7e6cc7eb3758'`);
 }
 
 export async function run(update: typeof query) {
-  console.log(`Running 004 ...`);
   await fixBrokenRoundNumbers(update);
 }

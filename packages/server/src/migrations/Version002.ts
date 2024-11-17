@@ -16,7 +16,6 @@ and JSON_UNQUOTE(JSON_EXTRACT(data, '$.re.members[0]')) != JSON_UNQUOTE(JSON_EXT
 }
 
 export async function run(update: typeof query) {
-  console.log(`Running 002 ...`);
   await fixForcedSoloMissesGameTypeMemberId(update);
   await fixWrongGameTypeMemberId(update);
   await recalcRoundPlayerStatistics(update);

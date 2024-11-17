@@ -9,3 +9,7 @@ const server = new Server(
 );
 
 export default server;
+
+export async function initLogux() {
+  await server.listen();
+}

@@ -7,6 +7,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@simplewebauthn/types": "^11.0.0",
     "@types/lodash": "^4",
     "@types/uuid": "^10",
     "lodash": "^4",

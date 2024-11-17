@@ -73,7 +73,6 @@ async function migrateGames(update: typeof query) {
 }
 
 export async function run(update: typeof query) {
-  console.log(`Running 001 ...`);
   await migrateGroups(update);
   await migrateRounds(update);
   await migrateGames(update);

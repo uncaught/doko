@@ -7,6 +7,7 @@
     "@doko/common": "file:../common",
     "@logux/client": "0.5.2",
     "@logux/redux": "0.4.2",
+    "@simplewebauthn/browser": "^11.0.0",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.0",
     "array-move": "^4.0.0",

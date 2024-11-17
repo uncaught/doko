@@ -1,13 +1,15 @@
-import {AnyObject, Game, Group, GroupMember, Player, Round} from '@doko/common';
+import {AnyObject, Game, Group, GroupMember, Passkey, Player, Round, User} from '@doko/common';
 
 type Table =
   | 'devices'
-  | 'groups'
-  | 'group_members'
+  | 'games'
   | 'group_member_devices'
-  | 'rounds'
+  | 'group_members'
+  | 'groups'
+  | 'passkeys'
   | 'round_group_members'
-  | 'games';
+  | 'rounds'
+  | 'users';
 
 export type DatabaseTypes<O extends AnyObject> = {
   [k in keyof O]?: 'unix' | 'json' | 'bool';
@@ -78,4 +80,21 @@ export const gamesDbConfig: DbConfig<Game> = {
   },
   insertFields: ['id', 'roundId', 'gameNumber', 'dealerGroupMemberId', 'data'],
   updateFields: ['data'],
+};
+
+export const passkeysDbConfig: DbConfig<Passkey> = {
+  table: 'passkeys',
+  types: {
+    backedUp: 'bool',
+    transports: 'json',
+  },
+  insertFields: ['id', 'publicKey', 'userId', 'webAuthnUserId', 'counter', 'deviceType', 'backedUp', 'transports'],
+  updateFields: ['counter'],
+};
+
+export const usersDbConfig: DbConfig<User> = {
+  table: 'users',
+  types: {},
+  insertFields: ['id', 'username', 'createdOn', 'lastSeenOn'],
+  updateFields: [],
 };

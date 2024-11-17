@@ -8,7 +8,6 @@ async function fixSoloWedding(update: typeof query) {
 }
 
 export async function run(update: typeof query) {
-  console.log(`Running 003 ...`);
   await fixSoloWedding(update);
   await recalcRoundPlayerStatistics(update);
 }

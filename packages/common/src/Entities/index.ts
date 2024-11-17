@@ -5,5 +5,7 @@ export * from './GroupSettings';
 export * from './Groups';
 export * from './Rounds';
 export * from './RoundDetails';
+export * from './Passkeys';
 export * from './Players';
 export * from './Statistics';
+export * from './Users';

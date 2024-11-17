@@ -18,6 +18,7 @@
 ### Reset database
 
 ```bash
+docker compose exec -T database mysql -e "drop database doko; create database doko;"
 cat xxx.sql.gz | gunzip | docker compose exec -T database mysql doko
 docker compose restart server
 ```

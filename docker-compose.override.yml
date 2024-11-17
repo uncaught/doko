@@ -39,7 +39,7 @@ services:
     environment:
       - NODE_ENV=development
       - LOGUX_HOST=0.0.0.0
-      - LOGUX_PORT=3030
+      - LOGUX_PORT=3000
       - DB_HOST=database
       - DB_PORT=3306
       - DB_USER=root

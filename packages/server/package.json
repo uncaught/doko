@@ -11,11 +11,13 @@
   "dependencies": {
     "@doko/common": "file:../common",
     "@logux/server": "0.5.3",
+    "@simplewebauthn/server": "^11.0.0",
     "@tsconfig/node22": "^22",
     "@types/lodash": "^4",
     "@types/node": "^22",
     "change-case": "^5.4.4",
     "dayjs": "^1",
+    "fastify": "^5.1.0",
     "lodash": "^4",
     "mariadb": "^3",
     "tsx": "^4.8.2",
