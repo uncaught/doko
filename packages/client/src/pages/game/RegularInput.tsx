@@ -42,7 +42,7 @@ function Row({Comp}: {Comp: React.FC<{isRe: boolean}>}): ReactElement {
   );
 }
 
-export default function NonPenalty(): ReactElement {
+export default function RegularInput(): ReactElement {
   return (
     <>
       <Segment vertical>

@@ -128,7 +128,10 @@ export function findPlayerIndex(players: Player[], memberId: string): number {
 }
 
 function getNextDealer(roundParticipatingPlayers: Player[], activePlayers: Player[], lastGame: Game): string {
-  if (reDealGameTypes.includes(lastGame.data.gameType)) {
+  if (
+    reDealGameTypes.includes(lastGame.data.gameType) ||
+    (lastGame.data.gameType === 'manualInput' && lastGame.data.manualInput?.dealAgain)
+  ) {
     return lastGame.dealerGroupMemberId;
   }
 
@@ -230,6 +233,12 @@ function useRealPatchGame() {
       if (round.endDate || (currentGame.data.isComplete && game.data?.isComplete !== false)) {
         return; //block edits on complete games
       }
+
+      //Reset manual input array if present:
+      if (game.data?.gameType && game.data.gameType !== 'manualInput' && currentGame.data.manualInput) {
+        game.data.manualInput = null;
+      }
+
       if (!objectContains(currentGame, game)) {
         dispatch.sync<GamesPatch>({
           game,

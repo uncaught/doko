@@ -23,7 +23,7 @@ export default function GamePlayerSideModal({member, close}: {member: GroupMembe
             Re
           </Button>
           <div className={'u-flex-center'}>
-            {member.name} spielt {gameTypeTexts.get(game.data.gameType)}
+            {member.name} spielt {gameTypeTexts[game.data.gameType]}
           </div>
         </>
       )}

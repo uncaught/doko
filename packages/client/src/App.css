@@ -457,6 +457,21 @@ input[type=number] {
   grid-column-gap: 1em;
 }
 
+.manual-points-grid {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+}
+
+.manual-points-grid .input {
+  width: 80px;
+}
+
+.manual-points-grid .input input {
+  text-align: right;
+}
+
 .graph-statistic {
   height: calc(100vh - 8rem);
   margin-left: -1rem;

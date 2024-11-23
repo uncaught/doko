@@ -125,7 +125,7 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
 
     games.forEach((game) => {
       const {
-        data: {isComplete, gameType, re, contra, penaltyCountsAsDutySolo},
+        data: {isComplete, gameType, re, contra, manualInput, penaltyCountsAsDutySolo},
       } = game;
       if (!isComplete) {
         //only complete games are counted for the player stats.
@@ -138,6 +138,12 @@ export function usePlayersWithStats(full = false): PlayerStats[] {
 
       if (gameType === 'penalty' && penaltyCountsAsDutySolo && contra.members.length === 1) {
         statsByMember.get(contra.members[0]!)!.dutySoloPlayed = true;
+      }
+
+      if (gameType === 'manualInput' && manualInput) {
+        manualInput.points.forEach(({player, points}) => {
+          statsByMember.get(player)!.pointBalance += points;
+        });
       }
 
       addPoints(re);

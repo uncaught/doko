@@ -44,7 +44,8 @@ export default function Games(): ReactElement {
   const rowCells: ReactElement[] = [];
 
   games.forEach(({id, gameNumber, data, dealerGroupMemberId}) => {
-    const {gamePoints, re, contra, isComplete, winner, runNumber} = data;
+    const {gamePoints, gameType, re, contra, isComplete, winner, runNumber} = data;
+    const isManual = gameType === 'manualInput';
     const isNewRun = lastRunNumber && lastRunNumber !== runNumber;
     lastRunNumber = runNumber;
 
@@ -71,7 +72,7 @@ export default function Games(): ReactElement {
 
     rowCells.push(
       <div key={`points_${gameNumber}`} className={rowCss} onClick={rowOnClick}>
-        {isComplete ? gamePoints : ''}
+        {isComplete && !isManual ? gamePoints : ''}
       </div>,
     );
 
@@ -79,7 +80,7 @@ export default function Games(): ReactElement {
       const isRe = re.members.includes(p.groupMemberId);
       const isContra = !isRe && contra.members.includes(p.groupMemberId);
 
-      if ((!isRe && !isContra) || !isComplete) {
+      if ((!isRe && !isContra && !isManual) || !isComplete) {
         rowCells.push(
           <div key={`cell_${gameNumber}_${p.groupMemberId}`} className={rowCss} onClick={rowOnClick}>
             {isComplete ? '-' : ''}
@@ -88,12 +89,14 @@ export default function Games(): ReactElement {
         return;
       }
 
-      const points = data[isRe ? 're' : 'contra'].totalPoints;
+      const points = isManual
+        ? (data.manualInput?.points.find(({player}) => player === p.groupMemberId)?.points ?? 0)
+        : data[isRe ? 're' : 'contra'].totalPoints;
       const newPoints = (sumMap.get(p.groupMemberId) || 0) + points;
       sumMap.set(p.groupMemberId, newPoints);
 
-      const hasWon = (winner === 're' && isRe) || (winner === 'contra' && isContra);
-      const hasLost = !hasWon && winner !== 'stalemate';
+      const hasWon = isManual ? points > 0 : (winner === 're' && isRe) || (winner === 'contra' && isContra);
+      const hasLost = isManual ? points < 0 : !hasWon && winner !== 'stalemate';
 
       rowCells.push(
         <div

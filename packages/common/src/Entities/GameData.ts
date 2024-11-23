@@ -59,22 +59,10 @@ export interface Party {
   totalPoints: number; //total, already multiplied times 3 for solo, negative for the losing party
 }
 
-export type Announce = 'announced' | 'no9' | 'no6' | 'no3' | 'no0';
+export const announceChain = ['announced', 'no9', 'no6', 'no3', 'no0'] as const;
+export type Announce = (typeof announceChain)[number];
 
-export const announceChain: Announce[] = ['announced', 'no9', 'no6', 'no3', 'no0'];
-
-export type GameType =
-  | 'normal'
-  | 'poverty'
-  | 'wedding'
-  | 'silentWedding'
-  | 'soloWedding'
-  | 'dutySolo'
-  | 'lustSolo'
-  | 'forcedSolo'
-  | 'penalty';
-
-export const gameTypes: GameType[] = [
+export const gameTypes = [
   'normal',
   'wedding',
   'poverty',
@@ -84,7 +72,10 @@ export const gameTypes: GameType[] = [
   'silentWedding',
   'soloWedding',
   'penalty',
-];
+  'manualInput',
+] as const;
+export type GameType = (typeof gameTypes)[number];
+
 export const reDealGameTypes: GameType[] = ['dutySolo', 'penalty'];
 
 //fulfillment of solo with:
@@ -93,17 +84,24 @@ export const soloGameTypes: GameType[] = ['dutySolo', 'lustSolo', 'forcedSolo'];
 //for team building and point calculation:
 export const soloLikeGameTypes: GameType[] = [...soloGameTypes, 'silentWedding', 'soloWedding', 'penalty'];
 
-export const gameTypeTexts = new Map<GameType, string>([
-  ['normal', 'Normalspiel'],
-  ['wedding', 'Hochzeit'],
-  ['poverty', 'Armut'],
-  ['dutySolo', 'Pflichtsolo'],
-  ['lustSolo', 'Lustsolo'],
-  ['forcedSolo', 'Vorführung'],
-  ['silentWedding', 'Stille Hochzeit'],
-  ['soloWedding', 'Solo Hochzeit'],
-  ['penalty', 'Strafe'],
-]);
+export const gameTypeTexts: Record<GameType, string> = {
+  dutySolo: 'Pflichtsolo',
+  forcedSolo: 'Vorführung',
+  lustSolo: 'Lustsolo',
+  manualInput: 'Manuelle Eingabe',
+  normal: 'Normalspiel',
+  penalty: 'Strafe',
+  poverty: 'Armut',
+  silentWedding: 'Stille Hochzeit',
+  soloWedding: 'Solo Hochzeit',
+  wedding: 'Hochzeit',
+};
+
+export interface ManualInput {
+  comment: string;
+  dealAgain: boolean;
+  points: {player: string; points: number}[]; //array so deep-patch will replace the entire thing
+}
 
 export interface GameData {
   bockEffect: GroupSettings['bockEffect'];
@@ -118,6 +116,7 @@ export interface GameData {
   heartsTrickWentThrough: boolean;
   isComplete: boolean;
   isLastGame: boolean;
+  manualInput?: ManualInput | null;
   penaltyCountsAsDutySolo?: boolean;
   players: string[];
   qualifiesNewBockGames: boolean;

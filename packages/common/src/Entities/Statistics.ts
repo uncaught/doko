@@ -195,6 +195,10 @@ export function addStatistics(target: Statistics, source: Statistics): void {
 export type StatsMap = Map<string, {statistics: Statistics}>;
 
 function addGameAndSoloTypes(data: GameData, statsByMember: StatsMap) {
+  if (data.gameType === 'manualInput') {
+    return;
+  }
+
   function addTotalAndNormalGames(key: keyof SubType<Statistics, GameTypes>) {
     return (pId: string) => {
       const {statistics} = statsByMember.get(pId)!;

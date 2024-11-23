@@ -4,6 +4,12 @@ import {contraHasWon} from './ContraHasWon';
 import {GameCalcLog, GameCalcLogKey} from './GameCalcLog';
 import {reHasWon} from './ReHasWon';
 
+function manualInput(data: GameData): GameData {
+  return mergeStates<GameData>(data, {
+    gamePoints: 0,
+  });
+}
+
 function penalty(data: GameData): GameData {
   return mergeStates<GameData>(data, {
     re: {
@@ -215,6 +221,9 @@ function game(data: GameData): GameData {
 
 export function recalcPoints(data: GameData): GameData {
   if (data.isComplete) {
+    if (data.gameType === 'manualInput') {
+      return manualInput(data);
+    }
     if (data.gameType === 'penalty') {
       return penalty(data);
     }

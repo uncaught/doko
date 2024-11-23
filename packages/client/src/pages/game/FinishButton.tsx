@@ -8,6 +8,7 @@ export default function FinishButton(): React.ReactElement | null {
   const patchGame = usePatchGame();
   if (
     data.isComplete ||
+    data.gameType === 'manualInput' ||
     (data.gameType !== 'penalty' &&
       (undecided(data).length > 0 || (soloGameTypes.includes(data.gameType) && data.soloType === null)))
   ) {

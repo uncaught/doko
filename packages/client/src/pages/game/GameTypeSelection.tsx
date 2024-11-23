@@ -5,16 +5,25 @@ import {useGame, usePatchGame} from '../../store/Games';
 import {useGroupMembers} from '../../store/GroupMembers';
 import {usePlayersWithStats} from '../../store/Players';
 
-type DropdownType = 'normal' | 'solo' | 'poverty' | 'wedding' | 'silentWedding' | 'soloWedding' | 'penalty';
+type DropdownType =
+  | 'normal'
+  | 'solo'
+  | 'poverty'
+  | 'wedding'
+  | 'silentWedding'
+  | 'soloWedding'
+  | 'penalty'
+  | 'manualInput';
 
 const types = new Map<DropdownType, {text: string}>([
-  ['normal', {text: 'Normalspiel'}],
+  ['normal', {text: gameTypeTexts.normal}],
   ['solo', {text: 'Solo'}],
-  ['poverty', {text: 'Armut'}],
-  ['wedding', {text: 'Hochzeit'}],
-  ['silentWedding', {text: 'Stille Hochzeit'}],
-  ['soloWedding', {text: 'Solo Hochzeit'}],
-  ['penalty', {text: 'Strafe'}],
+  ['poverty', {text: gameTypeTexts.poverty}],
+  ['wedding', {text: gameTypeTexts.wedding}],
+  ['silentWedding', {text: gameTypeTexts.silentWedding}],
+  ['soloWedding', {text: gameTypeTexts.soloWedding}],
+  ['penalty', {text: gameTypeTexts.penalty}],
+  ['manualInput', {text: gameTypeTexts.manualInput}],
 ]);
 
 export default function GameTypeSelection(): ReactElement {
@@ -28,7 +37,7 @@ export default function GameTypeSelection(): ReactElement {
   const isSolo = soloGameTypes.includes(gameType);
 
   const select = (type: DropdownType) => {
-    if (type === 'normal') {
+    if (type === 'normal' || type === 'manualInput') {
       patchGame({
         data: {
           isComplete: false,
@@ -73,7 +82,7 @@ export default function GameTypeSelection(): ReactElement {
   return (
     <div>
       <Dropdown
-        text={gameTypeTexts.get(gameType)}
+        text={gameTypeTexts[gameType]}
         icon='play'
         floating
         labeled
