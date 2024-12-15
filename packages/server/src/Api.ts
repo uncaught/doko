@@ -1,7 +1,7 @@
-import type {RegistrationResponseJSON} from '@simplewebauthn/types';
+import {AuthenticationResponseJSON, RegistrationResponseJSON} from '@simplewebauthn/types';
 import Fastify from 'fastify';
 import HttpError from './api/HttpError';
-import {register, verify} from './Passkeys';
+import {authenticateStart, authenticateVerify, registerStart, registerVerify} from './Passkeys';
 
 const port = 4000;
 
@@ -38,7 +38,7 @@ fastify.get('/', async (request, reply) => {
 });
 
 fastify.get<{Querystring: {username: string}; Params: {deviceId: string}}>(
-  '/passkey/register/:deviceId',
+  '/passkey/register/:deviceId/start',
   {
     schema: {
       querystring: {
@@ -52,14 +52,27 @@ fastify.get<{Querystring: {username: string}; Params: {deviceId: string}}>(
   },
   async (request, reply) => {
     reply.type('application/json').code(200);
-    return register(request.params.deviceId, request.query.username.trim().toLowerCase());
+    return registerStart(request.params.deviceId, request.query.username.trim().toLowerCase());
   },
 );
 
 fastify.post<{Body: RegistrationResponseJSON; Params: {deviceId: string}}>(
-  '/passkey/verify/:deviceId',
+  '/passkey/register/:deviceId/verify',
   async (request, reply) => {
     reply.type('application/json').code(200);
-    return verify(request.params.deviceId, request.body);
+    return registerVerify(request.params.deviceId, request.body);
+  },
+);
+
+fastify.get<{Params: {deviceId: string}}>('/passkey/authenticate/:deviceId/start', async (request, reply) => {
+  reply.type('application/json').code(200);
+  return authenticateStart(request.params.deviceId);
+});
+
+fastify.post<{Body: AuthenticationResponseJSON; Params: {deviceId: string}}>(
+  '/passkey/authenticate/:deviceId/verify',
+  async (request, reply) => {
+    reply.type('application/json').code(200);
+    return authenticateVerify(request.params.deviceId, request.body);
   },
 );
