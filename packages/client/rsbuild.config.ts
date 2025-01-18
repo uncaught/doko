@@ -2,7 +2,6 @@ import {defineConfig} from '@rsbuild/core';
 import {pluginReact} from '@rsbuild/plugin-react';
 import {pluginSass} from '@rsbuild/plugin-sass';
 import {pluginSvgr} from '@rsbuild/plugin-svgr';
-// import tailwindcss from 'tailwindcss';
 
 export default defineConfig({
   dev: {
@@ -44,25 +43,6 @@ export default defineConfig({
   source: {
     entry: {
       index: './src/index.tsx',
-    },
-  },
-  tools: {
-    // postcss: (_config, {addPlugins}) => {
-    //   addPlugins(tailwindcss);
-    // },
-    swc: {
-      jsc: {
-        experimental: {
-          plugins: [
-            [
-              '@swc/plugin-styled-jsx',
-              {
-                plugins: ['@styled-jsx/plugin-sass'],
-              },
-            ],
-          ],
-        },
-      },
     },
   },
 });

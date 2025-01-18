@@ -8,9 +8,8 @@
   },
   "dependencies": {
     "@types/lodash": "^4",
-    "@types/uuid": "^10",
     "lodash": "^4",
-    "uuid": "^10"
+    "uuid": "^11"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22",

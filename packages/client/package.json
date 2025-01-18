@@ -33,8 +33,6 @@
     "@rsbuild/plugin-react": "^1",
     "@rsbuild/plugin-sass": "^1",
     "@rsbuild/plugin-svgr": "^1",
-    "@styled-jsx/plugin-sass": "^4",
-    "@swc/plugin-styled-jsx": "^3",
     "@tsconfig/node22": "^22",
     "@types/lodash": "^4",
     "@types/node": "^22",
