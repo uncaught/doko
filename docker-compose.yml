@@ -1,6 +1,6 @@
 services:
   database:
-    image: mariadb:10.11.9
+    image: mariadb:11.4.4-noble
     restart: always
     environment:
       - MYSQL_DATABASE=doko
