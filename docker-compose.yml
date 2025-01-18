@@ -33,7 +33,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   server:
-    image: node:22.10.0-bookworm
+    image: node:22.13.0-bookworm-slim
     user: '1000:1000'
     working_dir: /doko/packages/server
     depends_on:
@@ -70,7 +70,7 @@ services:
       traefik.http.services.doko-wss.loadbalancer.server.port: 3030
 
   client:
-    image: node:22.10.0-bookworm
+    image: node:22.13.0-bookworm-slim
     user: '1000:1000'
     working_dir: /doko/packages/client
     environment:

@@ -1,4 +1,4 @@
-FROM node:22.10.0-bookworm AS build
+FROM node:22.13.0-bookworm-slim AS build
 ARG vers
 
 RUN mkdir -p /doko/packages/common /doko/packages/client
