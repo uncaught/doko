@@ -16,10 +16,7 @@ export default function Group(): ReactElement | null {
     return null;
   }
   return (
-    <Page
-      displayName={'Gruppe'}
-      menuItems={[{icon: 'user plus', route: `/addMembers`, title: 'Mitglieder hinzufügen'}]}
-    >
+    <Page displayName={'Gruppe'} menuItems={[{icon: 'user plus', route: `addMembers`, title: 'Mitglieder hinzufügen'}]}>
       <div>
         <GroupName />
         <Divider />
